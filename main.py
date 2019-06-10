@@ -19,6 +19,7 @@ from copy import deepcopy
 
 
 # Gestion d'une Stack pourrait être intéressante afin de récupérer les states les plus petits le plus rapidement possible
+# Surtout afin d'avoir ça en Objet proprement
 
 
 # class Queue:
@@ -43,6 +44,24 @@ from copy import deepcopy
 # 		pass
 	
 
+# Possibility to declare the Goal, the k and the N Globally --> to have proper code
+
+k = 3
+
+N = k * k
+
+puzzle = [ 
+		6, 7, 8
+		1, 2, 5,
+		0, 3, 4 
+]
+
+goal = [
+	1, 2, 3
+	8, 0, 4
+	7, 6, 5
+]
+
 
 class State:
 	"""
@@ -58,8 +77,6 @@ class State:
 		# Possibility to declare the Goal, the k and the N Globally --> to have proper code
 
 		self.puzzle = puzzle
-		self.k = k
-		self.N = k * k
 
 		# Pour l'instant restons concentré sur des puzzles carrés. Par la suite, pour du bonus on s'amusera avec des rectangles
 
@@ -72,7 +89,6 @@ class State:
 
 		# Pour l'instant, on se concentre sur la distance de manhattan
 		self.h = self.heuristic_manhattan()
-
 
 
 	def heuristic_manhattan(self):
@@ -92,7 +108,10 @@ class State:
 		# C'est très très brouillon
 
 		# TODO mettre la formule au clair avant de taper du code 
-		return lambda x, y: x + self.movecount(y), xrange(N)
+		# return lambda x, y: x + self.movecount(y), xrange(N)
+		for i in xrange(N):
+			if (self.puzzle[i] == 0)
+				break
 
 
 	def movecount(self, i):
@@ -161,7 +180,7 @@ class State:
 
 
 
-def checself.k_valid_puzzle(puzzle):
+def check_is_valid_puzzle(puzzle):
 	"""  
 	To check is a valid or invalid puzzle look this shit:
 
@@ -189,16 +208,16 @@ def astar(start):
 	# g is the length of the state 
 	# H is the results of the heuristic function 
 
-	# 	g + H  , g , le state child, et le path  jusq'ici
+	# [	g + H  , g , le state child, et le path  jusq'ici ]
 
 
 	closed = [] # States already selected by the algorithm, compared to the solution, and expanded
 
 	success = False
 
-	Queue.heappush(opened, [start.heuristic_manhattan(), 0, start, []])
+	# Queue.heappush(opened, [start.heuristic_manhattan(), 0, start, []])
 	while (opened != [] and success == False):
-		cur =  = Queue.heappop(opened)
+		# cur =  = Queue.heappop(opened)
 		if cur.is_final():  # compares cur to a solution state 
 			return g, path
 		else: 
@@ -213,15 +232,14 @@ def astar(start):
 
 				if str(child) not in closed and str(child) not in opened:
 
-					## LA FAUT METTRE LA FONCTION HEURISTTIC AFIIN DE COMPARER DEUX NOEUDS / DEUX PATHS
-
+					## LA FAUT METTRE LA FONCTION HEURISTTIC
 					# On va commencer avec la distance de manhattan 
 
 
 
 					p = path
 					p.append(move)
-					Queue.heappush(opened, [g+1 + child.heuristic(), g+1, child, p])
+					# Queue.heappush(opened, [g+1 + child.heuristic(), g+1, child, p])
 
 
 	return None
@@ -231,26 +249,13 @@ def main():
 
 	# Commençons par un exemple de 3*3
 
-	k = 3
 
-	puzzle = [ 
-		  6, 7, 8
-		  1, 2, 5,
-		  0, 3, 4 
-	]
-
-	goal = [
-		1, 2, 3
-		8, 0, 4
-		7, 6, 5
-	]
-	
 	moves = {'U':'UP', 'D':'DOWN', 'L':'LEFT', 'R':'RIGHT'}
 	
 	
 
-	# g is the length of the state 
-	g, path = astar(State())
+	# g is the length of the state
+	g, path = astar(State(puzzle))
 
 
 if __name__ == '__main__':
