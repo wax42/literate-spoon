@@ -71,6 +71,9 @@ def astar(goal, taquin):
         # neud deja analize
         closed_list = []
 
+	# dict
+	hash = {}
+
         # ici on store le premier noeud qui a un cout dez zero
         open_list.append(start_node)
 
@@ -178,3 +181,4 @@ if __name__ == '__main__':
 	start_time = time.time()
         main()
 	print("--- %s seconds ---" % (time.time() - start_time))
+
