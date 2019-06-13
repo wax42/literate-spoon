@@ -19,6 +19,15 @@ class Node():
                 # g + h
                 self.f = 0
 
+	# transform la map actuel en string
+	def map_str(self):
+		string = ""
+		for y in range(0, len(self.map)):
+			for x in range(0, len(self.map[0])):
+				string += str(self.map[y][x])
+		print (string)
+		return (string)
+
         def __eq__(self, other):
                 return (self.pos == other.pos)
 
@@ -71,22 +80,28 @@ def astar(goal, taquin):
         # neud deja analize
         closed_list = []
 
+	# utiliser comme un tableau associatif
+	# on stoque ici la stirng de la map de taquin comme une emprinte
+	# plus besoin de closed list
+	hash = dict()
+
 	# dict
-	hash = {}
+	#hash = {"1":'1'}
 
         # ici on store le premier noeud qui a un cout dez zero
         open_list.append(start_node)
-
+	hash[start_node.map_str()] = '1'
+	#hash[open_list.map_str()] = '1'
         # algo:
         # pop open list
         # gen neightbours withtout in closedlist
         # add g, h, f
         finish = 0
         while len(open_list) and finish is 0:
-		print ("Open list : " + str(len(open_list)))
+		#print ("Open list : " + str(len(open_list)))
                 data = open_list.pop()
-                print (" : open list len : " + str(len(open_list)) + " | closed list : " + str(len(closed_list)))
-  
+                #print (" : open list len : " + str(len(open_list)) + " | closed list : " + str(len(closed_list)))
+
 		#########################################
 		# NEW SON GENERATION
                 # recuperer la position dwe l empty node
@@ -108,8 +123,8 @@ def astar(goal, taquin):
 				print (new_matrice)
 
 				# cheker si la nouvelle matrice nexiste pas deja dnas la closed list ou l open list
-				if (check_map_is_present_in_list(new_matrice, open_list) == 0 and check_map_is_present_in_list(new_matrice, closed_list) == 0):
-					newnode = Node(data, new_matrice)
+				newnode = Node(data, new_matrice)
+				if (newnode.map_str() not in hash):
                                         # calculer le g h and f
                                         newnode.g = data.g + FACTOR
                                         # newnode.h = check_hamming(new_matrice, goal)#euristique(newnode.pos, end)
@@ -117,9 +132,8 @@ def astar(goal, taquin):
                                         newnode.h = check_hamming(new_matrice, goal)
                                         newnode.f = newnode.g + newnode.h
                                         open_list.append(newnode)
-					print ("New node\n")
-					#return "coucou"
-		
+					hash[newnode.map_str()] = '1'
+
 		open_list.sort(key=lambda Node : Node.f, reverse=True)
 
 		#######################################################
@@ -133,22 +147,12 @@ def astar(goal, taquin):
                         if (check_same_map(goal, i.map) == 1):
                                 data = i
                                 finish = 1
-                                #exit(1)
 				continue
 
                 if (finish == 1):
                         continue
-                else:
-                        closed_list.append(data)
                         #sinon alors on continu notre algo
                         #open_list.sort(key=lambda Node : Node.f, reverse=False)
-
-		######################## useless test
-		#if (len(open_list) >= 100):
-		#	for i in range(0, len(open_list)):
-		#		print(open_list[i].f)
-		#	print((open_list.pop()).f)
-		#	exit(1)
 
 	############################################################################
 
