@@ -9,14 +9,12 @@ class Node():
         def __init__(self, parent=None, taquin=None):
                 # case precedente
                 self.parent = parent
-                # pos de notre neud
-                #self.pos = pos
+		# map du taquin
 		self.map = taquin
                 # distance depuis le depart
                 self.g = 0
                 # heirstique
                 self.h = 0
-
                 # g + h
                 self.f = 0
 
@@ -26,37 +24,33 @@ class Node():
 		for y in range(0, len(self.map)):
 			for x in range(0, len(self.map[0])):
 				string += str(self.map[y][x])
-		#print (string)
 		return (string)
-
-        #def __eq__(self, other):
-        #        return (self.pos == other.pos)
 
         def __str__(self):
                 return ("pos : " + str(self.map) + " | g : " + str(self.g) + " | h : " + str(self.h) + " | f : " + str(self.f))
 
+# parametrer notre resolution de taquin
+# heurisitique : fonction eurisdtique que l'ion vuet utiliser
+# dim : dfimension de la matrice a traiter
+# goal : pattern final que l'on veut obtenir
+class Taquin():
+	def __init__(self, heuristique, dim, goal):
+		# fonction euristique aue l on va utiliser
+		self.heuristique = heuristique
+		# dimension de la matrice
+		self.dim = dim
+		# matrice cible
+		self.goal = goal
 
-def check_same_map(map1, map2):
-	xx = len(map1)
-	yy = len(map1[0])
-	for y in range(0, yy):
-		for x in range(0, xx):
-			if (map1[y][x] != map2[y][x]):
-				return (0)
-	return (1)
+	# h : fonction heuristique
+	def set_heuristique(self, h):
+		self.heuristique = h
 
-def check_map_is_present_in_list(map1, l1):
-	for i in l1:
-		if (check_same_map(map1, i.map) == 1):
-			return (1)
-	return (0)
+	def set_dim(self, dim):
+		self.dim = dim
 
-def str_list_node(listNode):
-        for i in listNode:
-                print(listNode)
-
-#def euristique(s1, pts2):
-#        return abs(pts1[0] - pts2[0]) + abs(pts1[1] - pts2[1])
+	def set_goal(self, goal):
+		self.goal = goal
 
 # toruver la position de l empty element
 # find element 0
@@ -86,9 +80,6 @@ def astar(goal, taquin):
 	# plus besoin de closed list
 	hash = dict()
 
-	# dict
-	#hash = {"1":'1'}
-
 	# queue bitch:
 	q = Queue.PriorityQueue(0)
 
@@ -96,18 +87,13 @@ def astar(goal, taquin):
         #open_list.append(start_node)
 	q.put((1, start_node))
 	hash[start_node.map_str()] = '1'
-	#hash[open_list.map_str()] = '1'
         # algo:
         # pop open list
         # gen neightbours withtout in closedlist
         # add g, h, f
         finish = 0
-        #while len(open_list) and finish is 0:
 	while q.qsize() and finish is 0:
-		#print ("Open list : " + str(len(open_list)))
-                #data = open_list.pop()
-		data = (q.get())[1]
-                #print (" : open list len : " + str(len(open_list)) + " | closed list : " + str(len(closed_list)))
+		data = (q.get())[1] # ici opn recupere l object
 
 		#########################################
 		# NEW SON GENERATION
@@ -142,10 +128,7 @@ def astar(goal, taquin):
 					q.put((newnode.f, newnode))
 					hash[newnode.map_str()] = '1'
 
-		#open_list.sort(key=lambda Node : Node.f, reverse=True)
-
 		#######################################################
-
                 # add dans la closed list the father node
                 # si on arrive sur la target alors reconstituer le chemin
                 # end condition
@@ -153,17 +136,13 @@ def astar(goal, taquin):
                 # test de merde :
 		if "123804765" in hash:
                 #for i in open_list:
-                        #if (check_same_map(goal, i.map) == 1):
                         data = (q.get())[1]
 			print ("need to be 0 : " + str(data.f))
-			#exit(1)
                         finish = 1
 			continue
 
                 if (finish == 1):
                         continue
-                        #sinon alors on continu notre algo
-                        #open_list.sort(key=lambda Node : Node.f, reverse=False)
 
 	############################################################################
 
