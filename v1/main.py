@@ -29,18 +29,28 @@ class Node():
         def __str__(self):
                 return ("pos : " + str(self.map) + " | g : " + str(self.g) + " | h : " + str(self.h) + " | f : " + str(self.f))
 
+def map_str(map):
+	string = ""
+	for y in range(0, len(map)):
+		for x in range(0, len(map[0])):
+			string += str(map[y][x])
+	return (string)
+
 # parametrer notre resolution de taquin
 # heurisitique : fonction eurisdtique que l'ion vuet utiliser
 # dim : dfimension de la matrice a traiter
 # goal : pattern final que l'on veut obtenir
+# map : tableau a 2 dimension qui represente la map de commencement du taquin
 class Taquin():
-	def __init__(self, heuristique, dim, goal):
+	def __init__(self, heuristique, dim, goal, map):
 		# fonction euristique aue l on va utiliser
 		self.heuristique = heuristique
 		# dimension de la matrice
 		self.dim = dim
 		# matrice cible
 		self.goal = goal
+		# matrice initial
+		self.map = map
 
 	# h : fonction heuristique
 	def set_heuristique(self, h):
@@ -52,6 +62,9 @@ class Taquin():
 	def set_goal(self, goal):
 		self.goal = goal
 
+	def set_map(self, map):
+		self.map = map
+
 # toruver la position de l empty element
 # find element 0
 def check_pos_empty(taquin_map):
@@ -62,10 +75,11 @@ def check_pos_empty(taquin_map):
 	return (-1, -1)
 
 #astar(ori, taquin)
-def astar(goal, taquin):
+def astar_start(goal, taquin, heuristique=check_hamming):
         # tableau de 4 element qui 
         # initialisation des data
         start_node = Node(None, taquin)
+	goal_str = map_str(goal)
         # permet e checker les voisiin par simple addition de pos via une boucle
         neightbours = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 
@@ -122,7 +136,8 @@ def astar(goal, taquin):
                                         newnode.g = data.g + FACTOR
                                         # newnode.h = check_hamming(new_matrice, goal)#euristique(newnode.pos, end)
                                         # newnode.h = check_manhattan(new_matrice, goal)
-                                        newnode.h = check_hamming(new_matrice, goal)
+                                        #newnode.h = check_hamming(new_matrice, goal)
+					newnode.h = heuristique(new_matrice, goal)
                                         newnode.f = newnode.g + newnode.h
                                         #open_list.append(newnode)
 					q.put((newnode.f, newnode))
@@ -133,16 +148,11 @@ def astar(goal, taquin):
                 # si on arrive sur la target alors reconstituer le chemin
                 # end condition
 
-                # test de merde :
-		if "123804765" in hash:
-                #for i in open_list:
+                # END CONDITION
+		if goal_str in hash:
                         data = (q.get())[1]
 			print ("need to be 0 : " + str(data.f))
                         finish = 1
-			continue
-
-                if (finish == 1):
-                        continue
 
 	############################################################################
 
@@ -156,7 +166,23 @@ def astar(goal, taquin):
 	print("Len path : " + str(len(answer)) + " | Closed list : " + str(len(hash) - (q.qsize() + 1)) + " | Open list : " + str(q.qsize() + 1))
         return (answer)
 
-#""
+# heuristique : heuristique function
+# map of origin
+# dim : dimension of the taquin
+def astar_setting(heuristique, map, dim):
+	taquin = Taquin(heuristique, dim, 0, map)
+	if (dim == 3):
+		taquin.set_goal([[1,2,3],[8,0,4],[7,6,5]])
+	return (taquin)
+
+# heuristique : heuristique function
+# map of origin
+# dim : dimension of the taquin
+def astar_launch(heuristique, taquin, dim):
+	Astar = astar_setting(heuristique, taquin, dim)
+	path =  astar_start(Astar.goal, Astar.map, Astar.heuristique)
+	return (path)
+
 def main():
 	id_line = {}
 	goal = [[1,2,3], [8,0,4], [7,6,5]]
@@ -164,9 +190,7 @@ def main():
 	#taquin = [[1,2,3], [4,5,6], [7,0,8]]
 	#taquin = [[1, 5, 2], [3, 5, 7], [6, 8, 0]]
 
-	# 2moove
-	#taquin = [[1,2,3], [4,0,5], [7,8,6]]
-	path = astar(goal, taquin)
+	path = astar_launch(check_hamming, taquin, 3)
 	path = path[::-1]
 	print (path)
 
@@ -174,4 +198,3 @@ if __name__ == '__main__':
 	start_time = time.time()
         main()
 	print("--- %s seconds ---" % (time.time() - start_time))
-
