@@ -1,6 +1,7 @@
 from copy import copy, deepcopy
 import time
 from heuristique import *
+import Queue
 
 FACTOR = 0
 
@@ -25,11 +26,11 @@ class Node():
 		for y in range(0, len(self.map)):
 			for x in range(0, len(self.map[0])):
 				string += str(self.map[y][x])
-		print (string)
+		#print (string)
 		return (string)
 
-        def __eq__(self, other):
-                return (self.pos == other.pos)
+        #def __eq__(self, other):
+        #        return (self.pos == other.pos)
 
         def __str__(self):
                 return ("pos : " + str(self.map) + " | g : " + str(self.g) + " | h : " + str(self.h) + " | f : " + str(self.f))
@@ -88,8 +89,12 @@ def astar(goal, taquin):
 	# dict
 	#hash = {"1":'1'}
 
+	# queue bitch:
+	q = Queue.PriorityQueue(0)
+
         # ici on store le premier noeud qui a un cout dez zero
-        open_list.append(start_node)
+        #open_list.append(start_node)
+	q.put((1, start_node))
 	hash[start_node.map_str()] = '1'
 	#hash[open_list.map_str()] = '1'
         # algo:
@@ -97,9 +102,11 @@ def astar(goal, taquin):
         # gen neightbours withtout in closedlist
         # add g, h, f
         finish = 0
-        while len(open_list) and finish is 0:
+        #while len(open_list) and finish is 0:
+	while q.qsize() and finish is 0:
 		#print ("Open list : " + str(len(open_list)))
-                data = open_list.pop()
+                #data = open_list.pop()
+		data = (q.get())[1]
                 #print (" : open list len : " + str(len(open_list)) + " | closed list : " + str(len(closed_list)))
 
 		#########################################
@@ -120,7 +127,7 @@ def astar(goal, taquin):
 				#penser a faire la verificatipn de non duplication de notrw list
 				new_matrice[pos[0]][pos[1]] = new_matrice[pos_y][pos_x]
 				new_matrice[pos_y][pos_x] = 0
-				print (new_matrice)
+				#print (new_matrice)
 
 				# cheker si la nouvelle matrice nexiste pas deja dnas la closed list ou l open list
 				newnode = Node(data, new_matrice)
@@ -131,10 +138,11 @@ def astar(goal, taquin):
                                         # newnode.h = check_manhattan(new_matrice, goal)
                                         newnode.h = check_hamming(new_matrice, goal)
                                         newnode.f = newnode.g + newnode.h
-                                        open_list.append(newnode)
+                                        #open_list.append(newnode)
+					q.put((newnode.f, newnode))
 					hash[newnode.map_str()] = '1'
 
-		open_list.sort(key=lambda Node : Node.f, reverse=True)
+		#open_list.sort(key=lambda Node : Node.f, reverse=True)
 
 		#######################################################
 
@@ -143,11 +151,14 @@ def astar(goal, taquin):
                 # end condition
 
                 # test de merde :
-                for i in open_list:
-                        if (check_same_map(goal, i.map) == 1):
-                                data = i
-                                finish = 1
-				continue
+		if "123804765" in hash:
+                #for i in open_list:
+                        #if (check_same_map(goal, i.map) == 1):
+                        data = (q.get())[1]
+			print ("need to be 0 : " + str(data.f))
+			#exit(1)
+                        finish = 1
+			continue
 
                 if (finish == 1):
                         continue
@@ -163,11 +174,10 @@ def astar(goal, taquin):
                         data = data.parent
                 except:
                         print ("end bitch")
-	print("Len path : " + str(len(answer)) + " | Closed list : " + str(len(closed_list)) + " | Open list : " + str(len(open_list)))
-
+	print("Len path : " + str(len(answer)) + " | Closed list : " + str(len(hash) - (q.qsize() + 1)) + " | Open list : " + str(q.qsize() + 1))
         return (answer)
 
-
+#""
 def main():
 	id_line = {}
 	goal = [[1,2,3], [8,0,4], [7,6,5]]
