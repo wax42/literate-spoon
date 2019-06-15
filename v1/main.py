@@ -2,6 +2,10 @@ from copy import copy, deepcopy
 import time
 from heuristique import *
 import Queue
+import argparse
+
+import my_argparse
+import sys
 
 FACTOR = 0
 
@@ -75,7 +79,7 @@ def check_pos_empty(taquin_map):
 	return (-1, -1)
 
 #astar(ori, taquin)
-def astar_start(goal, taquin, heuristique=check_hamming):
+def astar_start(goal, taquin, heuristique=check_hamming, dim=3):
         # tableau de 4 element qui 
         # initialisation des data
         start_node = Node(None, taquin)
@@ -173,6 +177,10 @@ def astar_setting(heuristique, map, dim):
 	taquin = Taquin(heuristique, dim, 0, map)
 	if (dim == 3):
 		taquin.set_goal([[1,2,3],[8,0,4],[7,6,5]])
+	elif (dim == 4):
+		taquin.set_goal([[1, 2, 3, 4], [12, 13, 14, 5], [11, 0, 15, 6], [10, 9, 8, 7]])
+	elif (dim == 5):
+		taquin.set_goal([[1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 0, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9]])
 	return (taquin)
 
 # heuristique : heuristique function
@@ -180,17 +188,26 @@ def astar_setting(heuristique, map, dim):
 # dim : dimension of the taquin
 def astar_launch(heuristique, taquin, dim):
 	Astar = astar_setting(heuristique, taquin, dim)
-	path =  astar_start(Astar.goal, Astar.map, Astar.heuristique)
+	path =  astar_start(Astar.goal, Astar.map, Astar.heuristique, dim)
 	return (path)
 
 def main():
 	id_line = {}
-	goal = [[1,2,3], [8,0,4], [7,6,5]]
-	taquin = [[4,8,3], [5,7,2], [0,1,6]]#[[,,], [,,], [,,]]
+        # parse argument
+	print(argparse.__file__)
+
+	parse = my_argparse.parsing_bitch()
+  #      args = parser.parse_args()
+
+	print parse.matrice
+	#return (0)
+	#goal = [[1,2,3], [8,0,4], [7,6,5]]
+	#taquin = [[4,8,3], [5,7,2], [0,1,6]]#[[,,], [,,], [,,]]
 	#taquin = [[1,2,3], [4,5,6], [7,0,8]]
 	#taquin = [[1, 5, 2], [3, 5, 7], [6, 8, 0]]
 
-	path = astar_launch(check_hamming, taquin, 3)
+	print parse.dim
+	path = astar_launch(check_hamming, parse.matrice, parse.dim)
 	path = path[::-1]
 	print (path)
 

@@ -1,3 +1,4 @@
+#import argparse
 import argparse
 import sys
 
@@ -69,13 +70,17 @@ def main_arg():
 #if __name__ == '__main__':
 def parsing_bitch():
 	parse = Parsing()
-	try:
-		args = main()
-		print args.f[0]
-		parser_file(parse, args.f[0])
-		print parse.matrice
-	except:
-		parse.error = 1
+	#try:
+	print "coucou"
+	args = main_arg()
+	print("fuck")
+	print args.f[0]
+	print("coucou")
+	parser_file(parse, args.f[0])
+	print "john"
+	print parse.matrice
+	#except:
+	#	parse.error = 1
 	return (parse)
 	#print(args)
 	#print(args.f)
