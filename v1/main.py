@@ -3,6 +3,7 @@ import time
 from heuristique import *
 import Queue
 import argparse
+import ui_v1
 
 import my_argparse
 import sys
@@ -210,8 +211,10 @@ def main():
 	path = astar_launch(check_hamming, parse.matrice, parse.dim)
 	path = path[::-1]
 	print (path)
+	return (str(path))
 
 if __name__ == '__main__':
 	start_time = time.time()
-        main()
+        path = main()
 	print("--- %s seconds ---" % (time.time() - start_time))
+	ui_v1.graphic_mode(path)
