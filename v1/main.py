@@ -192,29 +192,23 @@ def astar_launch(heuristique, taquin, dim):
 	path =  astar_start(Astar.goal, Astar.map, Astar.heuristique, dim)
 	return (path)
 
-def main():
+def main(parse):
 	id_line = {}
         # parse argument
 	print(argparse.__file__)
 
 	parse = my_argparse.parsing_bitch()
-  #      args = parser.parse_args()
-
 	print parse.matrice
-	#return (0)
-	#goal = [[1,2,3], [8,0,4], [7,6,5]]
-	#taquin = [[4,8,3], [5,7,2], [0,1,6]]#[[,,], [,,], [,,]]
-	#taquin = [[1,2,3], [4,5,6], [7,0,8]]
-	#taquin = [[1, 5, 2], [3, 5, 7], [6, 8, 0]]
 
-	print parse.dim
 	path = astar_launch(check_hamming, parse.matrice, parse.dim)
 	path = path[::-1]
 	print (path)
 	return (str(path))
 
 if __name__ == '__main__':
+	parse = my_argparse.parsing_bitch()
 	start_time = time.time()
-        path = main()
+        path = main(parse)
 	print("--- %s seconds ---" % (time.time() - start_time))
-	ui_v1.graphic_mode(path)
+	if (parse.graphic):
+		ui_v1.graphic_mode(path)
