@@ -64,6 +64,8 @@ class Taquin():
 		# matrice initial
 		self.map = map
 
+		self.factor = 0
+
 		# stats part
 		self.len_path    = 0
 		self.nb_all_node = 0
@@ -144,7 +146,7 @@ def astar_start(taquin):
 				newnode_map_str = newnode.map_str()
 				if (newnode_map_str not in hash):
 					# calculer le g h and f
-					newnode.g = data.g + FACTOR
+					newnode.g = data.g + taquin.factor
 					newnode.h = taquin.heuristique(new_matrice, taquin.goal)
 					newnode.f = newnode.g + newnode.h
 					pqueue.put((newnode.f, newnode)) # add elem in priority queu (open)
@@ -190,8 +192,9 @@ def astar_setting(heuristique, map, dim):
 # heuristique : heuristique function
 # map of origin
 # dim : dimension of the taquin
-def astar_launch(heuristique, taquin, dim):
+def astar_launch(heuristique, taquin, dim, factor=0):
 	Astar = astar_setting(heuristique, taquin, dim)
+	Astar.factor = factor
 	path = astar_start(Astar)
 
 	print ("*********************************")
@@ -215,7 +218,7 @@ def main(parse):
 	parse = my_argparse.parsing_bitch()
 	print(parse.matrice)
 
-	path = astar_launch(parse.heuristique, parse.matrice, parse.dim)
+	path = astar_launch(parse.heuristique, parse.matrice, parse.dim, parse.factor)
 	path = path[::-1]
 	#print (path)
 	return (str(path))

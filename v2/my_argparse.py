@@ -9,6 +9,7 @@ class Parsing():
 		self.graphic = 0
 		self.save = 0
 		self.stats = 0
+		self.factor = 0
 		self.heuristique = 0
 		self.error = 0
 
@@ -76,6 +77,7 @@ def main_arg():
 	parser.add_argument('--save', nargs=1, help='save in file data result')
 	parser.add_argument('--stats', action='store_true', help="show stats")
 	parser.add_argument('-g', '--graphic', action='store_true', default=False, help="launch graphic mode(tkinter)")
+	parser.add_argument('--factor', default = [0], type=int, nargs=1)
 
 	# parse argument
 	args = parser.parse_args()
@@ -89,4 +91,5 @@ def parsing_bitch():
 	parse.graphic = args.graphic
 	parser_heuristique(parse, args.heuristique)
 	parse.save = args.save
+	parse.factor = args.factor[0]
 	return (parse)
