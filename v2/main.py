@@ -64,7 +64,10 @@ class Taquin():
 		# matrice initial
 		self.map = map
 
-		self.total_open = 0
+		# stats part
+		self.len_path    = 0
+		self.nb_all_node = 0
+		self.nb_open = 0
 
 	# h : fonction heuristique
 	def set_heuristique(self, h):
@@ -88,15 +91,15 @@ def check_pos_empty(taquin_map):
 				return (y, x)
 	return (-1, -1)
 
-def astar_start(goal, taquin, heuristique=check_hamming, dim=3):
+#def astar_start(goal, taquin, heuristique=check_hamming):
+def astar_start(taquin):
 	comp_size = 0
 	# tableau de 4 element qui 
 	# initialisation des data
-	start_node = Node(None, taquin)
-	goal_str = map_str(goal)
+	start_node = Node(None, taquin.map)
+	goal_str = map_str(taquin.goal)
 	# permet e checker les voisiin par simple addition de pos via une boucle
 	neightbours = [(0, -1), (0, 1), (-1, 0), (1, 0)]
-
 	total =  0
 
 	# initialisation des liste de priorite
@@ -111,6 +114,7 @@ def astar_start(goal, taquin, heuristique=check_hamming, dim=3):
 
         # ici on store le premier noeud qui a un cout dez zero
 	pqueue.put((1, start_node))
+	taquin.nb_all_node += 1
 	hash[start_node.map_str()] = '1'
 	# algo:
 	# pop open list
@@ -141,12 +145,12 @@ def astar_start(goal, taquin, heuristique=check_hamming, dim=3):
 				if (newnode_map_str not in hash):
 					# calculer le g h and f
 					newnode.g = data.g + FACTOR
-					newnode.h = heuristique(new_matrice, goal)
+					newnode.h = taquin.heuristique(new_matrice, taquin.goal)
 					newnode.f = newnode.g + newnode.h
 					pqueue.put((newnode.f, newnode)) # add elem in priority queu (open)
 					hash[newnode_map_str] = '1'
-					#taquin.total_open += 1
-					total += 1
+					taquin.nb_all_node += 1
+
 		#######################################################
                 # add dans la closed list the father node
                 # si on arrive sur la target alors reconstituer le chemin
@@ -155,7 +159,6 @@ def astar_start(goal, taquin, heuristique=check_hamming, dim=3):
                 # END CONDITION
 		if goal_str in hash:
 			data = (pqueue.get())[1]
-			print ("need to be 0 : " + str(data.f))
 			finish = 1
 
 	############################################################################
@@ -167,10 +170,8 @@ def astar_start(goal, taquin, heuristique=check_hamming, dim=3):
 					data = data.parent
 			except:
 					print ("end bitch")
-	#print("Len path : " + str(len(answer)) + " | Closed list : " + str(len(hash) - (q.qsize() + 1)) + " | Open list : " + str(q.qsize() + 1))
-	print ("Total :--> " + str(len(hash)))
-	print ("Open list len :--> " + str(pqueue.qsize()))
-	print ("total : " + str(total))
+	taquin.len_path = len(answer)
+	taquin.nb_open = pqueue.qsize()
 	return (answer)
 
 # heuristique : heuristique function
@@ -191,9 +192,19 @@ def astar_setting(heuristique, map, dim):
 # dim : dimension of the taquin
 def astar_launch(heuristique, taquin, dim):
 	Astar = astar_setting(heuristique, taquin, dim)
-	path =  astar_start(Astar.goal, Astar.map, Astar.heuristique, dim)
-	#path = astar_start(Astar)
-	print ("---> astar len path : " + str(Astar.total_open))
+	path = astar_start(Astar)
+
+	print ("*********************************")
+	print ("************* PATH *************")
+	print (path)
+
+	# STATS DISPLAYIN
+	print ("*********************************")
+	print ("************* STATS *************")
+	print ("LEN PATH : " + str(Astar.len_path))
+	print ("NB NODE OPEN : " + str(Astar.nb_all_node))
+	print ("NB OPEN : " + str(Astar.nb_open))
+	print ("NB CLOSE : " +   str((Astar.nb_all_node - Astar.nb_open)))
 	return (path)
 
 def main(parse):
@@ -213,12 +224,7 @@ if __name__ == '__main__':
 	parse = my_argparse.parsing_bitch()
 	start_time = time.time()
 	path = main(parse)
-	print ("*********************************")
-	print ("************* STATS *************")
 	print ("| %s seconds ---" % (time.time() - start_time))
-	print ("| Path length : " + str(len(path[0])))
-	print ("| Size complexity : " + str(0))
-	print ("| number of states ever represented in memory : ")
 	if (parse.graphic):
 		ui_v2.graphic_mode(path)
-	print (path)
+	#print (path)
