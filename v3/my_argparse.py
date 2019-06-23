@@ -1,6 +1,6 @@
-#import argparse
 import argparse
 import sys
+import heuristique
 
 class Parsing():
 	def __init__(self):
@@ -47,6 +47,21 @@ def parser_file(parse, name_file):
 	parse.matrice = matrice
 	return matrice
 
+# find heurisisque function with string and affect function ptr
+def parser_heuristique(parse, name_hr):
+        name_hr = name_hr[0]
+        print ("name heuristique" + name_hr)
+        parse.heuristique = heuristique.check_manhattan
+
+        if (name_hr in "hamming"):
+                print ("* hamming heuristique")
+                parse.heuristique = heuristique.check_hamming
+        if (name_hr in "manhattan"):
+                print ("* manhattan heuristique")
+                parse.heuristique = heuristique.check_manhattan
+        if (name_hr in "linearConflit"):
+                print ("* linear conflict heuristique")
+                parse.heuristique = heuristique.check_linearConflit
 
 def main_arg():
 	# default : valuer par default
@@ -57,7 +72,7 @@ def main_arg():
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-f', nargs=1, help="input file", required=True)
-	parser.add_argument('-e', '--heuristique', nargs=1, choices=['coucou', 'john', 'her'], default="coucou", help='choose an heuristique')
+	parser.add_argument('-e', '--heuristique', nargs=1, choices=['hamming', 'manhattan', 'linearConflit'], default="manhattan", help='choose an heuristique')
 	parser.add_argument('--save', nargs=1, help='save in file data result')
 	parser.add_argument('--stats', action='store_true', help="show stats")
 	parser.add_argument('-g', '--graphic', action='store_true', default=False, help="launch graphic mode(tkinter)")
@@ -71,19 +86,8 @@ def parsing_bitch():
 	parse = Parsing()
 	#try:
 	args = main_arg()
-	print(args)
-	print("fuck")
-	print(args.f[0])
-	print("coucou")
 	parser_file(parse, args.f[0])
-	print("john")
-	print(parse.matrice)
 	parse.graphic = args.graphic
-	parse.heuristique = args.heuristique
+	parser_heuristique(parse, args.heuristique)
 	parse.save = args.save
-	print("parse")
-	#except:
-	#	parse.error = 1
 	return (parse)
-	#print(args)
-	#print(args.f)
