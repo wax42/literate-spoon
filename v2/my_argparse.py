@@ -72,7 +72,7 @@ def main_arg():
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-f', nargs=1, help="input file", required=True)
-	parser.add_argument('-e', '--heuristique', nargs=1, choices=['hamming', 'manhattan', 'linearConflit'], default=["manhattan"], help='choose an heuristique')
+	parser.add_argument('-e', '--heuristique', nargs=1, choices=['hamming', 'manhattan', 'linearConflit'], default=["hamming"], help='choose an heuristique')
 	parser.add_argument('--save', nargs=1, help='save in file data result')
 	parser.add_argument('--stats', action='store_true', help="show stats")
 	parser.add_argument('-g', '--graphic', action='store_true', default=False, help="launch graphic mode(tkinter)")
