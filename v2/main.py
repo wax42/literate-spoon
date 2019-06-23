@@ -1,14 +1,11 @@
-from copy import copy, deepcopy
 import time
-from heuristique import *
-# import Queue  pour python2
 import queue as Queue
-
 import argparse
 import ui_v2
-
 import my_argparse
 import sys
+from copy import copy, deepcopy
+from heuristique import *
 
 FACTOR = 0
 
@@ -67,6 +64,8 @@ class Taquin():
 		# matrice initial
 		self.map = map
 
+		self.total_open = 0
+
 	# h : fonction heuristique
 	def set_heuristique(self, h):
 		self.heuristique = h
@@ -89,8 +88,8 @@ def check_pos_empty(taquin_map):
 				return (y, x)
 	return (-1, -1)
 
-#astar(ori, taquin)
 def astar_start(goal, taquin, heuristique=check_hamming, dim=3):
+	comp_size = 0
 	# tableau de 4 element qui 
 	# initialisation des data
 	start_node = Node(None, taquin)
@@ -98,42 +97,36 @@ def astar_start(goal, taquin, heuristique=check_hamming, dim=3):
 	# permet e checker les voisiin par simple addition de pos via une boucle
 	neightbours = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 
+	total =  0
+
 	# initialisation des liste de priorite
-	# noeud a analiser
-	open_list = []
-	# neud deja analize
-	closed_list = []
 
 	# utiliser comme un tableau associatif
-	# on stoque ici la stirng de la map de taquin comme une emprinte
-	# plus besoin de closed list
+	# on stoque ici la string de la map de taquin comme une emprinte
+	# remplace la closed list
 	hash = dict()
 
 	# queue bitch:
-	q = Queue.PriorityQueue(0)
+	pqueue = Queue.PriorityQueue(0)
 
         # ici on store le premier noeud qui a un cout dez zero
-        #open_list.append(start_node)
-	q.put((1, start_node))
+	pqueue.put((1, start_node))
 	hash[start_node.map_str()] = '1'
 	# algo:
 	# pop open list
 	# gen neightbours withtout in closedlist
 	# add g, h, f
 	finish = 0
-	while q.qsize() and finish is 0:
-		data = (q.get())[1] # ici on recupere l object
+	while pqueue.qsize() and finish is 0:
+		data = (pqueue.get())[1] # ici on recupere l object
 		#########################################
 		# NEW SON GENERATION
                 # recuperer la position dwe l empty node
 		pos = check_pos_empty(data.map)
 		for i in neightbours:
-			# ici c est du swap pas de la simple recuperation de position
-			# on va comme meme verifier que les position sont admissible
 			pos_y = pos[0] + i[0]
 			pos_x = pos[1] + i[1]
 			# checker si notre noeud actuel n est pas dans la closed list
-			#if check_pos_is_present((pos_y, pos_x), closed_list) == 0:
 			# checker si on est encore dans le range
 			if pos_x >= 0 and pos_y >= 0 and pos_x < len(data.map[0]) and pos_y < len(data.map):
 				new_matrice = deepcopy(data.map)
@@ -141,22 +134,19 @@ def astar_start(goal, taquin, heuristique=check_hamming, dim=3):
 				#penser a faire la verification de non duplication de notre list
 				new_matrice[pos[0]][pos[1]] = new_matrice[pos_y][pos_x]
 				new_matrice[pos_y][pos_x] = 0
-				#print (new_matrice)
 
 				# checker si la nouvelle matrice nexiste pas deja dans la closed list ou l open list
 				newnode = Node(data, new_matrice)
-				if (newnode.map_str() not in hash):
+				newnode_map_str = newnode.map_str()
+				if (newnode_map_str not in hash):
 					# calculer le g h and f
 					newnode.g = data.g + FACTOR
-					# newnode.h = check_hamming(new_matrice, goal)#euristique(newnode.pos, end)
-					# newnode.h = check_manhattan(new_matrice, goal)
-					#newnode.h = check_hamming(new_matrice, goal)
 					newnode.h = heuristique(new_matrice, goal)
 					newnode.f = newnode.g + newnode.h
-					#open_list.append(newnode)
-					q.put((newnode.f, newnode))
-					hash[newnode.map_str()] = '1'
-
+					pqueue.put((newnode.f, newnode)) # add elem in priority queu (open)
+					hash[newnode_map_str] = '1'
+					#taquin.total_open += 1
+					total += 1
 		#######################################################
                 # add dans la closed list the father node
                 # si on arrive sur la target alors reconstituer le chemin
@@ -164,12 +154,12 @@ def astar_start(goal, taquin, heuristique=check_hamming, dim=3):
 
                 # END CONDITION
 		if goal_str in hash:
-			data = (q.get())[1]
+			data = (pqueue.get())[1]
 			print ("need to be 0 : " + str(data.f))
 			finish = 1
 
 	############################################################################
-
+	### Build path
 	answer = []
 	while (data != None):
 			try:
@@ -177,7 +167,10 @@ def astar_start(goal, taquin, heuristique=check_hamming, dim=3):
 					data = data.parent
 			except:
 					print ("end bitch")
-	print("Len path : " + str(len(answer)) + " | Closed list : " + str(len(hash) - (q.qsize() + 1)) + " | Open list : " + str(q.qsize() + 1))
+	#print("Len path : " + str(len(answer)) + " | Closed list : " + str(len(hash) - (q.qsize() + 1)) + " | Open list : " + str(q.qsize() + 1))
+	print ("Total :--> " + str(len(hash)))
+	print ("Open list len :--> " + str(pqueue.qsize()))
+	print ("total : " + str(total))
 	return (answer)
 
 # heuristique : heuristique function
@@ -199,6 +192,8 @@ def astar_setting(heuristique, map, dim):
 def astar_launch(heuristique, taquin, dim):
 	Astar = astar_setting(heuristique, taquin, dim)
 	path =  astar_start(Astar.goal, Astar.map, Astar.heuristique, dim)
+	#path = astar_start(Astar)
+	print ("---> astar len path : " + str(Astar.total_open))
 	return (path)
 
 def main(parse):
@@ -209,16 +204,21 @@ def main(parse):
 	parse = my_argparse.parsing_bitch()
 	print(parse.matrice)
 
-	#path = astar_launch(check_hamming, parse.matrice, parse.dim)
 	path = astar_launch(parse.heuristique, parse.matrice, parse.dim)
 	path = path[::-1]
-	print (path)
+	#print (path)
 	return (str(path))
 
 if __name__ == '__main__':
 	parse = my_argparse.parsing_bitch()
 	start_time = time.time()
 	path = main(parse)
-	print("--- %s seconds ---" % (time.time() - start_time))
+	print ("*********************************")
+	print ("************* STATS *************")
+	print ("| %s seconds ---" % (time.time() - start_time))
+	print ("| Path length : " + str(len(path[0])))
+	print ("| Size complexity : " + str(0))
+	print ("| number of states ever represented in memory : ")
 	if (parse.graphic):
 		ui_v2.graphic_mode(path)
+	print (path)
