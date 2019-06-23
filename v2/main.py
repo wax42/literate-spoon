@@ -209,7 +209,8 @@ def main(parse):
 	parse = my_argparse.parsing_bitch()
 	print(parse.matrice)
 
-	path = astar_launch(check_hamming, parse.matrice, parse.dim)
+	#path = astar_launch(check_hamming, parse.matrice, parse.dim)
+	path = astar_launch(parse.heuristique, parse.matrice, parse.dim)
 	path = path[::-1]
 	print (path)
 	return (str(path))

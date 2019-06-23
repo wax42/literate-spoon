@@ -31,7 +31,7 @@ def check_manhattan(taquin_map, goal):
         return (cost)
 
 
-def check_LinearConflit(taquin_map, goal):
+def check_linearConflit(taquin_map, goal):
         def count_conflicts(taquin_row, goal_row, size, ans=0):
                 counts = [0 for x in range(size)]
                 for i, tile_1 in enumerate(taquin_row):
