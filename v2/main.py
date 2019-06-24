@@ -17,11 +17,11 @@ class Node():
 			# g + h
 			self.f = 0
 
-	# transform la map actuel en string
-	def map_str(self):
+#	# transform la map actuel en string
+	def map_str(self, dim):
 		string = ""
-		for y in range(0, len(self.map)):
-			for x in range(0, len(self.map[0])):
+		for y in range(0, dim):
+			for x in range(0, dim):
 				string += str(self.map[y][x])
 		return (string)
 
@@ -33,10 +33,10 @@ class Node():
 			return False
 		return self.f == other.f
 
-def map_str(map):
+def map_str(map, dim):
 	string = ""
-	for y in range(0, len(map)):
-		for x in range(0, len(map[0])):
+	for y in range(0, dim):
+		for x in range(0, dim):
 			string += str(map[y][x])
 	return (string)
 
@@ -91,7 +91,7 @@ def astar_start(taquin):
 	# tableau de 4 element qui 
 	# initialisation des data
 	start_node = Node(None, taquin.map)
-	goal_str = map_str(taquin.goal)
+	goal_str = map_str(taquin.goal, taquin.dim)
 	# permet e checker les voisiin par simple addition de pos via une boucle
 	neightbours = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 	total =  0
@@ -110,7 +110,7 @@ def astar_start(taquin):
 	#pqueue.put((1, start_node))
 	heapq.heappush(pqueue, (1, start_node))
 	taquin.nb_all_node += 1
-	hash[start_node.map_str()] = '1'
+	hash[start_node.map_str(taquin.dim)] = '1'
 	# algo:
 	# pop open list
 	# gen neightbours withtout in closedlist
@@ -127,7 +127,8 @@ def astar_start(taquin):
 			pos_x = pos[1] + i[1]
 			# checker si notre noeud actuel n est pas dans la closed list
 			# checker si on est encore dans le range
-			if pos_x >= 0 and pos_y >= 0 and pos_x < len(data.map[0]) and pos_y < len(data.map):
+			# pour l opti on va eviter le len
+			if pos_x >= 0 and pos_y >= 0 and pos_x < taquin.dim and pos_y < taquin.dim:
 				new_matrice = deepcopy(data.map)
 				# swap value
 				#penser a faire la verification de non duplication de notre list
@@ -136,7 +137,7 @@ def astar_start(taquin):
 
 				# checker si la nouvelle matrice nexiste pas deja dans la closed list ou l open list
 				newnode = Node(data, new_matrice)
-				newnode_map_str = newnode.map_str()
+				newnode_map_str = newnode.map_str(taquin.dim)
 				if (newnode_map_str not in hash):
 					# calculer le g h and f
 					newnode.g = data.g + taquin.factor
@@ -196,10 +197,11 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	# STATS DISPLAYIN
 	print ("*********************************")
 	print ("************* STATS *************")
+	print ("DIMENSION     : " + str(dim) + " * " + str(dim))
 	print ("LEN PATH      : " + str(Astar.len_path))
 	print ("NB NODE OPEN  : " + str(Astar.nb_all_node))
 	print ("NB OPEN       : " + str(Astar.nb_open))
-	print ("NB CLOSE      : " +   str((Astar.nb_all_node - Astar.nb_open)))
+	print ("NB CLOSE      : " + str((Astar.nb_all_node - Astar.nb_open)))
 	return (path)
 
 def main(parse):
@@ -212,7 +214,6 @@ def main(parse):
 
 	path = astar_launch(parse.heuristique, parse.matrice, parse.dim, parse.factor)
 	path = path[::-1]
-	#print (path)
 	return (str(path))
 
 if __name__ == '__main__':
