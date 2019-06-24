@@ -1,0 +1,14 @@
+Utilisation de heapq a la place des queue qui sont utilise pour gerer le multithread
+
+python3 main.py -f file/dim_5 -e hamming
+16.197707891464233 seconds
+
+python3 main_priorityqueu.py -f file/dim_5 -e hamming
+17.257141828536987 seconds
+
+
+
+gain : 6 %
+
+>>> 17.257141828536987 / 16.197707891464233
+1.0654064108435397

@@ -1,5 +1,5 @@
 import time
-import heapq
+import queue as Queue
 import argparse
 import ui_v2
 import my_argparse
@@ -112,11 +112,10 @@ def astar_start(taquin):
 	hash = dict()
 
 	# queue bitch:
-	pqueue = []#Queue.PriorityQueue(0)
+	pqueue = Queue.PriorityQueue(0)
 
         # ici on store le premier noeud qui a un cout dez zero
-	#pqueue.put((1, start_node))
-	heapq.heappush(pqueue, (1, start_node))
+	pqueue.put((1, start_node))
 	taquin.nb_all_node += 1
 	hash[start_node.map_str()] = '1'
 	# algo:
@@ -124,8 +123,8 @@ def astar_start(taquin):
 	# gen neightbours withtout in closedlist
 	# add g, h, f
 	finish = 0
-	while len(pqueue) and finish is 0:
-		data = (heapq.heappop(pqueue))[1] # ici on recupere l object
+	while pqueue.qsize() and finish is 0:
+		data = (pqueue.get())[1] # ici on recupere l object
 		#########################################
 		# NEW SON GENERATION
                 # recuperer la position dwe l empty node
@@ -150,7 +149,7 @@ def astar_start(taquin):
 					newnode.g = data.g + taquin.factor
 					newnode.h = taquin.heuristique(new_matrice, taquin.goal)
 					newnode.f = newnode.g + newnode.h
-					heapq.heappush(pqueue, (newnode.f, newnode)) # add elem in priority queu (open)
+					pqueue.put((newnode.f, newnode)) # add elem in priority queu (open)
 					hash[newnode_map_str] = '1'
 					taquin.nb_all_node += 1
 
@@ -161,7 +160,7 @@ def astar_start(taquin):
 
                 # END CONDITION
 		if goal_str in hash:
-			data = (heapq.heappop(pqueue))[1]
+			data = (pqueue.get())[1]
 			finish = 1
 
 	############################################################################
@@ -174,7 +173,7 @@ def astar_start(taquin):
 			except:
 					print ("end bitch")
 	taquin.len_path = len(answer)
-	taquin.nb_open = len(pqueue)
+	taquin.nb_open = pqueue.qsize()
 	return (answer)
 
 # heuristique : heuristique function
