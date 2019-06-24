@@ -3,11 +3,8 @@ import heapq
 import argparse
 import ui_v2
 import my_argparse
-import sys
-from copy import copy, deepcopy
+from copy import deepcopy
 from heuristique import *
-
-FACTOR = 0
 
 class Node():
 	def __init__(self, parent=None, taquin=None):
@@ -17,8 +14,6 @@ class Node():
 			self.map = taquin
 			# distance depuis le depart
 			self.g = 0
-			# heirstique
-			self.h = 0
 			# g + h
 			self.f = 0
 
@@ -29,9 +24,6 @@ class Node():
 			for x in range(0, len(self.map[0])):
 				string += str(self.map[y][x])
 		return (string)
-
-	def __str__(self):
-		return ("pos : " + str(self.map) + " | g : " + str(self.g) + " | h : " + str(self.h) + " | f : " + str(self.f))
 
 	def __lt__(self, other):
 		return self.f < other.f
@@ -124,7 +116,7 @@ def astar_start(taquin):
 	# gen neightbours withtout in closedlist
 	# add g, h, f
 	finish = 0
-	while len(pqueue) and finish is 0:
+	while len(pqueue):
 		data = (heapq.heappop(pqueue))[1] # ici on recupere l object
 		#########################################
 		# NEW SON GENERATION
@@ -149,8 +141,7 @@ def astar_start(taquin):
 					# calculer le g h and f
 					newnode.g = data.g + taquin.factor
 					newnode.h = taquin.heuristique(new_matrice, taquin.goal)
-					newnode.f = newnode.g + newnode.h
-					heapq.heappush(pqueue, (newnode.f, newnode)) # add elem in priority queu (open)
+					heapq.heappush(pqueue, (newnode.g + newnode.h, newnode))
 					hash[newnode_map_str] = '1'
 					taquin.nb_all_node += 1
 
@@ -162,7 +153,8 @@ def astar_start(taquin):
                 # END CONDITION
 		if goal_str in hash:
 			data = (heapq.heappop(pqueue))[1]
-			finish = 1
+			#finish = 1
+			break
 
 	############################################################################
 	### Build path
@@ -197,7 +189,6 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	Astar = astar_setting(heuristique, taquin, dim)
 	Astar.factor = factor
 	path = astar_start(Astar)
-
 	print ("*********************************")
 	print ("************* PATH *************")
 	print (path)
@@ -205,10 +196,10 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	# STATS DISPLAYIN
 	print ("*********************************")
 	print ("************* STATS *************")
-	print ("LEN PATH : " + str(Astar.len_path))
-	print ("NB NODE OPEN : " + str(Astar.nb_all_node))
-	print ("NB OPEN : " + str(Astar.nb_open))
-	print ("NB CLOSE : " +   str((Astar.nb_all_node - Astar.nb_open)))
+	print ("LEN PATH      : " + str(Astar.len_path))
+	print ("NB NODE OPEN  : " + str(Astar.nb_all_node))
+	print ("NB OPEN       : " + str(Astar.nb_open))
+	print ("NB CLOSE      : " +   str((Astar.nb_all_node - Astar.nb_open)))
 	return (path)
 
 def main(parse):
@@ -228,7 +219,6 @@ if __name__ == '__main__':
 	parse = my_argparse.parsing_bitch()
 	start_time = time.time()
 	path = main(parse)
-	print ("| %s seconds ---" % (time.time() - start_time))
+	print ("SECONDS       : %.3f" % (time.time() - start_time))
 	if (parse.graphic):
 		ui_v2.graphic_mode(path)
-	#print (path)
