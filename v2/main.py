@@ -87,7 +87,6 @@ def check_pos_empty(taquin_map):
 
 #def astar_start(goal, taquin, heuristique=check_hamming):
 def astar_start(taquin):
-	comp_size = 0
 	# tableau de 4 element qui 
 	# initialisation des data
 	start_node = Node(None, taquin.map)
@@ -107,15 +106,14 @@ def astar_start(taquin):
 	pqueue = []#Queue.PriorityQueue(0)
 
         # ici on store le premier noeud qui a un cout dez zero
-	#pqueue.put((1, start_node))
 	heapq.heappush(pqueue, (1, start_node))
 	taquin.nb_all_node += 1
-	hash[start_node.map_str(taquin.dim)] = '1'
+	# we store just the key not a value
+	hash[start_node.map_str(taquin.dim)] = None
 	# algo:
 	# pop open list
 	# gen neightbours withtout in closedlist
 	# add g, h, f
-	finish = 0
 	while len(pqueue):
 		data = (heapq.heappop(pqueue))[1] # ici on recupere l object
 		#########################################
@@ -143,7 +141,7 @@ def astar_start(taquin):
 					newnode.g = data.g + taquin.factor
 					newnode.h = taquin.heuristique(new_matrice, taquin.goal)
 					heapq.heappush(pqueue, (newnode.g + newnode.h, newnode))
-					hash[newnode_map_str] = '1'
+					hash[newnode_map_str] = None
 					taquin.nb_all_node += 1
 
 		#######################################################
@@ -154,7 +152,6 @@ def astar_start(taquin):
                 # END CONDITION
 		if goal_str in hash:
 			data = (heapq.heappop(pqueue))[1]
-			#finish = 1
 			break
 
 	############################################################################
