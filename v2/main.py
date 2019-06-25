@@ -27,7 +27,7 @@ class Node():
 
 	def __lt__(self, other):
 		return self.f < other.f
-		
+
 	def __eq__(self, other):
 		if(other == None):
 			return False
@@ -100,16 +100,16 @@ def astar_start(taquin):
 	# utiliser comme un tableau associatif
 	# on stoque ici la string de la map de taquin comme une emprinte
 	# remplace la closed list
-	hash = dict()
+	hash = set()
 
 	# queue bitch:
-	pqueue = []#Queue.PriorityQueue(0)
+	pqueue = []
 
         # ici on store le premier noeud qui a un cout dez zero
 	heapq.heappush(pqueue, (1, start_node))
 	taquin.nb_all_node += 1
 	# we store just the key not a value
-	hash[start_node.map_str(taquin.dim)] = None
+	hash.add(start_node.map_str(taquin.dim))
 	# algo:
 	# pop open list
 	# gen neightbours withtout in closedlist
@@ -141,7 +141,7 @@ def astar_start(taquin):
 					newnode.g = data.g + taquin.factor
 					newnode.h = taquin.heuristique(new_matrice, taquin.goal)
 					heapq.heappush(pqueue, (newnode.g + newnode.h, newnode))
-					hash[newnode_map_str] = None
+					hash.add(newnode_map_str)
 					taquin.nb_all_node += 1
 
 		#######################################################
