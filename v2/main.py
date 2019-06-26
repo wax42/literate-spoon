@@ -53,6 +53,7 @@ class Taquin():
 		self.dim = dim
 		# matrice cible
 		self.goal = goal
+		self.goal_real = 0
 		# matrice initial
 		self.map = map
 
@@ -72,6 +73,9 @@ class Taquin():
 
 	def set_goal(self, goal):
 		self.goal = goal
+
+	def set_goal_real(self, goal):
+		self.goal_real = goal
 
 	def set_map(self, map):
 		self.map = map
@@ -170,14 +174,119 @@ def astar_start(taquin):
 # heuristique : heuristique function
 # map of origin
 # dim : dimension of the taquin
+def find_pos_in_tab(tab, val):
+	count = 0
+	print ("find " + str(val) + " in " + str(tab))
+	for i in tab:
+		if (i == val):
+			print ("\tValue found : " + str(count))
+			return (count)
+		count += 1
+
+# find n  number a > b 7 a != 0 b != 0
+def find_n(map_no_stair):
+	size = len(map_no_stair)
+	n = 0
+	for x in range(0, size):
+		for y in range(x+1, size):
+			if (map_no_stair[x] != 0 and map_no_stair[y] != 0 and map_no_stair[x] > map_no_stair[y]):
+				n += 1
+	return (n)
+
 def astar_setting(heuristique, map, dim):
 	taquin = Taquin(heuristique, dim, 0, map)
 	if (dim == 3):
-		taquin.set_goal([[1,2,3],[8,0,4],[7,6,5]])
+		taquin.set_goal([[1, 2, 3],[8 ,0 ,4],[7, 6 ,5]])
+		taquin.set_goal_real([1, 2, 3, 4, 0, 5, 6, 7 ,8])
 	elif (dim == 4):
 		taquin.set_goal([[1, 2, 3, 4], [12, 13, 14, 5], [11, 0, 15, 6], [10, 9, 8, 7]])
+		taquin.set_goal_real([1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 10, 11, 12, 13, 14, 15])
 	elif (dim == 5):
 		taquin.set_goal([[1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 0, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9]])
+		taquin.set_goal_real([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])
+
+	#verifier que l on peut resoudre le taquin
+#	count_diff = 0
+#	for y in range(0, dim):
+#		for x in range(0, dim):
+#			if (taquin.map[y][x] != taquin.goal[y][x]):
+#				count_diff += 1	
+	# TAQUIN VERIF SOLVABLE
+
+	print ("MAT1")
+	print (taquin.map)
+	print ("MAT2")
+	print (taquin.goal)
+
+	tab_map = []
+	tab_goal = []
+
+	tab_final = []
+	zero_empl = 0
+
+	for i in taquin.map:
+		tab_map = tab_map + i
+	for i in taquin.goal:
+		tab_goal = tab_goal + i
+	
+	size = len(tab_map)
+	# build tab pos
+	for i in range(0, size):
+		tab_final.append(find_pos_in_tab(tab_goal, tab_map[i]))
+	
+
+	print ("MAP input             : " + str(tab_map))
+	print ("Goal                  : " + str(tab_goal))
+	# 
+	print ("tab de correspondance : " + str(tab_final))
+
+	print ("Goal real             : " + str(taquin.goal_real))
+
+	print ("Build dictionnaries of dictionnaries : ")
+	dcorrep = dict()
+
+	# construciton de notre tableau de corresponance entre notre matrice en escalier et une matrice sans escalier pour ainsi effectuer l opperation permettant de savoir si c est valide
+	for i in range(0, size):
+		dcorrep[tab_goal[i]] = taquin.goal_real[i]
+
+	# creation du tableau qui correspond a une matrice sans escalier ;)
+	master_mat = []
+	for i in tab_map:
+		master_mat.append(dcorrep[i])
+
+	print (dcorrep)
+
+	print ("master_map : " + str(master_mat))
+
+	N = find_n(master_mat)
+	print ("nb diff : " + str(N))
+
+	if (dim % 2 == 1):
+		if (N % 2 == 0):
+			print("SOLVABLE")
+		else:
+			print ("No SOLVABLE")
+	else:
+		# dans le cas pair
+		#
+		print (map)
+		bottom_y = -1
+		for y in range(0, dim):
+			for x in range(0, dim):
+				if (taquin.map[y][x] == 0):
+					bottom_y = dim - y;
+
+		print ("N : " + str(N) + " and bottom_y : " + str(bottom_y))
+		if (N % 2 == 0 and bottom_y % 2 == 0):
+			print ("UNSOLVABLE N even and y even")
+		elif (N % 2 == 1 and bottom_y % 2 == 1):
+			print ("UNSOLVABLE N odd and y odd")
+		else:
+			print ("GOOD SOLVE\n")
+		print ("Pos from the bottom : " + str(bottom_y))
+
+		print ("bad solution")
+	#exit(1)
 	return (taquin)
 
 # heuristique : heuristique function
@@ -191,7 +300,7 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	print ("************* PATH *************")
 	print (path)
 
-	# STATS DISPLAYIN
+	# STATS DISPLAYING
 	print ("*********************************")
 	print ("************* STATS *************")
 	print ("DIMENSION     : " + str(dim) + " * " + str(dim))
