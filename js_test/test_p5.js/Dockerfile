@@ -18,6 +18,7 @@ ADD . $APPLICATION_PATH
 
 # INSTALL DEPENDENCIES (Python3)
 RUN apt-get -yqq update
+RUN apt-get install -yqq curl wget vim procps
 RUN apt-get install -yqq python3 python3-pip python-pip python3-tk
 
 # SET WORKING DIRECTORY
@@ -34,3 +35,8 @@ EXPOSE 8080
 # START THE APPLICATION
 ENTRYPOINT python3 file_server.py && python3 tornado_websocket.py
 
+#  docker build -t test_n_puzzle .
+
+# docker run -d -p 8080:8080 test_n_puzzle --name { NAME OF CONTAINER}
+
+# docker exec -it  { NAME OF CONTAINER }  bash
