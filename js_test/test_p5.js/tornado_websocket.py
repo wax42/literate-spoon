@@ -27,7 +27,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	def on_message(self, message):
 		print("Transmitting message: %s" % message)
 		for c in self.connections:
-			c.write_message(message)
+			c.write_message("Received")
+		
 
 	def on_close(self):
 		self.connections.remove(self)
@@ -35,9 +36,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 print("URI ws://%s:%s is now open for web communication" % (uri, port))
 application = tornado.web.Application([
-	# (r"/(.*)", tornadso.web.StaticFileHandler, {"path": root, "default_filename": "index.html"}),
-	# (r"/", MainHandler),
-	(r"/", WebSocketHandler),
+	(r"/", WebSocketHandler)
 ])
  
 if __name__ == "__main__":
