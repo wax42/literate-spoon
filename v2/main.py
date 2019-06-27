@@ -179,9 +179,10 @@ def find_pos_in_tab(tab, val):
 	print ("find " + str(val) + " in " + str(tab))
 	for i in tab:
 		if (i == val):
-			print ("\tValue found : " + str(count))
 			return (count)
-		count += 1
+			#print ("\tValue found : " + str(count))
+		count += 1 
+	return (count)
 
 # find n  number a > b 7 a != 0 b != 0
 def find_n(map_no_stair):
@@ -192,6 +193,19 @@ def find_n(map_no_stair):
 			if (map_no_stair[x] != 0 and map_no_stair[y] != 0 and map_no_stair[x] > map_no_stair[y]):
 				n += 1
 	return (n)
+
+def find_n_simple_tab(map):
+	size = len(map)
+	print (map)
+	n = 0
+	print ("size : " + str(size))
+	for x in range(0, size):
+		for xx in range(x+1, size):
+			if (map[x] > 0 and map[xx] > 0 and map[x] > map[xx]):
+		#		print ("Yheer : " + str(map[x]) + " > " + str(map[xx]))
+				n = n + 1
+	return (n)
+
 
 def astar_setting(heuristique, map, dim):
 	taquin = Taquin(heuristique, dim, 0, map)
@@ -213,11 +227,6 @@ def astar_setting(heuristique, map, dim):
 #				count_diff += 1	
 	# TAQUIN VERIF SOLVABLE
 
-	print ("MAT1")
-	print (taquin.map)
-	print ("MAT2")
-	print (taquin.goal)
-
 	tab_map = []
 	tab_goal = []
 
@@ -228,39 +237,23 @@ def astar_setting(heuristique, map, dim):
 		tab_map = tab_map + i
 	for i in taquin.goal:
 		tab_goal = tab_goal + i
-	
-	size = len(tab_map)
-	# build tab pos
-	for i in range(0, size):
-		tab_final.append(find_pos_in_tab(tab_goal, tab_map[i]))
-	
 
-	print ("MAP input             : " + str(tab_map))
-	print ("Goal                  : " + str(tab_goal))
-	# 
-	print ("tab de correspondance : " + str(tab_final))
+	#print("tab map n : " + str(find_n_simple_tab(tab_map)))
+	#print("tab map nn : " + str(find_n_simple_tab(tab_goal)))
+	v1 = find_n_simple_tab(tab_map)
+	v2 = find_n_simple_tab(tab_goal)
 
-	print ("Goal real             : " + str(taquin.goal_real))
+	if (dim % 2 == 0):
+		print ("-> " + str(find_pos_in_tab(tab_map, 0)))
+		print ("---> " + str(find_pos_in_tab(tab_goal, 0)))
+		v1 += (find_pos_in_tab(tab_map, 0) / dim)
+		v2 += (find_pos_in_tab(tab_goal, 0) / dim)
+	if (v1 % 2 == v2 % 2):
+		print ("Puzzle is solvable")
+	else:
+		print ("No solvable")
 
-	print ("Build dictionnaries of dictionnaries : ")
-	dcorrep = dict()
-
-	# construciton de notre tableau de corresponance entre notre matrice en escalier et une matrice sans escalier pour ainsi effectuer l opperation permettant de savoir si c est valide
-	for i in range(0, size):
-		dcorrep[tab_goal[i]] = taquin.goal_real[i]
-
-	# creation du tableau qui correspond a une matrice sans escalier ;)
-	master_mat = []
-	for i in tab_map:
-		master_mat.append(dcorrep[i])
-
-	print (dcorrep)
-
-	print ("master_map : " + str(master_mat))
-
-	N = find_n(master_mat)
-	print ("nb diff : " + str(N))
-
+	exit(1)
 	if (dim % 2 == 1):
 		if (N % 2 == 0):
 			print("SOLVABLE")
