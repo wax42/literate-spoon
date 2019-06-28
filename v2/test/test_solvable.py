@@ -21,13 +21,22 @@ def get_nb_diff(start, dico_asc):
                                 nb_diff += 1
         return (nb_diff)
 
-###############################################3
-#################################################
-
 def check_solvable(dim, nb_diff):
         if (nb_diff % (dim - 1)):
                 return (1)
         return (0)
+
+# final map
+# npuzzle not solve
+# dim : dimension
+#
+def is_solvable(goal, start, dim):
+	dico = made_dict_asc(goal)
+	nb_diff = get_nb_diff(start, dico)
+	return (check_solvable(dim, nb_diff))
+
+###############################################3
+#################################################
 
 print("--=== TEST ===--")
 
@@ -40,25 +49,13 @@ goal_map = []
 for i in goal:
 	goal_map += i
 
-print (goal)
-print (goal_map)
+#print (goal)
+#print (goal_map)
 
-dico_id = made_dict_asc(goal_map)
-
-print ("dico id : ", end='')
-print (dico_id)
-print ("start : ", end='')
-print (start)
-
-print ("============================================")
-
-nb_diff = get_nb_diff(start, dico_id)
-is_solve = check_solvable(3, nb_diff)
-
-print ("nb diff : " + str(nb_diff))
+#dico_id = made_dict_asc(goal_map)
 
 
-if (is_solve):
+if (is_solvable(goal_map, start, 3) == 1):
 	print ("Solvable bitch :)")
 else:
 	print ("not solvable ....")
