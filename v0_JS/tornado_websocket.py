@@ -3,6 +3,21 @@ import os
 import tornado.web
 import tornado.websocket
 import tornado.ioloop
+from algo_src.a_star import astar_launch
+from algo_src.heuristique import check_gaschnig
+
+
+def function_to_test():
+	taquin_map = [[7,5,0], [2 ,3 ,8], [4 ,6 ,1]]
+
+	# goal = [[1, 2, 3],[8 ,0 ,4],[7, 6 ,5]]
+	
+	path = astar_launch(check_gaschnig, taquin_map, 3, 1)
+	path = path[::-1]
+	return str(path)
+
+
+
 
 uri = os.getenv("WS_HOST", "127.0.0.1")
 port = os.getenv("WS_PORT", "8082")
@@ -27,7 +42,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	def on_message(self, message):
 		print("Transmitting message: %s" % message)
 		for c in self.connections:
-			c.write_message("Received")
+
+			c.write_message(function_to_test())
 		
 
 	def on_close(self):

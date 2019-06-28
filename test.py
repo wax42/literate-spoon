@@ -2,16 +2,23 @@ import math
 import pprint
 
 def count_conflicts(taquin_row, goal_row, size, ans=0):
-    """
-    L'objectif de la fonction etant de compter le nombre de conflits
+	"""
+	L'objectif de la fonction etant de compter le nombre de conflits
 
-    """
-    # commençons par definir qu'est ce qu'un conflit
+	"""
+	# commençons par definir qu'est ce qu'un conflit
 
-    counts = [0 for x in range(size)]
-    # Creation d'un tableau pour compter tout les conflits sur une ligne
+	# Two tiles tj and tk are in a linear conflict 
+	# if tj and tk are the same line, the goal positions of 
+	# tj and tk are both in that line, tj is to the right of tk,
+	#  and goal position of tj is to the left of the goal position of tk.
 
-    for i, tile_1 in enumerate(taquin_row):
+	# disons tj == tile_1 and tk == til_2
+
+	counts = [0 for x in range(size)]
+	# Creation d'un tableau pour compter tout les conflits sur une ligne
+
+	for i, tile_1 in enumerate(taquin_row):
 
             if tile_1 in goal_row and tile_1 != 0:
          
@@ -33,11 +40,10 @@ def count_conflicts(taquin_row, goal_row, size, ans=0):
                 print(tile_1, "n'est pas dans", goal_row)
 
     if max(counts) == 0:
-            print("TEST GOOOD TEST ", ans)
+			# Si on a rien trouver retourner le resultat
             return ans * 2
     else:
-            print("PRINT SALOPE DE TA MERE LA PUTE", ans)
-
+			# sinon ???
             i = counts.index(max(counts))
             taquin_row[i] = -1
             ans += 1
@@ -126,9 +132,6 @@ for y in range(size):
                 # print("xy", x, y)
                 # print("Taquin result ", taquin_map[y][x])
                 # print("Taquin list result ",taquin_list[idx])
-
-
-
                 taquin_rows[y].append(taquin_map[y][x])
                 taquin_columns[x].append(taquin_map[y][x])
 

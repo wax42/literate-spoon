@@ -1,3 +1,6 @@
+# !/usr/bin/python3
+# coding: utf8
+
 # RETROUVER LES POSITION DES CASES DU GOAL
 tableau_position = [
 	(1, 1),
