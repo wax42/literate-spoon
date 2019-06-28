@@ -11,6 +11,44 @@ tableau_position = [
 	(1, 0)
 ]
 
+def puzzle_to_list(puzzle):
+    """
+    Converts a two dimensional puzzle to a one dimensional puzzle.
+    [[1, 2, 3], [4, 5, 6], [7, 8, 9]] --> [1, 2, 3, 4, 5, 6, 7, 8, 0]
+    """
+    lst = []
+    for row in puzzle:
+        lst.extend(row)
+    return lst
+
+def check_gaschnig(taquin, goal):
+    res = 0
+    size = len(taquin) # TODO transfere la size a chaque fois en argument au lieu de recalculer
+    taquin = puzzle_to_list(taquin) # TODO eviter de reconvertir en list a chaque fois
+    goal = puzzle_to_list(goal)
+    taquin = list(taquin)
+    goal = list(goal)
+    # On itere jusqu'a ce que notre taquin devienne le goal et on retourne le nombre d'iteration
+    while taquin != goal:
+        # On va chercher l'index du 0 dans notre taquin
+        index = taquin.index(0)
+        if goal[index] != 0:
+            # Si goal[index] == 0 alors
+            # On recupere le nombre situé dans goal a l index d avant
+            # On recupere l'index de ce nombre la dans notre taquin
+            ci = taquin.index(goal[index])
+            # et on swap
+            taquin[ci], taquin[index] = taquin[index], taquin[ci]
+        else:
+            # Si goal[index] != 0 alors on swap des qu'on trouve une difference
+            for i in range(size * size):
+                if goal[i] != taquin[i]:
+                    taquin[i], taquin[index] = taquin[index], taquin[i]
+                    break
+        res += 1
+    return res
+
+
 # differene entre deux map, nb different case
 # Hamming distance
 def check_hamming(taquin_map, goal):

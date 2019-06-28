@@ -1,6 +1,7 @@
-from utils import Taquin, map_str, check_pos_empty
+from .utils import Taquin, map_str, check_pos_empty
 from copy import deepcopy
 import heapq
+from .heuristique import *
 
 class Node():
 	def __init__(self, parent=None, taquin=None):

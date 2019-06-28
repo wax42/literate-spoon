@@ -1,6 +1,6 @@
 import argparse
 import sys
-import heuristique
+from .heuristique import check_manhattan, check_hamming, check_gaschnig, check_linearConflit
 
 class Parsing():
 	def __init__(self):
@@ -52,17 +52,20 @@ def parser_file(parse, name_file):
 def parser_heuristique(parse, name_hr):
 	name_hr = name_hr[0]
 	print ("name heuristique" + name_hr)
-	parse.heuristique = heuristique.check_manhattan
+	parse.heuristique = check_manhattan
 
-	if (name_hr in "hamming"):
+	if (name_hr in "gaschnig"):
+		print ("* gaschnig heuristique")
+		parse.heuristique = check_gaschnig
+	elif (name_hr in "hamming"):
 		print ("* hamming heuristique")
-		parse.heuristique = heuristique.check_hamming
-	if (name_hr in "manhattan"):
+		parse.heuristique = check_gaschnig
+	elif (name_hr in "manhattan"):
 		print ("* manhattan heuristique")
-		parse.heuristique = heuristique.check_manhattan
-	if (name_hr in "linearConflit"):
+		parse.heuristique = check_manhattan
+	elif (name_hr in "linearConflit"):
 		print ("* linear conflict heuristique")
-		parse.heuristique = heuristique.check_linearConflit
+		parse.heuristique = check_linearConflit
 
 def main_arg():
 	# default : valuer par default
@@ -73,7 +76,7 @@ def main_arg():
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-f', nargs=1, help="input file", required=True)
-	parser.add_argument('-e', '--heuristique', nargs=1, choices=['hamming', 'manhattan', 'linearConflit'], default=["hamming"], help='choose an heuristique')
+	parser.add_argument('-e', '--heuristique', nargs=1, choices=['hamming', 'manhattan', 'linearConflit', 'gaschnig'], default=["hamming"], help='choose an heuristique')
 	parser.add_argument('--save', nargs=1, help='save in file data result')
 	parser.add_argument('--stats', action='store_true', help="show stats")
 	parser.add_argument('-g', '--graphic', action='store_true', default=False, help="launch graphic mode(tkinter)")

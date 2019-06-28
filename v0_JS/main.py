@@ -1,10 +1,13 @@
 import time
 import argparse
 from algo_src.my_argparse import parsing_bitch
-from algo_src.heuristique import *
+# from algo_src.heuristique import *
 from algo_src.a_star import astar_launch
 
 # file to launch alone the script without the web UI
+
+# by example:
+# python3 main.py -f sample_N-puzzle/dim_3 -e gaschnig
 
 def main(parse):
 	print(argparse.__file__)
