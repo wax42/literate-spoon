@@ -247,45 +247,44 @@ def find_n_simple_tab(map):
 	return (n)
 
 
-def is_solvable(taquin, dim):
-        # TAQUIN VERIF SOLVABLE
-
-        tab_map = []
-        tab_goal = []
-
-        tab_final = []
-        zero_empl = 0
-
-        for i in taquin.map:
-                tab_map = tab_map + i
-        for i in taquin.goal:
-                tab_goal = tab_goal + i
-
-        v1 = find_n_simple_tab(tab_map)
-        v2 = find_n_simple_tab(tab_goal)
-
-        if (dim % 2 == 0):
-                v1 += (find_pos_in_tab(tab_map, 0) / dim)
-                v2 += (find_pos_in_tab(tab_goal, 0) / dim)
-        if (v1 % 2 == v2 % 2):
-                return (1)
-        else:
-                return (0)
-
 def astar_setting(heuristique, map, dim):
 	taquin = Taquin(heuristique, dim, 0, map)
 	if (dim == 3):
 		taquin.set_goal([[1, 2, 3],[8 ,0 ,4],[7, 6 ,5]])
+		taquin.set_goal_real([1, 2, 3, 4, 0, 5, 6, 7 ,8])
 	elif (dim == 4):
 		taquin.set_goal([[1, 2, 3, 4], [12, 13, 14, 5], [11, 0, 15, 6], [10, 9, 8, 7]])
+		taquin.set_goal_real([1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 10, 11, 12, 13, 14, 15])
 	elif (dim == 5):
 		taquin.set_goal([[1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 0, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9]])
+		taquin.set_goal_real([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24])
 
 	# TAQUIN VERIF SOLVABLE
-	if (is_solvable(taquin, dim) == 0):
-		print ("No solvable bitch")
-		exit(1)
+
+	tab_map = []
+	tab_goal = []
+
+	tab_final = []
+	zero_empl = 0
+
+	for i in taquin.map:
+		tab_map = tab_map + i
+	for i in taquin.goal:
+		tab_goal = tab_goal + i
+
+	if (is_solvable(tab_goal, tab_map, dim) == 1):
+		print ("SOLVABLE")
+	else:
+		print ("XXXXXXXXXXXXXXXXXXXXXXXXXX");
+	exit(1)
+
+	#print("tab map n : " + str(find_n_simple_tab(tab_map)))
+	#print("tab map nn : " + str(find_n_simple_tab(tab_goal)))
+	v1 = find_n_simple_tab(tab_map)
+	v2 = find_n_simple_tab(tab_goal)
+
 	return (taquin)
+
 # heuristique : heuristique function
 # map of origin
 # dim : dimension of the taquin
