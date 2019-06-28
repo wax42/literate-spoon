@@ -3,6 +3,45 @@ from copy import deepcopy
 import heapq
 from .heuristique import *
 
+def find_pos_in_tab(tab, val):
+        count = 0
+        for i in tab:
+                if (i == val):
+                        return (count)
+                count += 1
+        return (count)
+
+def find_n_simple_tab(map):
+        size = len(map)
+        print (map)
+        n = 0
+        print ("size : " + str(size))
+        for x in range(0, size):
+                for xx in range(x+1, size):
+                        if (map[x] > 0 and map[xx] > 0 and map[x] > map[xx]):
+                                n = n + 1
+        return (n)
+
+def is_solvable(taquin, dim):
+        # TAQUIN VERIF SOLVABLE
+        tab_map = []
+        tab_goal = []
+        for i in taquin.map:
+                tab_map = tab_map + i
+        for i in taquin.goal:
+                tab_goal = tab_goal + i
+
+        v1 = find_n_simple_tab(tab_map)
+        v2 = find_n_simple_tab(tab_goal)
+
+        if (dim % 2 == 0):
+                v1 += (find_pos_in_tab(tab_map, 0) / dim)
+                v2 += (find_pos_in_tab(tab_goal, 0) / dim)
+        if (v1 % 2 == v2 % 2):
+                return (1)
+        else:
+                return (0)
+
 class Node():
 	def __init__(self, parent=None, taquin=None):
 			# case precedente
@@ -112,6 +151,8 @@ def astar_start(taquin):
 	taquin.nb_open = len(pqueue)
 	return (answer)
 
+
+
 # heuristique : heuristique function
 # map of origin
 # dim : dimension of the taquin
@@ -123,6 +164,12 @@ def astar_setting(heuristique, map, dim):
 		taquin.set_goal([[1, 2, 3, 4], [12, 13, 14, 5], [11, 0, 15, 6], [10, 9, 8, 7]])
 	elif (dim == 5):
 		taquin.set_goal([[1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 0, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9]])
+	else:
+		taquin.error = 2
+
+	if (is_solvable(taquin, dim) == 0):
+		taquin.error = 1
+
 	return (taquin)
 
 # heuristique : heuristique function
@@ -131,6 +178,12 @@ def astar_setting(heuristique, map, dim):
 def astar_launch(heuristique, taquin, dim, factor=0):
 	Astar = astar_setting(heuristique, taquin, dim)
 	Astar.factor = factor
+	if (Astar.error == 1):
+		print("Taquin invalide. Try another file.")
+		exit(1)
+	if (Astar.error == 2):
+		print ("Bad dim. Need to be [2 < dim < 6]")
+		exit(1)
 	path = astar_start(Astar)
 	print ("*********************************")
 	print ("************* PATH *************")

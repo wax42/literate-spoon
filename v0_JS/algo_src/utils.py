@@ -17,6 +17,10 @@ class Taquin():
 
 		self.factor = 0
 
+		# 1 : taquin unsolvable
+		# 2 : invalid dim
+		self.error = 0
+
 		# stats part
 		self.len_path    = 0
 		self.nb_all_node = 0
