@@ -16,17 +16,10 @@ def function_to_test():
 	path = path[::-1]
 	return str(path)
 
-
-
-
 uri = os.getenv("WS_HOST", "127.0.0.1")
 port = os.getenv("WS_PORT", "8082")
 address = "ws://" + uri + ":" + port
 root = os.path.dirname(__file__)
-# class MainHandler(tornado.web.RequestHandler):
-# 	def get(self):
-# 		# items = ["Item 1", "Item 2", "Item 3"]
-# 		self.render("index.html")
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	connections = set()
@@ -38,13 +31,22 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		self.connections.add(self)
 		print("New client connected")
 		self.write_message("You are connected")
+		# TODO lancer un n_puzzle de 3 par 3 simple sur l'ouverture
+		# afin que l'interface s'ouvre deja sur une solution
+	
 
 	def on_message(self, message):
 		print("Transmitting message: %s" % message)
+		# Gestion de message 
+		# FRONT --> BACK
+		# FORMAT JSON
+		# {}
+		#
+		print(self.connections)
 		for c in self.connections:
-
+			# Euh normalement, il n'y aura qu'un seul et meme client 
+			# TODO faut t'il se prendre la tete a gerer de multiples connections ?
 			c.write_message(function_to_test())
-		
 
 	def on_close(self):
 		self.connections.remove(self)
