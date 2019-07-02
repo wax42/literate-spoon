@@ -99,7 +99,7 @@ function setup() {
 	canvas_resize();
 	ws = new WebSocket("ws://127.0.0.1:8082");
 	ws.onopen = ()=> {
-		ws.send("hello from client");
+		ws.send('{ "3":"hello from client"}');
 	}
 
 	// listenner
@@ -238,7 +238,7 @@ function draw() {
 
 function algo() {
 	console.log("Mouse pressed", mouseX, mouseY);
-	ws.send("mousePressed");
+	ws.send('{ "0": { "heuristique": "", "puzzle": "", "size_puzzle": "", "factor": "", }}');
 	ws.onmessage = (e) => {
 		let result;
 		result = JSON.parse(e.data);
