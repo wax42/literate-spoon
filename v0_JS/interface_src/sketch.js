@@ -127,28 +127,6 @@ function setup() {
 
 
 
-	// button_heuristique_gaschnig = createButton('gaschnig');
-	// button_heuristique_gaschnig.position(ui.middle_width + 150, 250);
-	// button_heuristique_gaschnig.mousePressed( () => {
-	// 	console.log('gaschnig');
-	// 	which_heuristique();
-	// });
-
-	// button_heuristique_manhatan = createButton('manhatan');
-	// button_heuristique_manhatan.position(ui.middle_width + 150, 300);
-	// button_heuristique_manhatan.mousePressed( () => {
-	// 	console.log('manhatan');
-	// 	which_heuristique();
-
-	// });
-
-	// button_heuristique_hamming = createButton('hamming');
-	// button_heuristique_hamming.position(ui.middle_width + 150, 350);
-	// button_heuristique_hamming.mousePressed( () => {
-	// 	console.log('hamming');
-	// 	which_heuristique();
-
-	// });
 
 	button = createButton('submit');
 	button.position(input.x + input.width, 65);

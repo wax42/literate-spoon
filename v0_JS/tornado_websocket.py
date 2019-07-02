@@ -4,7 +4,7 @@ import json
 import tornado.web
 import tornado.websocket
 import tornado.ioloop
-from algo_src.a_star import astar_launch
+from algo_src.a_star import astar_launch, is_solvable
 from algo_src.heuristique import check_gaschnig
 
 
@@ -44,6 +44,28 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		# {
 		# }
 		#
+		# 0 Astar with parameters
+		# 1 Validate puzzle
+		# 2 Loading size closed size opened
+		# message = {
+		# 	"0": {
+		# 		"heuristique": "",
+		# 		"puzzle": "",
+		# 		"size_puzzle": "",
+		# 		"factor": "",
+
+		# 	},
+		# 	"1": {
+		# 		"puzzle": "",
+		# 	},
+		# 	"2": {
+		# 		"open": "",
+		# 		"close" "",
+		# 		"all_node": ""
+		# 	}
+		# }
+
+		front_msg = json.loads(message)
 		print(self.connections)
 		for c in self.connections:
 			# Euh normalement, il n'y aura qu'un seul et meme client 

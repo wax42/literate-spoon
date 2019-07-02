@@ -12,16 +12,13 @@ var button_heuristique = new Array(3).fill;
 function function_button_edit() {
     if (ui.edit) {
         ui.edit = !ui.edit;
-        for (var y = 0; y < puzzle.size_puzzle; y++) {
-            for (var x = 0; x < puzzle.size_puzzle; x++) {
-                ui.input_puzzle[y][x].remove();
-            }
-        }
+        destroy_mode_edit();
+
         initialise_button();
     }
     else {
         ui.edit = !ui.edit;
-        initialise_input_puzzle();
+        initialise_mode_edit();
         button_next.remove();
         button_previous.remove();
         button_first.remove();
@@ -45,15 +42,30 @@ function initialise_input_puzzle() {
 function initialise_mode_edit() {
     // Initialize heuristique button
 
+    let x = ui.middle_width + 250;
+    let y = 50
+    console.log(" Initialisation mode edit");
     puzzle.heuristique.forEach((value, i) => {
-		button_heuristique[0] = createButton(value);
-		button_heuristique[0].position(x, y + ( i * 50));
-		button_heuristique[0].mousePressed( () => {
+		button_heuristique[i] = createButton(value);
+		button_heuristique[i].position(x, y + ( i * 50));
+		button_heuristique[i].mousePressed( () => {
 			console.log(value);
 		});
     });
     
     initialise_input_puzzle();
+}
+
+function destroy_mode_edit() {
+    // destroy button heuristique
+    for (let i=0; i<3; i++) {
+        button_heuristique[i].remove();
+    }
+    for (var y = 0; y < puzzle.size_puzzle; y++) {
+        for (var x = 0; x < puzzle.size_puzzle; x++) {
+            ui.input_puzzle[y][x].remove();
+        }
+    }
 }
 
 

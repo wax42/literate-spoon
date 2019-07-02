@@ -119,13 +119,13 @@ def astar_start(taquin):
 
 				# checker si la nouvelle matrice nexiste pas deja dans la closed list ou l open list
 				newnode = Node(data, new_matrice)
-				newnode_map_str = newnode.map_str(taquin.dim)
+				newnode_map_str = newnode.map_str(taquin.dim) # [ victor]
 				if (newnode_map_str not in hash):
 					# calculer le g h and f
 					newnode.g = data.g + taquin.factor
 					newnode.h = taquin.heuristique(new_matrice, taquin.goal)
 					heapq.heappush(pqueue, (newnode.g + newnode.h, newnode))
-					hash.add(newnode_map_str)
+					hash.add(newnode_map_str) # [ victor]
 					taquin.nb_all_node += 1
 
 		#######################################################
