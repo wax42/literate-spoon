@@ -40,7 +40,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		# Gestion de message 
 		# FRONT --> BACK
 		# FORMAT JSON
-		# {}
+		# {
+		# }
 		#
 		print(self.connections)
 		for c in self.connections:
