@@ -197,4 +197,13 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	print ("NB NODE OPEN  : " + str(Astar.nb_all_node))
 	print ("NB OPEN       : " + str(Astar.nb_open))
 	print ("NB CLOSE      : " + str((Astar.nb_all_node - Astar.nb_open)))
-	return (path)
+
+	send_dico = {}
+	send_dico['path'] = path
+	send_dico['size_puzzle'] = dim
+	send_dico['len_path'] = Astar.len_path
+	send_dico['all_node'] = Astar.nb_all_node
+	send_dico['node_open'] = Astar.nb_open
+	send_dico['node_close'] = Astar.nb_all_node - Astar.nb_open
+
+	return (send_dico)

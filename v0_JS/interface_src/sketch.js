@@ -29,6 +29,7 @@ class UI {
 		this.color_white = (255, 255, 255);
 
 		this.edit = false;
+		this.input_puzzle= [];
 
 		// button declaration
 		// button_next, button_previous, button_right, button_left, button_first, button_last
@@ -57,22 +58,25 @@ class Puzzle {
 		this.len_path = 0;
 		this.current_puzzle = [[1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 0, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9]];
 		this.size_puzzle = 5;
-		
+		this.all_node;
+		this.node_open;
+		this.node_close;
+
+		this.heuristique = ['manhatan', 'gaschnig', 'hamming'];
+		this.index_heuristique = 0;
 	}
 }
 
 var puzzle = new Puzzle();
 
-// var path = null;
-// var current_puzzle = [[1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 0, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9]];
-// var turn = 0;
-// var len_path = 0;
-// var size_puzzle = 5;
+/*
+ Function of the main programm definition
+	- draw()
+	- setup()
+	- canvas_resize()
+	- windowResized()
 
-
-// Function definition
-
-
+ */
 
 //canvas resize on viewport change
 function canvas_resize() {
@@ -106,13 +110,46 @@ function setup() {
 		// redraw();
 	}
 
-	background(210, 190, 80);
 
 
 	input = createInput();
 	input.position(ui.middle_width, 65);
 
-	// button creation
+	// initialize input for the puzzle
+
+	initialise_input_puzzle();
+
+
+	// button creation	
+
+	let x = ui.middle_width + 150;
+	let y = 250;
+
+
+
+	// button_heuristique_gaschnig = createButton('gaschnig');
+	// button_heuristique_gaschnig.position(ui.middle_width + 150, 250);
+	// button_heuristique_gaschnig.mousePressed( () => {
+	// 	console.log('gaschnig');
+	// 	which_heuristique();
+	// });
+
+	// button_heuristique_manhatan = createButton('manhatan');
+	// button_heuristique_manhatan.position(ui.middle_width + 150, 300);
+	// button_heuristique_manhatan.mousePressed( () => {
+	// 	console.log('manhatan');
+	// 	which_heuristique();
+
+	// });
+
+	// button_heuristique_hamming = createButton('hamming');
+	// button_heuristique_hamming.position(ui.middle_width + 150, 350);
+	// button_heuristique_hamming.mousePressed( () => {
+	// 	console.log('hamming');
+	// 	which_heuristique();
+
+	// });
+
 	button = createButton('submit');
 	button.position(input.x + input.width, 65);
 	button.mousePressed(function_test_greet);
@@ -129,41 +166,41 @@ function setup() {
 	greeting = createElement('h2', 'what is your name?');
 	greeting.position(ui.middle_width, 5);
 
-	button_next = createButton('next');
-	button_next.position(ui.middle_width + 50, 250);
-	button_next.mousePressed(function_button_next);
+	initialise_button();
 
-
-	button_previous = createButton('previous');
-	button_previous.position(ui.middle_width + 50, 300);
-	button_previous.mousePressed(function_button_previous);
-
-	button_first = createButton('first');
-	button_first.position(ui.middle_width + 50, 350);
-	button_first.mousePressed(function_button_first);
-
-
-	button_last = createButton('last');
-	button_last.position(input.x + input.width, 400);
-	button_last.mousePressed(function_button_last);
   
 }
 
-function function_test_greet() {
-	const name = input.value();
-	greeting.html('hello ' + name + '!');
-	input.value('');
-  
-	for (let i = 0; i < 200; i++) {
-	  push();
-	  fill(random(255), 255, 255);
-	  translate(random(width), random(height));
-	  rotate(random(2 * PI));
-	  text(name, 0, 0);
-	  pop();
+
+
+function draw_edit_puzzle() {
+	console.log("draw puzzle() puzzle.turn :", puzzle.turn);
+	push(); // The push() function saves the current drawing style settings and transformations
+
+	let w = ui.middle_width / puzzle.size_puzzle;
+	let h = ui.full_height / puzzle.size_puzzle;
+
+	// TODO After delete the size of the button  remplace 20 with a variable
+	h = h - 20;
+
+	let data;
+	for (var y = 0; y < puzzle.size_puzzle; y++) {
+		for (var x = 0; x < puzzle.size_puzzle; x++) {
+				data = puzzle.current_puzzle[y][x];
+				ui.input_puzzle[y][x].value(data);
+				ui.input_puzzle[y][x].position(x * w + w / 2, y * h + h / 2);
+				ui.input_puzzle[y][x].size(20, 20); // size of the input
+
+				rect(x * w, y * h, w, h, 20);
+				push();
+				fill(0, 0, 0);
+				pop();
+
+		}
 	}
-  }
-  
+	//  pop() restores these settings of push()
+}
+
 
 
 function draw_puzzle() {
@@ -198,35 +235,48 @@ function draw_puzzle() {
 
 		}
 	}
+	pop();
 	//  pop() restores these settings of push()
+
+}
+
+function draw_mode_edit() {
+	draw_edit_puzzle();
+	console.log("draw mode edit");
 }
 
 function draw() {
 	console.log("draw");
 
-
-
-	// Test slider
-	draw_puzzle();
+	background(210, 190, 80);
+	
+	if (ui.edit) {
+		draw_mode_edit();
+	}
+	else {
+		draw_puzzle();
+	}
 }
 
 function algo() {
 	console.log("Mouse pressed", mouseX, mouseY);
 	ws.send("mousePressed");
-	ws.onmessage = (e)=>{
-		puzzle.path = JSON.parse(e.data);
-		puzzle.len_path = puzzle.path.length;
-		console.log('puzzle.len_path', puzzle.len_path);
-		if (puzzle.path) {
-			puzzle.size_puzzle = puzzle.path[0].length
-		}
-		console.log('parse', puzzle.path);
+	ws.onmessage = (e) => {
+		let result;
+		result = JSON.parse(e.data);
+		console.log(result);
+		puzzle.path = result.path
+		puzzle.len_path = result.len_path
+		puzzle.size_puzzle = result.size_puzzle
 		redraw();
 	}
 }
 
 function mouseClicked() {
 	console.log("Mouse clicked", mouseX, mouseY);
+	// remove();
+	// setup();
+	// redraw();
 	//  Allons nous faire les bouttons ici ??
 	// ça risque d'etre chiant ! Esperons qu'il y a une lib
 
