@@ -1,56 +1,74 @@
 "use strict";
-// Slider declaration
-let input, button, greeting;
 
-let button_algo;
+/*
+ class for the interface
+	UI: 
+		Variable
+			// Size 
+
+			- full_width
+			- full_height
+			- middle_with
+			
+			# Color
+			- color_black
+			- color_white
+			// Mode edit
+			
+			- edit 
+			- input_puzzle
+			- factor
+
+		Function
+
+			- GetSize()
+		
+	
+	Puzzle:
+		Variable
+			// 
+			- path
+			- turn
+			- len_path
+			- current_puzzle
+			- size_puzzle
+			- all_nodes
+			- node_open
+			- node_close
+		
+		Function
+			pass
 
 
-// WebSocket declaration
-var ws = null;
-
-// get size of windows
-var GetSize = () => {
-	return ([Math.max(window.innerWidth || 0),
-			Math.max(window.innerHeight || 0)]);
-}
-
+ */
 
 // Interface declaration
-
 class UI {
 	constructor(name) {
 		// Size declaration
-		this.full_width = GetSize()[0];
-		this.full_height = GetSize()[1];
+		this.full_width = this.GetSize()[0];
+		this.full_height = this.GetSize()[1];
 		this.middle_width = this.full_width / 2;
 
 		// color declaration
 		this.color_black = ( 0, 0, 0);
 		this.color_white = (255, 255, 255);
 
+		// edit mode
 		this.edit = false;
 		this.input_puzzle= [];
-
-		// button declaration
-		// button_next, button_previous, button_right, button_left, button_first, button_last
-
-
-
-
+		this.factor = 0;
 	}
+	// get size of windows
+	GetSize(){
+		return ([Math.max(window.innerWidth || 0),
+				Math.max(window.innerHeight || 0)]);
+	}
+
+
 }
 
-var ui = new UI();
-
-// Color declaration
-
-var color_black = (0, 0, 0);
-var color_white = (255, 255, 255);
-
-
-
-
-// Declaration of n_puzzle variable in Obj
+// Puzzle declaration
 class Puzzle {
 	constructor(name) {
 		this.path = null;
@@ -62,12 +80,44 @@ class Puzzle {
 		this.node_open;
 		this.node_close;
 
-		this.heuristique = ['manhatan', 'gaschnig', 'hamming'];
-		this.index_heuristique = 0;
+		this.heuristics = ['manhatan', 'gaschnig', 'hamming'];
+		this.index_heuristics = 0;
 	}
+	check_correct_puzzle() {
+		let tmp_puzzle = []
+		for(let i=0; i<puzzle.size_puzzle; i++) {
+			tmp_puzzle[i] = [];
+			for(let j=0; j<puzzle.size_puzzle; j++) {
+				tmp_puzzle[i][j] = ui.input_puzzle[i][j].value();
+			}
+		}
+		// Create JSON string with 1 in start
+		var obj = '{ "1" : { "puzzle":'
+		+ JSON.stringify(tmp_puzzle)
+		+ '}}'
+		
+		console.log(obj);
+		ws.send(obj)
+		// Check  
+	}
+
+	// TO DELETE
+	// ajouter function de check de validite
+	// ou autre calcule chinois pour avoir des stats
 }
 
 var puzzle = new Puzzle();
+var ui = new UI();
+
+// Variable WebSocket declaration
+var ws = null;
+
+
+// TO DELETE Slider declaration
+let input, button, greeting;
+var button_algo;
+
+
 
 /*
  Function of the main programm definition
@@ -76,18 +126,28 @@ var puzzle = new Puzzle();
 	- canvas_resize()
 	- windowResized()
 
+
+Function to moves in another places
+	- draw_puzzle
+	- draw_edit_puzzle
+	- draw_mode_edit
+
+
+Function to delete
+	- algo
+
  */
 
 //canvas resize on viewport change
 function canvas_resize() {
-    var win_size = GetSize();
+    var win_size = ui.GetSize();
     resizeCanvas(win_size[0], win_size[1], true);
 }
 
 //window resize on viewport change >> hook
 function windowResized() {
-	ui.full_width = GetSize()[0];
-	ui.full_height = GetSize()[1];
+	ui.full_width = ui.GetSize()[0];
+	ui.full_height = ui.GetSize()[1];
 	ui.middle_width = ui.full_width / 2;
 	canvas_resize();
 	redraw();
@@ -117,7 +177,7 @@ function setup() {
 
 	// initialize input for the puzzle
 
-	initialise_input_puzzle();
+	initialize_input_puzzle();
 
 
 	// button creation	
@@ -134,7 +194,7 @@ function setup() {
 	
 	button_edit = createButton('edit');
 	button_edit.position(ui.full_width - 200, 100);
-	button_edit.mousePressed(function_button_edit);
+	button_edit.mousePressed(event_button_edit);
 
 	button_algo = createButton('algo');
 	button_algo.position(ui.middle_width + 50, 100);
@@ -144,12 +204,14 @@ function setup() {
 	greeting = createElement('h2', 'what is your name?');
 	greeting.position(ui.middle_width, 5);
 
-	initialise_button();
+	initialize_mode_normal();
 
   
 }
 
 
+
+// TO ADD maybe in other place WHERE i don't know
 
 function draw_edit_puzzle() {
 	console.log("draw puzzle() puzzle.turn :", puzzle.turn);
@@ -167,7 +229,7 @@ function draw_edit_puzzle() {
 				data = puzzle.current_puzzle[y][x];
 				ui.input_puzzle[y][x].value(data);
 				ui.input_puzzle[y][x].position(x * w + w / 2, y * h + h / 2);
-				ui.input_puzzle[y][x].size(20, 20); // size of the input
+				ui.input_puzzle[y][x].size(30, 20); // size of the input
 
 				rect(x * w, y * h, w, h, 20);
 				push();
@@ -237,25 +299,16 @@ function draw() {
 }
 
 function algo() {
-	console.log("Mouse pressed", mouseX, mouseY);
-	ws.send('{ "0": { "heuristique": "", "puzzle": "", "size_puzzle": "", "factor": "", }}');
-	ws.onmessage = (e) => {
-		let result;
-		result = JSON.parse(e.data);
-		console.log(result);
-		puzzle.path = result.path
-		puzzle.len_path = result.len_path
-		puzzle.size_puzzle = result.size_puzzle
-		redraw();
-	}
-}
-
-function mouseClicked() {
-	console.log("Mouse clicked", mouseX, mouseY);
-	// remove();
-	// setup();
-	// redraw();
-	//  Allons nous faire les bouttons ici ??
-	// ça risque d'etre chiant ! Esperons qu'il y a une lib
-
+	puzzle.check_correct_puzzle();
+	// console.log("Mouse pressed", mouseX, mouseY);
+	// ws.send('{ "0": { "heuristics": "", "puzzle": "", "size_puzzle": "", "factor": "", }}');
+	// ws.onmessage = (e) => {
+	// 	let result;
+	// 	result = JSON.parse(e.data);
+	// 	console.log(result);
+	// 	puzzle.path = result.path
+	// 	puzzle.len_path = result.len_path
+	// 	puzzle.size_puzzle = result.size_puzzle
+	// 	redraw();
+	// }
 }

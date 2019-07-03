@@ -73,12 +73,15 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 		front_msg = json.loads(message)
 		message_send = {}
+
+		print("DEBUG", front_msg)
+
 		if ('0' in front_msg.keys()):
 			# Launch A star with params
 			# param heuristique, puzzle, size_puzzle, factor
 			message_send['0'] = astar_launch(check_gaschnig, taquin_map, 3, 1)
 		elif ('1' in front_msg.keys()):
-			message_send['1'] = is_valid()
+			message_send['1'] = is_solvable(front_msg['1']['puzzle'], len(front_msg['1']['puzzle'])) # TODO don't calculate the len
 		elif ('2' in front_msg.keys()):
 			# Chinoiserie pour la fin 
 			pass
@@ -95,6 +98,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		if bool(message_send) == False:
 			message_send['2'] = "Error Message Socket invalid"
 
+		print("Message send to a client: %s" % str(message_send))
 		self.write_message(str(message_send))
 
 	def on_close(self):
