@@ -37,35 +37,33 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	
 
 	def on_message(self, message):
+
 		"""
 		Gestion de message 
-		FRONT --> BACK
-		FORMAT JSON
-		{
-		}
-		
+		FRONT <--> BACK
+		Meme au format au niveau des clés
+
 		0 Astar with parameters
 		1 Validate puzzle
 		2 Loading size closed size opened
 		3 Basic log communication
 		message = {
-			"0": {
+			"algo": {
 				"heuristique": "",
 				"puzzle": "",
 				"size_puzzle": "",
 				"factor": "",
 
 			},
-			"1": {
+			"validate_puzzle": {
 				"puzzle": "",
 			},
-			"2": {
+			"stats": {
 				"open": "",
 				"close" "",
 				"all_node": ""
 			}
-			"3": {
-				"msg": ""
+			"logs": {
 			}
 		}
 		"""
@@ -76,27 +74,27 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 
 		print("DEBUG", front_msg)
 
-		if ('0' in front_msg.keys()):
+		if ('algo' in front_msg.keys()):
 			# Launch A star with params
 			# param heuristique, puzzle, size_puzzle, factor
-			message_send['0'] = astar_launch(check_gaschnig, taquin_map, 3, 1)
-		elif ('1' in front_msg.keys()):
-			message_send['1'] = is_solvable(front_msg['1']['puzzle'], len(front_msg['1']['puzzle'])) # TODO don't calculate the len
-		elif ('2' in front_msg.keys()):
+			message_send['algo'] = astar_launch(check_gaschnig, taquin_map, 3, 1)
+		elif ('validate_puzzle' in front_msg.keys()):
+			message_send['validate_puzzle'] = is_solvable(front_msg['validate_puzzle']['puzzle'], len(front_msg['validate_puzzle']['puzzle'])) # TODO don't calculate the len
+		elif ('stats' in front_msg.keys()):
 			# Chinoiserie pour la fin 
 			pass
-		elif('3' in front_msg.keys()):
+		elif('logs' in front_msg.keys()):
 			# Print msg send by the front
-			print("Client send logs: %s" % front_msg['3'])
+			print("Client send logs: %s" % front_msg['logs'])
 
 		# Gestion de retours et de logs d'erreur
 		# 0 result a_star
 		# 1 result is_valid puzzle
 		# 2 error with the message of errors
 		
-		# if message send is not empty
+		# if message send is empty / so the front_message is invalid
 		if bool(message_send) == False:
-			message_send['2'] = "Error Message Socket invalid"
+			message_send['logs'] = "Error Message Socket invalid"
 
 		print("Message send to a client: %s" % str(message_send))
 		self.write_message(str(message_send))

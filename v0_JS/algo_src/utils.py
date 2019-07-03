@@ -48,7 +48,6 @@ def map_str(map, dim):
 	return (string)
 
 
-# toruver la position de l empty element
 # find element 0
 def check_pos_empty(taquin_map):
 	for y in range(0, len(taquin_map)):
@@ -58,18 +57,33 @@ def check_pos_empty(taquin_map):
 	return (-1, -1)
 
 def spiral(n):
-    dx,dy = 1,0  # Starting increments
-    x,y = 0,0    # Starting location
-    myarray = [[None]* n for j in range(n)]
-    for i in range(n**2):
-        myarray[x][y] = i + 1
-        nx,ny = x+dx, y+dy
-        if 0<=nx<n and 0<=ny<n and myarray[nx][ny] == None:
-            x,y = nx,ny
-        else:
-            dx,dy = -dy,dx
-            x,y = x+dx, y+dy
+	size = n * n
 
+	dx,dy = 0,1	# Starting increments
+	x,y = 0,0	# Starting location
+	puzzle = [[None] * n for j in range(n)]
+	for i in range(size):
+		# x y  is good ?
+		puzzle[x][y] = i + 1
+		print(puzzle)
+		nx, ny = x + dx, y + dy
+		print("nx, ny", nx, ny)
+		if 0 <= nx < n and 0 <= ny < n and puzzle[nx][ny] == None:
+			x, y = nx, ny
+			print("if", x, y)
+		else:
+			dx, dy = dy,-dx
+			x, y = x + dx, y + dy
+			print("else", x, y)
+
+
+	for y in range(0, len(puzzle)):
+		for x in range(0, len(puzzle[0])):
+			if (puzzle[y][x] == size):
+				puzzle[y][x] = 0
 	#  Manque plus que a remplacer l'element le plus grand par un 0
-    return myarray
- 
+	return puzzle
+
+import pprint
+
+pprint.pprint(spiral(3))

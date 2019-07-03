@@ -18,6 +18,7 @@
 			- edit 
 			- input_puzzle
 			- factor
+			- loading
 
 		Function
 
@@ -57,7 +58,8 @@ class UI {
 		// edit mode
 		this.edit = false;
 		this.input_puzzle = [];
-		this.current_len = 0; // TODO 
+		this.loading = false;
+		// this.current_len = 0; // TODO 
 		// Fix the current len 
 	}
 	// get size of windows
@@ -85,23 +87,7 @@ class Puzzle {
 		this.heuristics = ['manhatan', 'gaschnig', 'hamming'];
 		this.index_heuristics = 0;
 	}
-	check_correct_puzzle() {
-		let tmp_puzzle = []
-		for(let i=0; i<puzzle.size_puzzle; i++) {
-			tmp_puzzle[i] = [];
-			for(let j=0; j<puzzle.size_puzzle; j++) {
-				tmp_puzzle[i][j] = ui.input_puzzle[i][j].value();
-			}
-		}
-		// Create JSON string with 1 in start
-		var obj = '{ "1" : { "puzzle":'
-		+ JSON.stringify(tmp_puzzle)
-		+ '}}'
-		
-		console.log(obj);
-		ws.send(obj)
-		// Check  
-	}
+
 
 	// TO DELETE
 	// ajouter function de check de validite
@@ -115,15 +101,14 @@ var ui = new UI();
 var ws = null;
 
 
-// TO DELETE Slider declaration
-let input, button, greeting;
-var button_algo;
+
 
 
 
 /*
  Function of the main programm definition
 	- draw()
+	- preload()
 	- setup()
 	- canvas_resize()
 	- windowResized()
@@ -152,59 +137,56 @@ function windowResized() {
 	ui.full_height = ui.GetSize()[1];
 	ui.middle_width = ui.full_width / 2;
 	canvas_resize();
-	redraw();
+	// redraw();
+}
+
+function preload() {
+	/*
+	Called directly before setup(),  the preload() function is used 
+	to handle asynchronous loading of external files in a blocking way.
+	*/
+
+	// TODO the first launch 
+
 }
 
 function setup() {
-	// loop();
-	noLoop(); // redraw and noLoop don't work 
+	// noLoop(); //  
 	canvas_resize();
 	ws = new WebSocket("ws://127.0.0.1:8082");
 	ws.onopen = ()=> {
-		ws.send('{ "3":"hello from client"}');
+		ws.send('{ "logs":"hello from client"}');
+		// Just some log for the back
 	}
 
 	// listenner
-	ws.onmessage = (e)=>{
+	ws.onmessage = (e) => {
+
+		var back_response = JSON.stringify(e);
+		console.log(back_response);
+
+
 		// virer cette merde ou justement mettre a jour 
 		// correctement ici en fonction de ce qu'on recoit
 		// console.log("received:", e);
 		// redraw();
 	}
 
-
-
-	input = createInput();
-	input.position(ui.middle_width, 65);
-
 	// initialize input for the puzzle
 
-	initialize_input_puzzle();
+	// gestion current_len a revoir TODO
+	ui.current_len = puzzle.size_puzzle;
 
 
-	// button creation	
+	// The button is always in the same place
 
-	let x = ui.middle_width + 150;
-	let y = 250;
+	// maybe with the responsive recalculate this position
 
-
-
-
-	button = createButton('submit');
-	button.position(input.x + input.width, 65);
-	button.mousePressed(function_test_greet);
-	
 	button_edit = createButton('edit');
-	button_edit.position(ui.full_width - 200, 100);
 	button_edit.mousePressed(event_button_edit);
 
-	button_algo = createButton('algo');
-	button_algo.position(ui.middle_width + 50, 100);
-	button_algo.mousePressed(algo);
-
-
-	greeting = createElement('h2', 'what is your name?');
-	greeting.position(ui.middle_width, 5);
+	// greeting = createElement('h2', 'what is your name?');
+	// greeting.position(ui.middle_width, 5);
 
 	initialize_mode_normal();
 
@@ -219,21 +201,32 @@ function draw_edit_puzzle() {
 	console.log("draw puzzle() puzzle.turn :", puzzle.turn);
 	push(); // The push() function saves the current drawing style settings and transformations
 
-	let w = ui.middle_width / puzzle.size_puzzle;
-	let h = ui.full_height / puzzle.size_puzzle;
+	let w = ui.full_width * 0.4 / puzzle.size_puzzle;
+	let h = ui.full_height * 0.8  / puzzle.size_puzzle;
+
+	let start_x = 0.05 * ui.full_width;
+	let start_y = 0.20 *  ui.full_height
 
 	// TODO After delete the size of the button  remplace 20 with a variable
 	h = h - 20;
 
+	console.log(" DEBUG ", puzzle.size_puzzle, ui.current_len, puzzle.current_puzzle)
+
 	let data;
 	for (var y = 0; y < puzzle.size_puzzle; y++) {
 		for (var x = 0; x < puzzle.size_puzzle; x++) {
-				data = puzzle.current_puzzle[y][x];
-				ui.input_puzzle[y][x].value(data);
-				ui.input_puzzle[y][x].position(x * w + w / 2, y * h + h / 2);
+				// if (x >= puzzle.current_puzzle.length || y >= puzzle.current_puzzle.length) {
+				// 	data = '';
+				// }
+				// else {
+				// 	data = puzzle.current_puzzle[y][x];
+				// }
+				// // data = '';
+				// ui.input_puzzle[y][x].value(data);
+				ui.input_puzzle[y][x].position(start_x + x * w + w / 2, start_y + y * h + h / 2);
 				ui.input_puzzle[y][x].size(30, 20); // size of the input
 
-				rect(x * w, y * h, w, h, 20);
+				rect(start_x + x * w, start_y + y * h, w, h, 20);
 				push();
 				fill(0, 0, 0);
 				pop();
@@ -249,19 +242,29 @@ function draw_puzzle() {
 	console.log("draw puzzle() puzzle.turn :", puzzle.turn);
 	push(); // The push() function saves the current drawing style settings and transformations
 
-	let w = ui.middle_width / puzzle.size_puzzle;
-	let h = ui.full_height / puzzle.size_puzzle;
+	let w = ui.full_width * 0.4 / puzzle.size_puzzle;
+	let h = ui.full_height * 0.8  / puzzle.size_puzzle;
 
+	let start_x = 0.05 * ui.full_width;
+	let start_y = 0.20 *  ui.full_height
 	// TODO After delete the size of the button 
 	h = h - 20;
 	
 	if (puzzle.path) {
 		puzzle.current_puzzle = puzzle.path[puzzle.turn]
 	}
+
 	let data;
 	for (var y = 0; y < puzzle.size_puzzle; y++) {
 		for (var x = 0; x < puzzle.size_puzzle; x++) {
-				data = puzzle.current_puzzle[y][x];
+				if (x >= puzzle.current_puzzle.length || y >= puzzle.current_puzzle.length) {
+					data = '';
+				}
+				else {
+					data = puzzle.current_puzzle[y][x];
+				}
+				// if (puzzle.size_puzzle < puzzle.current_len)
+				// data = puzzle.current_puzzle[y][x];
 				// position_x, position_y, witdth, height, rounded_corners
 				if (data == '0') {
 					fill(ui.color_black); // black square 
@@ -269,10 +272,10 @@ function draw_puzzle() {
 				else {
 					fill(ui.color_white); // white square
 				}
-				rect(x * w, y * h, w, h, 20);
+				rect(start_x + x * w, start_y + y * h, w, h, 20);
 				push();
 				fill(0, 0, 0);
-				text(data, x * w + w / 2, y * h + h / 2);
+				text(data, start_x + x * w + w / 2, start_y + y * h + h / 2);
 				pop();
 
 		}
@@ -284,26 +287,56 @@ function draw_puzzle() {
 
 function draw_mode_edit() {
 	draw_edit_puzzle();
+
+	let height = ui.full_height * 0.5;
+	elem_size.position(ui.full_width * 0.5, height); 
+	slider_size.position(ui.full_width * 0.5, height  + 50);
+
+    elem_factor.position(ui.full_width * 0.5, height + 100);
+	slider_factor.position(ui.full_width * 0.5, height + 150);
+
+
 	console.log("draw mode edit");
+}
+
+function draw_mode_normal( ) {
+	// position of the buttons
+	let height = ui.full_height * 0.25;
+	let width_interval = 65;
+	
+    button_algo.position(ui.full_width * 0.5 + width_interval * 0, height);
+    button_next.position(ui.full_width * 0.5 + width_interval * 1, height);
+	button_previous.position(ui.full_width * 0.5 + width_interval * 2, height);
+	button_first.position(ui.full_width * 0.5 + width_interval * 3, height);
+    button_last.position(ui.full_width * 0.5 + width_interval * 4, height);
+
+	draw_puzzle();
+	console.log("draw mode normal");
 }
 
 function draw() {
 	console.log("draw");
 
 	background(210, 190, 80);
+	frameRate(2); // to regulate fps
+	button_edit.position(ui.full_width * 0.05, ui.full_height * 0.05);
+
 	
+	// if (ui.loading) {
+	// 	// faire des bails de chargements
+	// } else if (ui.edit)
 	if (ui.edit) {
 		draw_mode_edit();
 	}
 	else {
-		draw_puzzle();
+		draw_mode_normal();
 	}
 }
 
 function algo() {
 	// puzzle.check_correct_puzzle();
 	console.log("Mouse pressed", mouseX, mouseY);
-	ws.send('{ "0": { "heuristics": "", "puzzle": "", "size_puzzle": "", "factor": "", }}');
+	ws.send('{ "algo": { "heuristics": "", "puzzle": "", "size_puzzle": "", "factor": "", }}');
 	ws.onmessage = (e) => {
 		let result;
 		result = JSON.parse(e.data);
@@ -311,6 +344,6 @@ function algo() {
 		puzzle.path = result.path
 		puzzle.len_path = result.len_path
 		puzzle.size_puzzle = result.size_puzzle
-		redraw();
+		// redraw();
 	}
 }

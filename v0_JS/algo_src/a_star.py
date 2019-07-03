@@ -22,13 +22,13 @@ def find_n_simple_tab(map):
                                 n = n + 1
         return (n)
 
-def is_solvable(taquin, dim):
+def is_solvable(taquin, goal, dim):
         # TAQUIN VERIF SOLVABLE
         tab_map = []
         tab_goal = []
-        for i in taquin.map:
+        for i in taquin:
                 tab_map = tab_map + i
-        for i in taquin.goal:
+        for i in goal:
                 tab_goal = tab_goal + i
 
         v1 = find_n_simple_tab(tab_map)
@@ -73,9 +73,9 @@ class Node():
 def astar_start(taquin):
 	# tableau de 4 element qui 
 	# initialisation des data
-	start_node = Node(None, taquin.map)
+	start_node = Node(None, taquin)
 	goal_str = map_str(taquin.goal, taquin.dim)
-	# permet e checker les voisiin par simple addition de pos via une boucle
+	# permet e checker les vpar simple addition de pos via une boucle
 	neightbours = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 	total =  0
 
@@ -167,7 +167,7 @@ def astar_setting(heuristique, map, dim):
 	else:
 		taquin.error = 2
 
-	if (is_solvable(taquin, dim) == 0):
+	if (is_solvable(taquin.map, taquin.goal, dim) == 0):
 		taquin.error = 1
 
 	return (taquin)
