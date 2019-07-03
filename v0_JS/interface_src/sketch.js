@@ -57,7 +57,6 @@ class UI {
 		// edit mode
 		this.edit = false;
 		this.input_puzzle= [];
-		this.factor = 0;
 	}
 	// get size of windows
 	GetSize(){
@@ -72,6 +71,7 @@ class UI {
 class Puzzle {
 	constructor(name) {
 		this.path = null;
+		this.factor = 0;
 		this.turn = 0;
 		this.len_path = 0;
 		this.current_puzzle = [[1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 0, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9]];
@@ -299,16 +299,16 @@ function draw() {
 }
 
 function algo() {
-	puzzle.check_correct_puzzle();
-	// console.log("Mouse pressed", mouseX, mouseY);
-	// ws.send('{ "0": { "heuristics": "", "puzzle": "", "size_puzzle": "", "factor": "", }}');
-	// ws.onmessage = (e) => {
-	// 	let result;
-	// 	result = JSON.parse(e.data);
-	// 	console.log(result);
-	// 	puzzle.path = result.path
-	// 	puzzle.len_path = result.len_path
-	// 	puzzle.size_puzzle = result.size_puzzle
-	// 	redraw();
-	// }
+	// puzzle.check_correct_puzzle();
+	console.log("Mouse pressed", mouseX, mouseY);
+	ws.send('{ "0": { "heuristics": "", "puzzle": "", "size_puzzle": "", "factor": "", }}');
+	ws.onmessage = (e) => {
+		let result;
+		result = JSON.parse(e.data);
+		console.log(result);
+		puzzle.path = result.path
+		puzzle.len_path = result.len_path
+		puzzle.size_puzzle = result.size_puzzle
+		redraw();
+	}
 }

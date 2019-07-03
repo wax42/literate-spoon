@@ -56,3 +56,20 @@ def check_pos_empty(taquin_map):
 			if (taquin_map[y][x] == 0):
 				return (y, x)
 	return (-1, -1)
+
+def spiral(n):
+    dx,dy = 1,0  # Starting increments
+    x,y = 0,0    # Starting location
+    myarray = [[None]* n for j in range(n)]
+    for i in range(n**2):
+        myarray[x][y] = i + 1
+        nx,ny = x+dx, y+dy
+        if 0<=nx<n and 0<=ny<n and myarray[nx][ny] == None:
+            x,y = nx,ny
+        else:
+            dx,dy = -dy,dx
+            x,y = x+dx, y+dy
+
+	#  Manque plus que a remplacer l'element le plus grand par un 0
+    return myarray
+ 

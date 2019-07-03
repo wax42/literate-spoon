@@ -4,7 +4,7 @@
 
 /*
 
-Button and Input Management
+Button, Slider and Input Management
 
 Declaration Variable
     - buttons_heuristics  // array
@@ -53,8 +53,16 @@ Function to delete
 var button_next, button_previous, button_first, button_last, button_edit
 
 
+
 // Declare 3 button [ mahanttan, gaschnig, hamming ]
 var buttons_heuristics = new Array(3).fill;
+
+// Declare array[2] [0] = Slider   [1] = Element
+var slider_factor;
+var elem_factor;
+
+var slider_size;
+var elem_size;
 
 
 function initialize_mode_normal() {
@@ -111,6 +119,7 @@ function initialize_mode_edit() {
     });
     
     initialize_input_puzzle();
+    initialize_slider_elem();
 }
 
 function initialize_input_puzzle() {
@@ -119,10 +128,52 @@ function initialize_input_puzzle() {
 		ui.input_puzzle[i] = [];
 		for(let j=0; j<puzzle.size_puzzle; j++) {
             ui.input_puzzle[i][j] = createInput();
-            ui.input_puzzle[i][j].attribute("maxlength", "2"); // limit the size of the input to 2 char
-            ui.input_puzzle[i][j].attribute("type", "number"); // limit the size of the input to 2 char
+            ui.input_puzzle[i][j].attribute("type", "number");
+            // ui.input_puzzle[i][j].attribute("pattern", "[0-9]");
+            // ui.input_puzzle[i][j].attribute("title", "Put a fucking number");
+            ui.input_puzzle[i][j].attribute("min", 0);
+            ui.input_puzzle[i][j].attribute("max", 99);
+            ui.input_puzzle[i][j].addClass("quantity")
+
+
 		}
 	}
+}
+
+function initialize_slider_elem() {
+    // createSlider(min, max, [value], [step])
+    // create elem for write the value of the slider
+    slider_factor = createSlider(0, 100, 0, 1);
+    elem_factor = createElement('h2', 0);
+
+    slider_factor.position(ui.middle_width + 300, 500);  // TODO make responsive
+    elem_factor.position(ui.middle_width + 280, 500);  // TODO make responsive
+
+    slider_factor.style('width', '80px');
+    slider_factor.mouseReleased( () => {
+        puzzle.factor = slider_factor.value();
+        elem_factor.html(puzzle.factor);
+    });
+
+    
+
+    slider_size = createSlider(2, 10, puzzle.size_puzzle, 1);
+    elem_size = createElement('h2', puzzle.size_puzzle);
+
+
+    slider_size.position(ui.middle_width + 300, 550); // TODO make responsive
+    elem_size.position(ui.middle_width + 280, 550);  // TODO make responsive
+    
+    slider_size.style('width', '80px');
+    slider_size.mouseReleased( () => {
+        puzzle.size_puzzle = slider_size.value();
+        elem_size.html(puzzle.size_puzzle);
+        redraw(); // Create somes bugs 
+        // TODO fix the draw --> initialization input / responsive --> and come here 
+    });
+
+
+
 }
 
 function destroy_mode_edit() {
@@ -135,6 +186,11 @@ function destroy_mode_edit() {
             ui.input_puzzle[y][x].remove();
         }
     }
+    slider_factor.remove();
+    elem_factor.remove();
+
+    slider_size.remove();
+    elem_size.remove();
 }
 
 function destroy_mode_normal() {
