@@ -168,7 +168,7 @@ def spiral(n):
     dx,dy = 1,0            # Starting increments
     x,y = 0,0              # Starting location
     myarray = [[None]* n for j in range(n)]
-    for i in xrange(n**2):
+    for i in range(n**2):
         myarray[x][y] = i + 1
         nx,ny = x+dx, y+dy
         if 0<=nx<n and 0<=ny<n and myarray[nx][ny] == None:
