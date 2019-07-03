@@ -56,7 +56,9 @@ class UI {
 
 		// edit mode
 		this.edit = false;
-		this.input_puzzle= [];
+		this.input_puzzle = [];
+		this.current_len = 0; // TODO 
+		// Fix the current len 
 	}
 	// get size of windows
 	GetSize(){

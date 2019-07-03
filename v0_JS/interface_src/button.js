@@ -134,6 +134,7 @@ function initialize_input_puzzle() {
             ui.input_puzzle[i][j].attribute("min", 0);
             ui.input_puzzle[i][j].attribute("max", 99);
             ui.input_puzzle[i][j].addClass("quantity")
+            ui.input_puzzle[i][j].value(i + j);
 
 
 		}
@@ -168,6 +169,8 @@ function initialize_slider_elem() {
     slider_size.mouseReleased( () => {
         puzzle.size_puzzle = slider_size.value();
         elem_size.html(puzzle.size_puzzle);
+        destroy_input_puzzle();
+        initialize_input_puzzle(); // reinitialize the size of the n_puzzle
         redraw(); // Create somes bugs 
         // TODO fix the draw --> initialization input / responsive --> and come here 
     });
@@ -181,16 +184,20 @@ function destroy_mode_edit() {
     for (let i=0; i<3; i++) {
         buttons_heuristics[i].remove();
     }
-    for (var y = 0; y < puzzle.size_puzzle; y++) {
-        for (var x = 0; x < puzzle.size_puzzle; x++) {
-            ui.input_puzzle[y][x].remove();
-        }
-    }
+    destroy_input_puzzle();
     slider_factor.remove();
     elem_factor.remove();
 
     slider_size.remove();
     elem_size.remove();
+}
+
+function destroy_input_puzzle() {
+    for (var y = 0; y < puzzle.size_puzzle; y++) {
+        for (var x = 0; x < puzzle.size_puzzle; x++) {
+            ui.input_puzzle[y][x].remove();
+        }
+    }
 }
 
 function destroy_mode_normal() {
