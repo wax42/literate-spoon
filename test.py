@@ -1,3 +1,4 @@
+#coding: utf8
 import math
 import pprint
 
@@ -39,15 +40,15 @@ def count_conflicts(taquin_row, goal_row, size, ans=0):
             else:
                 print(tile_1, "n'est pas dans", goal_row)
 
-    if max(counts) == 0:
+	if max(counts) == 0:
 			# Si on a rien trouver retourner le resultat
-            return ans * 2
-    else:
+	        return ans * 2
+	else:
 			# sinon ???
-            i = counts.index(max(counts))
-            taquin_row[i] = -1
-            ans += 1
-            return count_conflicts(taquin_row, goal_row, size, ans)
+			i = counts.index(max(counts))
+			taquin_row[i] = -1
+			ans += 1
+			return count_conflicts(taquin_row, goal_row, size, ans)
 
 
 def gaschnig(taquin, goal, size):
@@ -103,58 +104,101 @@ def puzzle_to_list(puzzle):
         lst.extend(row)
     return lst
 
-size = 3
-# for y in range(size):
-#         for x in range(size):
-#             idx = (y * size) + x
-#             print(idx)
+def test_linearConlift():
+	size = 3
+	# for y in range(size):
+	#         for x in range(size):
+	#             idx = (y * size) + x
+	#             print(idx)
 
-taquin_rows = [[] for y in range(size)] 
-taquin_columns = [[] for x in range(size)] 
-goal_rows = [[] for y in range(size)] 
-goal_columns = [[] for x in range(size)]
+	taquin_rows = [[] for y in range(size)] 
+	taquin_columns = [[] for x in range(size)] 
+	goal_rows = [[] for y in range(size)] 
+	goal_columns = [[] for x in range(size)]
 
-taquin_map = [[7,5,0], [2 ,3 ,8], [4 ,6 ,1]]
+	taquin_map = [[7,5,0], [2 ,3 ,8], [4 ,6 ,1]]
 
-goal = [[1, 2, 3],[8 ,0 ,4],[7, 6 ,5]]
+	goal = [[1, 2, 3],[8 ,0 ,4],[7, 6 ,5]]
 
-goal_list = puzzle_to_list(goal)
-taquin_list = puzzle_to_list(taquin_map)
+	goal_list = puzzle_to_list(goal)
+	taquin_list = puzzle_to_list(taquin_map)
 
-res = 0
+	res = 0
 
-for y in range(size):
-        for x in range(size):
+	for y in range(size):
+		for x in range(size):
 
-                idx = (y * size) + x
-                
-                # print("idx" ,idx)
-                # print("xy", x, y)
-                # print("Taquin result ", taquin_map[y][x])
-                # print("Taquin list result ",taquin_list[idx])
-                taquin_rows[y].append(taquin_map[y][x])
-                taquin_columns[x].append(taquin_map[y][x])
+				idx = (y * size) + x
+				
+				# print("idx" ,idx)
+				# print("xy", x, y)
+				# print("Taquin result ", taquin_map[y][x])
+				# print("Taquin list result ",taquin_list[idx])
+				taquin_rows[y].append(taquin_map[y][x])
+				taquin_columns[x].append(taquin_map[y][x])
 
-                goal_rows[y].append(goal[y][x])
-                goal_columns[x].append(goal[y][x])
+				goal_rows[y].append(goal[y][x])
+				goal_columns[x].append(goal[y][x])
 
 
 
-# print(taquin_rows)
-# print(taquin_columns)
+	# print(taquin_rows)
+	# print(taquin_columns)
 
-# print(goal_rows)
-# print(goal_columns)
+	# print(goal_rows)
+	# print(goal_columns)
 
-# Premiere etape OK
-# Let's go to check the fucking count_conflits function 
+	# Premiere etape OK
+	# Let's go to check the fucking count_conflits function 
 
-pprint.pprint(taquin_rows)
-pprint.pprint(goal_rows)
+	pprint.pprint(taquin_rows)
+	pprint.pprint(goal_rows)
 
-for i in range(size):
-        # check lignes apres lignes dans l'exemple d'abord [7, 5, 0] avec [1, 2, 3] etc ...
-        res += count_conflicts(taquin_rows[i], goal_rows[i], size)
-# for i in range(size):
-#         res += count_conflicts(taquin_columns[i], goal_columns[i], size)
+	for i in range(size):
+		# check lignes apres lignes dans l'exemple d'abord [7, 5, 0] avec [1, 2, 3] etc ...
+		res += count_conflicts(taquin_rows[i], goal_rows[i], size)
+	# for i in range(size):
+	#         res += count_conflicts(taquin_columns[i], goal_columns[i], size)
 
+
+
+
+
+def spiral(n):
+    dx,dy = 1,0            # Starting increments
+    x,y = 0,0              # Starting location
+    myarray = [[None]* n for j in range(n)]
+    for i in xrange(n**2):
+        myarray[x][y] = i + 1
+        nx,ny = x+dx, y+dy
+        if 0<=nx<n and 0<=ny<n and myarray[nx][ny] == None:
+            x,y = nx,ny
+        else:
+            dx,dy = -dy,dx
+            x,y = x+dx, y+dy
+
+	#  Manque plus que a remplacer l'element le plus grand par un 0
+    return myarray
+ 
+def printspiral(myarray):
+    n = range(len(myarray))
+    for y in n:
+        for x in n:
+            print "%2i" % myarray[x][y],
+        print
+ 
+
+
+
+
+
+
+
+def main():
+	printspiral(spiral(5))
+
+
+
+
+if __name__ == "__main__":
+	main()
