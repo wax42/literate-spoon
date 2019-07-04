@@ -1,6 +1,6 @@
 from .utils import Taquin, map_str, check_pos_empty, spiral
 from copy import deepcopy
-import heapq
+import heapq, time
 from .heuristique import *
 
 #  TODO DELETE
@@ -17,9 +17,7 @@ def find_pos_in_tab(tab, val):
 
 def find_n_simple_tab(map):
         size = len(map)
-        print (map)
         n = 0
-        print ("size : " + str(size))
         for x in range(0, size):
                 for xx in range(x+1, size):
                         if (map[x] > 0 and map[xx] > 0 and map[x] > map[xx]):
@@ -163,14 +161,15 @@ def astar_start(taquin):
 # dim : dimension of the taquin
 def astar_setting(heuristique, map, dim):
 	taquin = Taquin(heuristique, dim, 0, map)
-	if (dim <= 2 and dim >= 10):
+	if (dim >= 3 and dim <= 10):
 		taquin.set_goal(spiral(dim))
-	elif (dim == 3): # TODO delete this and verify
-		taquin.set_goal([[1,2,3],[8,0,4],[7,6,5]])
-	elif (dim == 4):
-		taquin.set_goal([[1, 2, 3, 4], [12, 13, 14, 5], [11, 0, 15, 6], [10, 9, 8, 7]])
-	elif (dim == 5):
-		taquin.set_goal([[1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 0, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9]])
+		print("GOAL: ", taquin.goal)
+	# elif (dim == 3): # TODO delete this and verify
+	# 	taquin.set_goal([[1,2,3],[8,0,4],[7,6,5]])
+	# elif (dim == 4):
+	# 	taquin.set_goal([[1, 2, 3, 4], [12, 13, 14, 5], [11, 0, 15, 6], [10, 9, 8, 7]])
+	# elif (dim == 5):
+	# 	taquin.set_goal([[1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 0, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9]])
 	else:
 		taquin.error = 2
 
@@ -183,6 +182,7 @@ def astar_setting(heuristique, map, dim):
 # map of origin
 # dim : dimension of the taquin
 def astar_launch(heuristique, taquin, dim, factor=0):
+	
 	Astar = astar_setting(heuristique, taquin, dim)
 	Astar.factor = factor
 	if (Astar.error == 1):
@@ -192,7 +192,9 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 		print ("Bad dim. Need to be [2 < dim < 6]")
 		exit(1)
 
+	start_time = time.time()
 	path = astar_start(Astar)
+	time_duration = time.time() - start_time
 	print ("*********************************")
 	print ("************* PATH *************")
 	print (path)
@@ -205,6 +207,7 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	print ("NB NODE OPEN  : " + str(Astar.nb_all_node))
 	print ("NB OPEN       : " + str(Astar.nb_open))
 	print ("NB CLOSE      : " + str((Astar.nb_all_node - Astar.nb_open)))
+	print ("TIME DURATION : %.3f" % time_duration)
 
 	send_dico = {}
 	send_dico['path'] = path
@@ -213,5 +216,6 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	send_dico['all_node'] = Astar.nb_all_node
 	send_dico['node_open'] = Astar.nb_open
 	send_dico['node_close'] = Astar.nb_all_node - Astar.nb_open
+	send_dico['time_duration'] = time_duration
 
 	return (send_dico)

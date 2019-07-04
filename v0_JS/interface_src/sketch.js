@@ -217,6 +217,7 @@ function setup() {
 			elem_node_close.html("node open:" + puzzle.node_close);
 			elem_node_open.html("node close:" + puzzle.node_open);
 			elem_time_duration.html("time duration:" + puzzle.time_duration);
+			// elem_time_duration.style(, 100);
 		} else if ("logs" in result ) {
 			console.log("Somes logs from the back", result.logs);
 		} else if ("validate_puzzle" in result ) {
@@ -251,6 +252,7 @@ function setup() {
 
 	button_edit = createButton('edit');
 	button_edit.mousePressed(event_button_edit);
+	button_edit.size(60, 20);
 
 	elem_title = createElement('h1', "42 N_PUZZLE");
 	elem_signature = createElement("h5", "by vguerand and alhelson");
@@ -394,7 +396,6 @@ function draw_mode_normal( ) {
 function draw() {
 	console.log("draw");
 
-	background(210, 190, 80);
 	frameRate(2); // to regulate fps
 	button_edit.position(ui.full_width * 0.05, ui.full_height * 0.05);
 

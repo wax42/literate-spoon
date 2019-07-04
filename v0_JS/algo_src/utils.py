@@ -1,4 +1,4 @@
-
+import random
 # parametrer notre resolution de taquin
 # heurisitique : fonction heuristique que l'on veut utiliser
 # dim : dimension de la matrice a traiter
@@ -72,9 +72,46 @@ def spiral(n):
 			dx, dy = dy,-dx
 			x, y = x + dx, y + dy
 
-
-	for y in range(0, len(puzzle)):
-		for x in range(0, len(puzzle[0])):
+	# Put 0 in the biggest elem
+	for y in range(n):
+		for x in range(n):
 			if (puzzle[y][x] == size):
 				puzzle[y][x] = 0
 	return puzzle
+
+
+def puzzle_to_list(puzzle):
+	"""
+	Converts a two dimensional puzzle to a one dimensional puzzle.
+	[[1, 2, 3], [4, 5, 6], [7, 8, 9]] --> [1, 2, 3, 4, 5, 6, 7, 8, 0]
+	"""
+	lst = []
+	for row in puzzle:
+		lst.extend(row)
+	return lst
+
+
+def random_puzzle(n):
+	size = n * n
+	list_nb = [i + 1 for i in range(size)]
+
+	puzzle = [[0] * n for _ in range(n)]
+	for y in range(n):
+		
+		for x in range(n):
+				random_nb = random.randint(0, size) - 1
+				nb = list_nb[random_nb]
+				list_nb.remove(nb)
+				size = size - 1
+				puzzle[y][x] = nb
+	# Put 0 in the biggest elem
+	size = n * n
+	for y in range(n):
+		for x in range(n):
+			if (puzzle[y][x] == size):
+				puzzle[y][x] = 0
+
+	
+	return puzzle
+
+

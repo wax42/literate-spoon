@@ -86,24 +86,24 @@ function initialize_mode_normal() {
 
     button_algo = createButton('algo');
 	button_algo.mousePressed(algo);
-    button_algo.size(60, 10);
+    button_algo.size(60, 20);
 
     button_next = createButton('next');
     button_next.mousePressed(event_button_next);
-    button_next.size(60, 10);
+    button_next.size(60, 20);
 
 
     button_previous = createButton('previous');
     button_previous.mousePressed(event_button_previous);
-    button_previous.size(60, 10);
+    button_previous.size(60, 20);
 
     button_first = createButton('first');
     button_first.mousePressed(event_button_first);
-    button_first.size(60, 10);
+    button_first.size(60, 20);
 
     button_last = createButton('last');
     button_last.mousePressed(event_button_last); 
-    button_last.size(60, 10);
+    button_last.size(60, 20);
 
 
 }
@@ -143,6 +143,7 @@ function initialize_mode_edit() {
         // button creation
 		buttons_heuristics[i] = createButton(value);
         buttons_heuristics[i].position(x, y + ( i * 50));
+        buttons_heuristics[i].size(60, 20);
 
         // if the heuristics is already selected
         if (puzzle.index_heuristics == i) {
@@ -180,7 +181,7 @@ function initialize_input_puzzle() {
             // ui.input_puzzle[i][j].attribute("title", "Put a fucking number");
             ui.input_puzzle[i][j].attribute("min", 0);
             ui.input_puzzle[i][j].attribute("max", 99);
-            ui.input_puzzle[i][j].addClass("quantity")
+            ui.input_puzzle[i][j].addClass("input_puzzle")
             ui.input_puzzle[i][j].value(i + j);
 
 

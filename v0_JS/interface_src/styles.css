@@ -1,33 +1,87 @@
-html, body {
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-}
+/* Let's go to create some style */
 
-/* input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button
-{
-	-webkit-appearance: none;
-	margin: 0;
-}
 
-input[type=number]
-{
-	-moz-appearance: textfield;
-}
+/**
+ * 1. Correct the line height in all browsers.
+ * 2. Prevent adjustments of font size after orientation changes in iOS.
+ */
 
-input {
-	width: 45px;
-	height: 42px;
-	line-height: 1.65;
-	float: left;
+ html {
+	line-height: 1.15; /* 1 */
+	-webkit-text-size-adjust: 100%; /* 2 */
+
+	/* background: linear-gradient(135deg, red, blue); */
+	background: linear-gradient(135deg, rgb(211, 7, 68), rgb(60, 46, 131));
+  }
+  
+ /* title */
+ h1 {
+	 font-size: 2em;
+ }
+
+
+ input_puzzle {
+	 color: #000;
+ }
+
+ button {
+	position: relative;
+  
 	display: block;
+	margin: 30px auto;
 	padding: 0;
-	margin: 0;
-	padding-left: 20px;
-	border: 1px solid #eee;
-}
-
-input:focus {
-	outline: 0;
-} */
+  
+	overflow: hidden;
+  
+	border-width: 0;
+	outline: none;
+	border-radius: 4px;
+	box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+	
+	background-color: rgb(172, 84, 160);
+	color: #ecf0f1;
+	
+	transition: background-color .3s;
+  }
+  
+  button:hover {
+	background-color: rgb(60, 46, 131);
+  }
+  
+  button > * {
+	position: relative;
+  }
+  
+  button span {
+	display: block;
+	padding: 12px 24px;
+  }
+  
+  button:before {
+	content: "";
+	
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	
+	display: block;
+	width: 0;
+	padding-top: 0;
+	  
+	border-radius: 100%;
+	
+	background-color: rgba(236, 240, 241, .3);
+	
+	-webkit-transform: translate(-50%, -50%);
+	-moz-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	-o-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+  }
+  
+  button:active:before {
+	width: 120%;
+	padding-top: 120%;
+	
+	transition: width .2s ease-out, padding-top .2s ease-out;
+  }
