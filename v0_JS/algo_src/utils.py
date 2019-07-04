@@ -65,25 +65,16 @@ def spiral(n):
 	for i in range(size):
 		# x y  is good ?
 		puzzle[x][y] = i + 1
-		print(puzzle)
 		nx, ny = x + dx, y + dy
-		print("nx, ny", nx, ny)
 		if 0 <= nx < n and 0 <= ny < n and puzzle[nx][ny] == None:
 			x, y = nx, ny
-			print("if", x, y)
 		else:
 			dx, dy = dy,-dx
 			x, y = x + dx, y + dy
-			print("else", x, y)
 
 
 	for y in range(0, len(puzzle)):
 		for x in range(0, len(puzzle[0])):
 			if (puzzle[y][x] == size):
 				puzzle[y][x] = 0
-	#  Manque plus que a remplacer l'element le plus grand par un 0
 	return puzzle
-
-import pprint
-
-pprint.pprint(spiral(3))

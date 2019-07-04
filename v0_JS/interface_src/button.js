@@ -55,6 +55,8 @@ var button_next, button_previous, button_first, button_last, button_edit
 // TO DELETE or NOT
 var button_algo;
 
+var elem_all_node, elem_node_open, elem_node_close, elem_time_duration;
+
 
 
 // Declare 3 button [ mahanttan, gaschnig, hamming ]
@@ -72,6 +74,10 @@ function initialize_mode_normal() {
     // Initialize button next previous first last
 
 
+    elem_all_node = createElement('h4',"all node:" + 0)
+    elem_node_open = createElement('h4',"node open:" + 0)
+    elem_node_close = createElement('h4',"node close:" + 0)
+    elem_time_duration = createElement('h4',"time duration:" + 0)
 
 
     // button creation	
@@ -110,12 +116,15 @@ function validate_edit_mode() {
     }
 
       // Create JSON string with 1 in start
-      var obj = '{ "1" : { "puzzle":'
-      + JSON.stringify(tmp_puzzle)
-      + '}}'
-      
-      console.log(obj);
-      ws.send(obj);
+      var obj = {}
+      obj.validate_puzzle = {
+          "puzzle": tmp_puzzle,
+          "size_puzzle": puzzle.size_puzzle
+      }
+
+      // maybe stock tmp_puzzle le temps d'avoir la reponse du back
+      ui.tmp_validate_puzzle = tmp_puzzle; // Maybe delete this shit
+      ws.send(JSON.stringify(obj));
       // Go to wait for the response
       ui.loading = true;
 }
@@ -295,22 +304,4 @@ function event_button_last() {
 
 
 
-// TO DELETE 
-// Ici est stocke toute la merde qui va etre supprime
-
-
-function function_test_greet() {
-	const name = input.value();
-	greeting.html('hello ' + name + '!');
-	input.value('');
-  
-	for (let i = 0; i < 200; i++) {
-	  push();
-	  fill(random(255), 255, 255);
-	  translate(random(width), random(height));
-	  rotate(random(2 * PI));
-	  text(name, 0, 0);
-	  pop();
-	}
-}
   

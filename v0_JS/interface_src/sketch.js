@@ -17,6 +17,7 @@
 			
 			- edit 
 			- input_puzzle
+			- tmp_validate_puzzle
 			- factor
 			- loading
 
@@ -58,9 +59,17 @@ class UI {
 		// edit mode
 		this.edit = false;
 		this.input_puzzle = [];
+		this.tmp_validate_puzzle;
 		this.loading = false;
 		// this.current_len = 0; // TODO 
 		// Fix the current len 
+
+		// loading mode
+		this.images = [];
+		this.index = 0;
+		this.counter_image = 0;
+		this.total_image = 40;
+		this.loading_image = false;
 	}
 	// get size of windows
 	GetSize(){
@@ -80,9 +89,10 @@ class Puzzle {
 		this.len_path = 0;
 		this.current_puzzle = [[1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 0, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9]];
 		this.size_puzzle = 5;
-		this.all_node;
-		this.node_open;
-		this.node_close;
+		this.all_node = 0;
+		this.node_open = 0;
+		this.node_close = 0;
+		this.time_duration = 0; 
 
 		this.heuristics = ['manhatan', 'gaschnig', 'hamming'];
 		this.index_heuristics = 0;
@@ -100,7 +110,7 @@ var ui = new UI();
 // Variable WebSocket declaration
 var ws = null;
 
-
+var loadingAnimation;
 
 
 
@@ -140,19 +150,41 @@ function windowResized() {
 	// redraw();
 }
 
+function loadImageElement(filename) {
+	loadImage(filename, imageLoaded);
+  
+	function imageLoaded(image) {
+	  console.log(filename);
+	  ui.images.push(image);
+	  ui.counter_image++;
+	  if (ui.counter_image == ui.total_image) {
+		ui.loading_image = true;
+		ui.loading = true;
+	  }
+	}
+  }
+
 function preload() {
 	/*
 	Called directly before setup(),  the preload() function is used 
 	to handle asynchronous loading of external files in a blocking way.
 	*/
-
-	// TODO the first launch 
+	for (var i = 1; i <= ui.total_image; i++) {
+		loadImageElement("img/anim" + i + ".png");
+	}
 
 }
 
+
 function setup() {
+
 	// noLoop(); //  
 	canvas_resize();
+
+
+	// test for loading
+	loadingAnimation = select('.bubbles-wrapper');
+
 	ws = new WebSocket("ws://127.0.0.1:8082");
 	ws.onopen = ()=> {
 		ws.send('{ "logs":"hello from client"}');
@@ -160,13 +192,57 @@ function setup() {
 	}
 
 	// listenner
+
 	ws.onmessage = (e) => {
 
-		var back_response = JSON.stringify(e);
-		console.log(back_response);
+		let result;
 
+		console.log(e);
 
-		// virer cette merde ou justement mettre a jour 
+		if (e == undefined) {
+			// TODO delete
+			console.log("Suce tes morts");
+			return ;
+		}
+		result = JSON.parse(e.data);
+
+		// TODO gestion of which message
+		console.log("Back send a new message", result);
+		
+		if ("algo" in result) {
+			result = result.algo;
+			puzzle.path = result.path;
+			puzzle.len_path = result.len_path;
+			puzzle.size_puzzle = result.size_puzzle;
+			puzzle.all_node = result.all_node;
+			puzzle.node_open = result.node_open;
+			puzzle.node_close = result.node_close;
+			elem_all_node.html("all node:" + puzzle.all_node);
+			elem_node_close.html("node open:" + puzzle.node_close);
+			elem_node_open.html("node close:" + puzzle.node_open);
+			elem_time_duration.html("time duration:" + puzzle.time_duration);
+			
+		} else if ("logs" in result ) {
+			console.log("Somes logs from the back", result.logs);
+		} else if ("validate_puzzle" in result ) {
+			//  Que faire quand le puzzle est valide
+			// C'est le mauvais puzzle qui est envoyer pour l'instant ou plutot pas celui d'edit
+			// euh enfet si mais c'est buguer
+			if (result.validate_puzzle) {
+				console.log("Puzzle valide")
+			} else {
+				console.log("invalide Puzzle")
+				event_button_edit(); // Rego to edit the puzzle
+			}
+		}
+		else {
+			console.log("que des suces putes");
+
+		}
+		// TODO REMETTRE LA LIGNE EN BAS !!!
+		ui.loading = false;
+
+	// virer cette merde ou justement mettre a jour 
 		// correctement ici en fonction de ce qu'on recoit
 		// console.log("received:", e);
 		// redraw();
@@ -303,12 +379,20 @@ function draw_mode_normal( ) {
 	// position of the buttons
 	let height = ui.full_height * 0.25;
 	let width_interval = 65;
-	
+
     button_algo.position(ui.full_width * 0.5 + width_interval * 0, height);
     button_next.position(ui.full_width * 0.5 + width_interval * 1, height);
 	button_previous.position(ui.full_width * 0.5 + width_interval * 2, height);
 	button_first.position(ui.full_width * 0.5 + width_interval * 3, height);
     button_last.position(ui.full_width * 0.5 + width_interval * 4, height);
+
+	height = ui.full_height * 0.5;
+	width_interval = 80;
+	
+	elem_all_node.position(ui.full_width * 0.5 + width_interval * 0, height);
+	elem_node_close.position(ui.full_width * 0.5 + width_interval * 1, height);
+	elem_node_open.position(ui.full_width * 0.5 + width_interval * 2, height);
+	elem_time_duration.position(ui.full_width * 0.5 + width_interval * 3, height);
 
 	draw_puzzle();
 	console.log("draw mode normal");
@@ -318,17 +402,26 @@ function draw() {
 	console.log("draw");
 
 	background(210, 190, 80);
-	frameRate(2); // to regulate fps
+	frameRate(20); // to regulate fps
 	button_edit.position(ui.full_width * 0.05, ui.full_height * 0.05);
 
 	
-	// if (ui.loading) {
-	// 	// faire des bails de chargements
-	// } else if (ui.edit)
-	if (ui.edit) {
+	if (ui.loading) {
+		console.log(" Ouii");
+		image(ui.images[ui.index], 0, 0);
+		ui.index = (ui.index + 1) % ui.images.length; 
+		// clear();
+		// loadingAnimation.addClass('display-none');
+		// textAlign(CENTER, CENTER);
+		// textSize(120);
+		// textStyle(BOLD);
+		// fill("#8861A4");
+		// text("SUCCESS!!", width / 2, height / 2);
+		// ui.loading = false;
+		// faire des bails de chargements
+	} else if (ui.edit) {
 		draw_mode_edit();
-	}
-	else {
+	} else {
 		draw_mode_normal();
 	}
 }
@@ -336,14 +429,13 @@ function draw() {
 function algo() {
 	// puzzle.check_correct_puzzle();
 	console.log("Mouse pressed", mouseX, mouseY);
-	ws.send('{ "algo": { "heuristics": "", "puzzle": "", "size_puzzle": "", "factor": "", }}');
-	ws.onmessage = (e) => {
-		let result;
-		result = JSON.parse(e.data);
-		console.log(result);
-		puzzle.path = result.path
-		puzzle.len_path = result.len_path
-		puzzle.size_puzzle = result.size_puzzle
-		// redraw();
+	var obj = {}
+	obj.algo = {
+		"heuristics": puzzle.heuristics[puzzle.index_heuristics],
+		"puzzle": puzzle.current_puzzle, // checker le puzzle qu'on envoie la gestion est pas encore reglo
+		"size_puzzle": puzzle.size_puzzle,
+		"factor": puzzle.factor
 	}
+	ws.send(JSON.stringify(obj));
+	ui.loading = true;
 }

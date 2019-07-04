@@ -5,16 +5,11 @@ import tornado.web
 import tornado.websocket
 import tornado.ioloop
 from algo_src.a_star import astar_launch, is_solvable
+from algo_src.utils import spiral
 from algo_src.heuristique import check_gaschnig
 
 # TO DELETE FOR THE TEST	
 taquin_map = [[7,5,0], [2 ,3 ,8], [4 ,6 ,1]]
-
-def first_launch():
-	
-	dico = astar_launch(check_gaschnig, taquin_map, 3, 1)
-	print(str(dico))
-	return json.dumps(dico)
 
 uri = os.getenv("WS_HOST", "127.0.0.1")
 port = os.getenv("WS_PORT", "8082")
@@ -31,7 +26,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	def open(self):
 		self.connections.add(self)
 		print("New client connected")
-		self.write_message(first_launch())
+		message_send = {}
+		message_send['algo'] = astar_launch(check_gaschnig, taquin_map, 3, 1)
+		# self.write_message(str(message_send))
 		# TODO lancer un n_puzzle de 3 par 3 simple sur l'ouverture
 		# afin que l'interface s'ouvre deja sur une solution
 	
@@ -55,9 +52,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				"factor": "",
 
 			},
-			"validate_puzzle": {
-				"puzzle": "",
-			},
+			"validate_puzzle": [[]],
 			"stats": {
 				"open": "",
 				"close" "",
@@ -79,25 +74,32 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			# param heuristique, puzzle, size_puzzle, factor
 			message_send['algo'] = astar_launch(check_gaschnig, taquin_map, 3, 1)
 		elif ('validate_puzzle' in front_msg.keys()):
-			message_send['validate_puzzle'] = is_solvable(front_msg['validate_puzzle']['puzzle'], len(front_msg['validate_puzzle']['puzzle'])) # TODO don't calculate the len
-		elif ('stats' in front_msg.keys()):
-			# Chinoiserie pour la fin 
-			pass
+			# Convert double array of str in double array of int
+			size_puzzle = front_msg['validate_puzzle']['size_puzzle']
+			puzzle = front_msg['validate_puzzle']['puzzle'] 
+			for i in range(size_puzzle):
+				puzzle[i] = list(map(int, puzzle[i])) 
+			message_send['validate_puzzle'] = is_solvable(puzzle, spiral(size_puzzle), size_puzzle)# TODO don't calculate the len
+		# elif ('stats' in front_msg.keys()):
+		# 	# Chinoiserie pour la fin 
+		# 	pass
 		elif('logs' in front_msg.keys()):
 			# Print msg send by the front
 			print("Client send logs: %s" % front_msg['logs'])
+			message_send['logs'] = "back suck your fucking msg"  # TODO faire un truc intelligent
 
 		# Gestion de retours et de logs d'erreur
-		# 0 result a_star
-		# 1 result is_valid puzzle
-		# 2 error with the message of errors
-		
+		# algo result a_star
+		# validate_puzzle result is_valid puzzle
+		# logs error with the message of errors
+		# stats 
+
 		# if message send is empty / so the front_message is invalid
 		if bool(message_send) == False:
 			message_send['logs'] = "Error Message Socket invalid"
 
 		print("Message send to a client: %s" % str(message_send))
-		self.write_message(str(message_send))
+		self.write_message(json.dumps(message_send))
 
 	def on_close(self):
 		self.connections.remove(self)

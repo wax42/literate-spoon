@@ -3,6 +3,10 @@ from copy import deepcopy
 import heapq
 from .heuristique import *
 
+#  TODO DELETE
+
+import pprint
+
 def find_pos_in_tab(tab, val):
         count = 0
         for i in tab:
@@ -22,11 +26,11 @@ def find_n_simple_tab(map):
                                 n = n + 1
         return (n)
 
-def is_solvable(taquin, goal, dim):
-        # TAQUIN VERIF SOLVABLE
+def is_solvable(puzzle, goal, dim):
+        # PUZZLE VERIF SOLVABLE
         tab_map = []
         tab_goal = []
-        for i in taquin:
+        for i in puzzle:
                 tab_map = tab_map + i
         for i in goal:
                 tab_goal = tab_goal + i
@@ -69,13 +73,14 @@ class Node():
 			return False
 		return self.f == other.f
 
+# TODO clean l'initialisation / nom des variables etc
 
 def astar_start(taquin):
 	# tableau de 4 element qui 
 	# initialisation des data
-	start_node = Node(None, taquin)
+	start_node = Node(None, taquin.map)
 	goal_str = map_str(taquin.goal, taquin.dim)
-	# permet e checker les vpar simple addition de pos via une boucle
+	# permet e checker les vopar simple addition de pos via une boucle
 	neightbours = [(0, -1), (0, 1), (-1, 0), (1, 0)]
 	total =  0
 
@@ -184,6 +189,7 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	if (Astar.error == 2):
 		print ("Bad dim. Need to be [2 < dim < 6]")
 		exit(1)
+
 	path = astar_start(Astar)
 	print ("*********************************")
 	print ("************* PATH *************")
