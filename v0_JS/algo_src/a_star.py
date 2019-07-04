@@ -1,4 +1,4 @@
-from .utils import Taquin, map_str, check_pos_empty
+from .utils import Taquin, map_str, check_pos_empty, spiral
 from copy import deepcopy
 import heapq
 from .heuristique import *
@@ -163,7 +163,9 @@ def astar_start(taquin):
 # dim : dimension of the taquin
 def astar_setting(heuristique, map, dim):
 	taquin = Taquin(heuristique, dim, 0, map)
-	if (dim == 3):
+	if (dim <= 2 and dim >= 10):
+		taquin.set_goal(spiral(dim))
+	elif (dim == 3): # TODO delete this and verify
 		taquin.set_goal([[1,2,3],[8,0,4],[7,6,5]])
 	elif (dim == 4):
 		taquin.set_goal([[1, 2, 3, 4], [12, 13, 14, 5], [11, 0, 15, 6], [10, 9, 8, 7]])

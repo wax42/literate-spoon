@@ -55,9 +55,11 @@ var button_next, button_previous, button_first, button_last, button_edit
 // TO DELETE or NOT
 var button_algo;
 
+// Declare elem to put the number all_node, node_open, node_close, time_duration
 var elem_all_node, elem_node_open, elem_node_close, elem_time_duration;
 
-
+// Declare elem title and signature
+var elem_title, elem_signature;
 
 // Declare 3 button [ mahanttan, gaschnig, hamming ]
 var buttons_heuristics = new Array(3).fill;

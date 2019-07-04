@@ -191,24 +191,20 @@ function setup() {
 		// Just some log for the back
 	}
 
-	// listenner
+	// listenner a mettre dans une fonction en dehors
 
 	ws.onmessage = (e) => {
-
 		let result;
 
 		console.log(e);
-
 		if (e == undefined) {
 			// TODO delete
 			console.log("Suce tes morts");
 			return ;
 		}
 		result = JSON.parse(e.data);
-
 		// TODO gestion of which message
 		console.log("Back send a new message", result);
-		
 		if ("algo" in result) {
 			result = result.algo;
 			puzzle.path = result.path;
@@ -221,7 +217,6 @@ function setup() {
 			elem_node_close.html("node open:" + puzzle.node_close);
 			elem_node_open.html("node close:" + puzzle.node_open);
 			elem_time_duration.html("time duration:" + puzzle.time_duration);
-			
 		} else if ("logs" in result ) {
 			console.log("Somes logs from the back", result.logs);
 		} else if ("validate_puzzle" in result ) {
@@ -230,22 +225,18 @@ function setup() {
 			// euh enfet si mais c'est buguer
 			if (result.validate_puzzle) {
 				console.log("Puzzle valide")
+				puzzle.current_puzzle = ui.tmp_validate_puzzle;
 			} else {
-				console.log("invalide Puzzle")
+				console.log("invalide Puzzle");
+				// lauch small animation
 				event_button_edit(); // Rego to edit the puzzle
 			}
 		}
 		else {
 			console.log("que des suces putes");
-
 		}
-		// TODO REMETTRE LA LIGNE EN BAS !!!
+		// TODO REMETTRE LA LIGNE EN BAS OU LA DESACTIVER POUR TESTER LE CHARGEMENT!!!
 		ui.loading = false;
-
-	// virer cette merde ou justement mettre a jour 
-		// correctement ici en fonction de ce qu'on recoit
-		// console.log("received:", e);
-		// redraw();
 	}
 
 	// initialize input for the puzzle
@@ -261,6 +252,8 @@ function setup() {
 	button_edit = createButton('edit');
 	button_edit.mousePressed(event_button_edit);
 
+	elem_title = createElement('h1', "42 N_PUZZLE");
+	elem_signature = createElement("h5", "by vguerand and alhelson");
 	// greeting = createElement('h2', 'what is your name?');
 	// greeting.position(ui.middle_width, 5);
 
@@ -274,7 +267,7 @@ function setup() {
 // TO ADD maybe in other place WHERE i don't know
 
 function draw_edit_puzzle() {
-	console.log("draw puzzle() puzzle.turn :", puzzle.turn);
+	// console.log("draw puzzle() puzzle.turn :", puzzle.turn);
 	push(); // The push() function saves the current drawing style settings and transformations
 
 	let w = ui.full_width * 0.4 / puzzle.size_puzzle;
@@ -286,7 +279,7 @@ function draw_edit_puzzle() {
 	// TODO After delete the size of the button  remplace 20 with a variable
 	h = h - 20;
 
-	console.log(" DEBUG ", puzzle.size_puzzle, ui.current_len, puzzle.current_puzzle)
+	// console.log(" DEBUG ", puzzle.size_puzzle, ui.current_len, puzzle.current_puzzle)
 
 	let data;
 	for (var y = 0; y < puzzle.size_puzzle; y++) {
@@ -315,7 +308,7 @@ function draw_edit_puzzle() {
 
 
 function draw_puzzle() {
-	console.log("draw puzzle() puzzle.turn :", puzzle.turn);
+	// console.log("draw puzzle() puzzle.turn :", puzzle.turn);
 	push(); // The push() function saves the current drawing style settings and transformations
 
 	let w = ui.full_width * 0.4 / puzzle.size_puzzle;
@@ -402,13 +395,15 @@ function draw() {
 	console.log("draw");
 
 	background(210, 190, 80);
-	frameRate(20); // to regulate fps
+	frameRate(2); // to regulate fps
 	button_edit.position(ui.full_width * 0.05, ui.full_height * 0.05);
 
+	elem_title.position(ui.full_width * 0.25, ui.full_height * 0.05);
+	elem_signature.position(ui.full_width * 0.15, ui.full_height * 0.92);
 	
 	if (ui.loading) {
 		console.log(" Ouii");
-		image(ui.images[ui.index], 0, 0);
+		image(ui.images[ui.index], ui.full_width / 2, ui.full_height / 2);
 		ui.index = (ui.index + 1) % ui.images.length; 
 		// clear();
 		// loadingAnimation.addClass('display-none');
