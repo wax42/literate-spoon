@@ -55,7 +55,7 @@ var button_next, button_previous, button_first, button_last, button_edit
 var button_algo;
 
 // Declare elem to put the number all_node, node_open, node_close, time_duration
-var elem_all_node, elem_node_open, elem_node_close, elem_time_duration;
+var elem_all_node, elem_node_open, elem_node_close, elem_time_duration, elem_number_of_move;
 
 // Declare elem title and signature
 var elem_title, elem_signature;
@@ -77,10 +77,11 @@ function initialize_mode_normal() {
     initialize_div_titles();
     initialize_text_puzzle();
 
-    elem_all_node = createElement('h4',"all node:" + 0)
-    elem_node_open = createElement('h4',"node open:" + 0)
-    elem_node_close = createElement('h4',"node close:" + 0)
-    elem_time_duration = createElement('h4',"time duration:" + 0)
+    elem_all_node = createElement('h4',"Total number of state ever selected in the 'opened' set (Complexity in time)" + 0);
+    elem_node_open = createElement('h4',"Maximum numbere of states ever represented in memory at the same time during the search (Complexity in time)"  + puzzle.node_close);
+    elem_node_close = createElement('h4',"node close:" + 0);
+    elem_number_of_move = createElement('h4', "Number of moves required to transition from the initial state to the final state, according to the search" + puzzle.len_path);
+    elem_time_duration = createElement('h4',"time duration:" + 0);
 
 
     // button creation	
@@ -311,7 +312,7 @@ function event_button_edit() {
 
         destroy_mode_edit();
 
-        initialize_mode_normal(); // initialize button 
+        // initialize_mode_normal(); // initialize button 
 
     }
     // if the mode edit is selected
@@ -325,11 +326,19 @@ function event_button_edit() {
 }
 
 
+function animate_title() {
+    ui.last_position0 = ui.position0yx
+    ui.findpos0();
+    ui.div_titles[ui.position0yx[0]][ui.position0yx[1]].removeClass('empty_title_puzzle')
+}
+
+
 function event_button_next() {
     puzzle.turn = (puzzle.turn + 1);
     if (puzzle.turn >= puzzle.len_path) {
         puzzle.turn = puzzle.len_path - 1;
     }
+    animate_title();
     // redraw();
 }
 
@@ -340,6 +349,8 @@ function event_button_previous() {
     {
 		puzzle.turn = 0;
     }
+    animate_title();
+
     // redraw();
 }
 
@@ -347,12 +358,17 @@ function event_button_previous() {
 function event_button_first() {
     puzzle.turn = 0;
     // redraw();
+    animate_title();
+
 }
 
 
 function event_button_last() {
-	puzzle.turn = puzzle.len_path - 1;
+    puzzle.turn = puzzle.len_path - 1;
+    animate_title();
+    
     // redraw();
+
 }
 
 

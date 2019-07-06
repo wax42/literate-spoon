@@ -11,26 +11,42 @@
 	-webkit-text-size-adjust: 100%; /* 2 */
 
 	/* background: linear-gradient(135deg, red, blue); */
-	background: linear-gradient(135deg, rgb(211, 7, 68), rgb(60, 46, 131));
+	background: radial-gradient(ellipse at bottom, #002534 0%, #090a0f 100%);
   }
   
  /* title */
  h1 {
 	 font-size: 2em;
 	 z-index: 2;
+	 /* color: rgb(30, 186, 187); */
+	 color: rgb(70, 72, 76);;
+	 font-family: 'Trebuchet MS', Helvetica, sans-serif;
  }
 
 
  /* text in title puzzle */
  h6 {
 	 z-index: 2;
-	 font-size: 5vw;
+	 font-size: 4vw;
 	 margin: 0;
  }
 
+ /* Stats */
+ h4 {
+	color: rgb(70, 72, 76);;
+ }
+
+ /* signature */
+ h5 {
+	color: rgb(70, 72, 76);;
+ }
+
  .title_puzzle {
-	 background-color:  #6d1d8d;
+	 background-color: rgb(30, 186, 187);
+	 /* background-image: linear-gradient(ellipse at bottom, rgb(30, 186, 187),  #002534); */
 	 border-radius: 5px;
+	 border-width: 40px;
+	 border: solid 0.3em  rgb(70, 72, 76);
 	 /* margin: 10px; */
 	 z-index: 1;
  }
@@ -61,7 +77,7 @@
 	border-radius: 4px;
 	box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
 	
-	background-color: rgb(172, 84, 160);
+	background-color: rgb(70, 72, 76);
 	color: #ecf0f1;
 	
 	transition: background-color .3s;

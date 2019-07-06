@@ -75,7 +75,23 @@ class UI {
 		this.counter_image = 0;
 		this.total_image = 40;
 		this.loading_image = false;
+
+		// animate title
+		this.animed_title = false;
+		this.position0yx = [0, 0];
+		this.last_position0 = [0, 0];
+
 	}
+	findpos0 () {
+		for (let i=0; i<puzzle.size_puzzle; i++) {
+			for (let j=0; j<puzzle.size_puzzle; j++) {
+					if (puzzle.current_puzzle[i][j]  == '0')
+						this.position0yx = [i, j]
+			}
+		}
+	}
+
+
 	// get size of windows
 	GetSize(){
 		return ([Math.max(window.innerWidth || 0),
@@ -178,13 +194,25 @@ function setup() {
 	// noLoop(); //  
 	canvas_resize();
 
-	// test for loading
+	// Wait for the back response
+	ui.loading = true;
+
 
 	// Initialize the websocket
 	ws = new WebSocket("ws://127.0.0.1:8082");
+	
+	// TODO launch a first time a random puzzle in the back
 	ws.onopen = ()=> {
 		// Just sends some random logs to test the back
-		ws.send('{ "logs":"hello from client"}');
+		// ws.send('{ "logs":"hello from client"}');
+		var obj = {}
+		obj.algo = {
+			"heuristics": puzzle.heuristics[1],
+			"puzzle": puzzle.current_puzzle, // checker le puzzle qu'on envoie la gestion est pas encore reglo
+			"size_puzzle": puzzle.size_puzzle,
+			"factor": puzzle.factor
+		}
+		ws.send(JSON.stringify(obj));
 	}
 
 	// listenner of the websocket
@@ -194,6 +222,7 @@ function setup() {
 
 	// ??? Initialize current_len TODO check the obligation of this shit
 	ui.current_len = puzzle.size_puzzle;
+	ui.findpos0();
 
 	button_edit = createButton('edit');
 	button_edit.mousePressed(event_button_edit);
@@ -202,7 +231,6 @@ function setup() {
 	elem_title = createElement('h1', "42 N_PUZZLE");
 	elem_signature = createElement("h5", "by vguerand and alhelson");
 
-	initialize_mode_normal();
 }
 
 // When the back send a message 
@@ -219,6 +247,7 @@ function event_onmessage(e) {
 		// TODO gestion of which message
 		console.log("Back send a new message", result);
 		if ("algo" in result) {
+			initialize_mode_normal();
 			result = result.algo;
 			puzzle.path = result.path;
 			puzzle.len_path = result.len_path;
@@ -226,11 +255,11 @@ function event_onmessage(e) {
 			puzzle.all_node = result.all_node;
 			puzzle.node_open = result.node_open;
 			puzzle.node_close = result.node_close;
-			elem_all_node.html("all node:" + puzzle.all_node);
-			elem_node_close.html("node open:" + puzzle.node_close);
+			elem_all_node.html("Total number of state ever selected in the 'opened' set (Complexity in time)" + puzzle.all_node);
+			elem_node_close.html("Maximum numbere of states ever represented in memory at the same time during the search (Complexity in time)"  + puzzle.node_close);
+			elem_number_of_move.html("Number of moves required to transition from the initial state to the final state, according to the search" + puzzle.len_path);
 			elem_node_open.html("node close:" + puzzle.node_open);
 			elem_time_duration.html("time duration:" + puzzle.time_duration);
-			initialize_mode_normal();
 			console.log(puzzle.path);
 
 		} else if ("logs" in result ) {
@@ -242,17 +271,21 @@ function event_onmessage(e) {
 			if (result.validate_puzzle) {
 				console.log("Puzzle valide")
 				puzzle.current_puzzle = ui.tmp_validate_puzzle;
+				destroy_div_titles();
+				initialize_mode_normal();
 			} else {
 				console.log("invalide Puzzle");
+				ui.edit = true;
+				initialize_mode_edit(); // Rego to edit the puzzle
+
 				// lauch small animation
-				event_button_edit(); // Rego to edit the puzzle
 			}
 		}
 		else {
 			console.log("que des suces putes");
 		}
 		// TODO REMETTRE LA LIGNE EN BAS OU LA DESACTIVER POUR TESTER LE CHARGEMENT!!!
-		ui.loading = true;
+		ui.loading = false;
 	}
 
 
@@ -287,12 +320,10 @@ function draw_edit_puzzle() {
 function draw_puzzle() {
 
 	let w = ui.full_width * 0.4 / puzzle.size_puzzle;
-	let h = ui.full_height * 0.8  / puzzle.size_puzzle;
+	let h = ui.full_height * 0.7  / puzzle.size_puzzle;
 
 	let start_x = 0.05 * ui.full_width;
 	let start_y = 0.20 *  ui.full_height
-	// TODO After delete the size of the button 
-	h = h - 20;
 	
 	if (puzzle.path) {
 		puzzle.current_puzzle = puzzle.path[puzzle.turn]
@@ -307,7 +338,7 @@ function draw_puzzle() {
 
 				}
 				ui.div_titles[y][x].position(start_x + x * w, start_y + y * h);
-				ui.div_titles[y][x].size(w - 10, h - 10);
+				ui.div_titles[y][x].size(w - 15, h - 15);
 				ui.text_puzzles[y][x].position(start_x + x * w + w * 0.25, start_y + y * h + h * 0.25);
 				// Warning if the puzzle size move segmentation fault
 				ui.text_puzzles[y][x].html(puzzle.current_puzzle[y][x]);
@@ -342,13 +373,17 @@ function draw_mode_normal( ) {
 	button_first.position(ui.full_width * 0.5 + width_interval * 3, height);
 	button_last.position(ui.full_width * 0.5 + width_interval * 4, height);
 
-	height = ui.full_height * 0.5;
-	width_interval = 80;
+	height = ui.full_height * 0.34;
+	let interval = 80;
 
-	elem_all_node.position(ui.full_width * 0.5 + width_interval * 0, height);
-	elem_node_close.position(ui.full_width * 0.5 + width_interval * 1, height);
-	elem_node_open.position(ui.full_width * 0.5 + width_interval * 2, height);
-	elem_time_duration.position(ui.full_width * 0.5 + width_interval * 3, height);
+			
+	elem_all_node.position(ui.full_width * 0.5 , height + interval * 0);
+	elem_node_close.position(ui.full_width * 0.5 , height + interval * 1);
+	elem_node_open.position(ui.full_width * 0.5 , height + interval * 2);
+	elem_time_duration.position(ui.full_width * 0.5 , height + interval * 3);
+	elem_number_of_move.position(ui.full_width * 0.5 , height + interval * 4);
+	
+
 
 	draw_puzzle();
 }
@@ -359,7 +394,7 @@ function draw() {
 	*/
 
 	frameRate(20); // to regulate fps
-
+	clear();
 
 	// Recalculate position for responsive app
 	button_edit.position(ui.full_width * 0.05, ui.full_height * 0.05);
