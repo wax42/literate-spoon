@@ -75,6 +75,8 @@ var elem_size;
 function initialize_mode_normal() {
     // Initialize button next previous first last
 
+    initialize_div_titles();
+    initialize_text_puzzle();
 
     elem_all_node = createElement('h4',"all node:" + 0)
     elem_node_open = createElement('h4',"node open:" + 0)
@@ -108,6 +110,29 @@ function initialize_mode_normal() {
 
 }
 
+function initialize_div_titles(len = puzzle.size_puzzle) {
+    ui.div_titles = [];
+    for (let i=0; i<len; i++) {
+        ui.div_titles[i] = [];
+        for (let j=0; j<len; j++) {
+            ui.div_titles[i][j] = createDiv();
+            ui.div_titles[i][j].addClass("title_puzzle");
+        }
+    }
+}
+
+function initialize_text_puzzle() {
+    ui.text_puzzles = [];
+    for (let i=0; i<puzzle.size_puzzle; i++) {
+        ui.text_puzzles[i] = [];
+        for (let j=0; j<puzzle.size_puzzle; j++) {
+            ui.text_puzzles[i][j] = createElement('h6', puzzle.current_puzzle[i][j]);
+        }
+    }
+}
+
+
+
 function validate_edit_mode() {
     let tmp_puzzle = []
     for(let i=0; i<puzzle.size_puzzle; i++) {
@@ -116,6 +141,7 @@ function validate_edit_mode() {
             tmp_puzzle[i][j] = ui.input_puzzle[i][j].value();
         }
     }
+    console.log(tmp_puzzle)
 
       // Create JSON string with 1 in start
       var obj = {}
@@ -206,15 +232,17 @@ function initialize_slider_elem() {
     slider_size = createSlider(2, 10, puzzle.size_puzzle, 1);
     elem_size = createElement('h2', "size:" + puzzle.size_puzzle);
 
-    
+    // initialize slider slide    
     slider_size.style('width', '80px');
     slider_size.mouseReleased( () => {
         let current_len = puzzle.size_puzzle;
         puzzle.size_puzzle = slider_size.value();
         elem_size.html("size: " + puzzle.size_puzzle);
         destroy_input_puzzle(current_len);
+        destroy_div_titles(current_len);
+        initialize_div_titles();
         initialize_input_puzzle(); // reinitialize the size of the n_puzzle
-        redraw(); // Create somes bugs 
+        // redraw(); // Create somes bugs 
         // TODO fix the draw --> initialization input / responsive --> and come here 
     });
 
@@ -245,6 +273,7 @@ function destroy_input_puzzle(len = puzzle.size_puzzle) {
 
 function destroy_mode_normal() {
     // destroy button next previous first last
+    destroy_text_puzzle();
     button_next.remove();
     button_previous.remove();
     button_first.remove();
@@ -252,17 +281,38 @@ function destroy_mode_normal() {
     button_algo.remove();
 }
 
+
+function destroy_div_titles(len = puzzle.size_puzzle) {
+    for (let i=0; i<len; i++) {
+        for (let j=0; j<len; j++) {
+            ui.div_titles[i][j].remove();
+        }
+    }
+}
+
+function destroy_text_puzzle() {
+    for (let i=0; i<puzzle.size_puzzle; i++) {
+        for (let j=0; j<puzzle.size_puzzle; j++) {
+            ui.text_puzzles[i][j].remove();
+        }
+    }
+}
+
+
+
+
 function event_button_edit() {
     // Management of mode
 
     // if the mode edit is going to close
     if (ui.edit) {
         ui.edit = !ui.edit;
+        validate_edit_mode(); // valide send a socket and put loading to true
+
         destroy_mode_edit();
 
         initialize_mode_normal(); // initialize button 
 
-        validate_edit_mode(); // valide send a socket and put loading to true
     }
     // if the mode edit is selected
     else { 

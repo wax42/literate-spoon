@@ -56,6 +56,11 @@ class UI {
 		this.color_black = ( 0, 0, 0);
 		this.color_white = (255, 255, 255);
 
+		// normal mode
+		this.div_titles = []; // Will contain the Div elem of the titles
+		this.text_puzzles = []; // Will contain the Text elem of the titles
+
+
 		// edit mode
 		this.edit = false;
 		this.input_puzzle = [];
@@ -286,21 +291,11 @@ function draw_edit_puzzle() {
 	let data;
 	for (var y = 0; y < puzzle.size_puzzle; y++) {
 		for (var x = 0; x < puzzle.size_puzzle; x++) {
-				// if (x >= puzzle.current_puzzle.length || y >= puzzle.current_puzzle.length) {
-				// 	data = '';
-				// }
-				// else {
-				// 	data = puzzle.current_puzzle[y][x];
-				// }
-				// // data = '';
-				// ui.input_puzzle[y][x].value(data);
-				ui.input_puzzle[y][x].position(start_x + x * w + w / 2, start_y + y * h + h / 2);
-				ui.input_puzzle[y][x].size(30, 20); // size of the input
 
-				rect(start_x + x * w, start_y + y * h, w, h, 20);
-				push();
-				fill(0, 0, 0);
-				pop();
+				ui.div_titles[y][x].position(start_x + x * w, start_y + y * h);
+				ui.div_titles[y][x].size(w - 10, h - 10);
+				
+				ui.input_puzzle[y][x].position(start_x + x * w + w * 0.25, start_y + y * h + h * 0.25);
 
 		}
 	}
@@ -310,8 +305,6 @@ function draw_edit_puzzle() {
 
 
 function draw_puzzle() {
-	// console.log("draw puzzle() puzzle.turn :", puzzle.turn);
-	push(); // The push() function saves the current drawing style settings and transformations
 
 	let w = ui.full_width * 0.4 / puzzle.size_puzzle;
 	let h = ui.full_height * 0.8  / puzzle.size_puzzle;
@@ -328,32 +321,19 @@ function draw_puzzle() {
 	let data;
 	for (var y = 0; y < puzzle.size_puzzle; y++) {
 		for (var x = 0; x < puzzle.size_puzzle; x++) {
-				if (x >= puzzle.current_puzzle.length || y >= puzzle.current_puzzle.length) {
-					data = '';
-				}
-				else {
-					data = puzzle.current_puzzle[y][x];
-				}
-				// if (puzzle.size_puzzle < puzzle.current_len)
-				// data = puzzle.current_puzzle[y][x];
-				// position_x, position_y, witdth, height, rounded_corners
+				data = puzzle.current_puzzle[y][x];
 				if (data == '0') {
-					fill(ui.color_black); // black square 
+					ui.div_titles[y][x].addClass("empty_title_puzzle");
+
 				}
-				else {
-					fill(ui.color_white); // white square
-				}
-				rect(start_x + x * w, start_y + y * h, w, h, 20);
-				push();
-				fill(0, 0, 0);
-				text(data, start_x + x * w + w / 2, start_y + y * h + h / 2);
-				pop();
+				ui.div_titles[y][x].position(start_x + x * w, start_y + y * h);
+				ui.div_titles[y][x].size(w - 10, h - 10);
+				ui.text_puzzles[y][x].position(start_x + x * w + w * 0.25, start_y + y * h + h * 0.25);
+				// Warning if the puzzle size move segmentation fault
+				ui.text_puzzles[y][x].html(puzzle.current_puzzle[y][x]);
 
 		}
 	}
-	pop();
-	//  pop() restores these settings of push()
-
 }
 
 function draw_mode_edit() {
@@ -363,7 +343,7 @@ function draw_mode_edit() {
 	elem_size.position(ui.full_width * 0.5, height); 
 	slider_size.position(ui.full_width * 0.5, height  + 50);
 
-    elem_factor.position(ui.full_width * 0.5, height + 100);
+  elem_factor.position(ui.full_width * 0.5, height + 100);
 	slider_factor.position(ui.full_width * 0.5, height + 150);
 
 
@@ -375,15 +355,15 @@ function draw_mode_normal( ) {
 	let height = ui.full_height * 0.25;
 	let width_interval = 65;
 
-    button_algo.position(ui.full_width * 0.5 + width_interval * 0, height);
-    button_next.position(ui.full_width * 0.5 + width_interval * 1, height);
+	button_algo.position(ui.full_width * 0.5 + width_interval * 0, height);
+	button_next.position(ui.full_width * 0.5 + width_interval * 1, height);
 	button_previous.position(ui.full_width * 0.5 + width_interval * 2, height);
 	button_first.position(ui.full_width * 0.5 + width_interval * 3, height);
-    button_last.position(ui.full_width * 0.5 + width_interval * 4, height);
+	button_last.position(ui.full_width * 0.5 + width_interval * 4, height);
 
 	height = ui.full_height * 0.5;
 	width_interval = 80;
-	
+
 	elem_all_node.position(ui.full_width * 0.5 + width_interval * 0, height);
 	elem_node_close.position(ui.full_width * 0.5 + width_interval * 1, height);
 	elem_node_open.position(ui.full_width * 0.5 + width_interval * 2, height);
@@ -425,13 +405,16 @@ function draw() {
 function algo() {
 	// puzzle.check_correct_puzzle();
 	console.log("Mouse pressed", mouseX, mouseY);
+	destroy_mode_normal();
+	destroy_div_titles();
 	var obj = {}
 	obj.algo = {
-		"heuristics": puzzle.heuristics[puzzle.index_heuristics],
+		"heuristics": puzzle.heuristics[1],
 		"puzzle": puzzle.current_puzzle, // checker le puzzle qu'on envoie la gestion est pas encore reglo
 		"size_puzzle": puzzle.size_puzzle,
 		"factor": puzzle.factor
 	}
 	ws.send(JSON.stringify(obj));
+	initialize_mode_normal();
 	ui.loading = true;
 }

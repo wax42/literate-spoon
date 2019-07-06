@@ -17,11 +17,34 @@
  /* title */
  h1 {
 	 font-size: 2em;
+	 z-index: 2;
  }
 
 
- input_puzzle {
+ /* text in title puzzle */
+ h6 {
+	 z-index: 2;
+	 font-size: 5vw;
+	 margin: 0;
+ }
+
+ .title_puzzle {
+	 background-color:  #6d1d8d;
+	 border-radius: 5px;
+	 /* margin: 10px; */
+	 z-index: 1;
+ }
+
+ .empty_title_puzzle {
+	 background-color: transparent;
+	 border-color: #000;
+ }
+
+
+ .input_puzzle {
 	 color: #000;
+	 z-index: 2;
+	 size: 5vw;
  }
 
  button {
