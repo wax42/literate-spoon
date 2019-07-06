@@ -103,10 +103,6 @@ class Puzzle {
 		this.index_heuristics = 0;
 	}
 
-
-	// TO DELETE
-	// ajouter function de check de validite
-	// ou autre calcule chinois pour avoir des stats
 }
 
 var puzzle = new Puzzle();
@@ -114,10 +110,6 @@ var ui = new UI();
 
 // Variable WebSocket declaration
 var ws = null;
-
-var loadingAnimation;
-
-
 
 
 /*
@@ -186,19 +178,35 @@ function setup() {
 	// noLoop(); //  
 	canvas_resize();
 
-
 	// test for loading
-	loadingAnimation = select('.bubbles-wrapper');
 
+	// Initialize the websocket
 	ws = new WebSocket("ws://127.0.0.1:8082");
 	ws.onopen = ()=> {
+		// Just sends some random logs to test the back
 		ws.send('{ "logs":"hello from client"}');
-		// Just some log for the back
 	}
 
-	// listenner a mettre dans une fonction en dehors
-
+	// listenner of the websocket
 	ws.onmessage = (e) => {
+		event_onmessage(e); 
+	}
+
+	// ??? Initialize current_len TODO check the obligation of this shit
+	ui.current_len = puzzle.size_puzzle;
+
+	button_edit = createButton('edit');
+	button_edit.mousePressed(event_button_edit);
+	button_edit.size(60, 20);
+
+	elem_title = createElement('h1', "42 N_PUZZLE");
+	elem_signature = createElement("h5", "by vguerand and alhelson");
+
+	initialize_mode_normal();
+}
+
+// When the back send a message 
+function event_onmessage(e) {
 		let result;
 
 		console.log(e);
@@ -225,7 +233,6 @@ function setup() {
 			initialize_mode_normal();
 			console.log(puzzle.path);
 
-			// elem_time_duration.style(, 100);
 		} else if ("logs" in result ) {
 			console.log("Somes logs from the back", result.logs);
 		} else if ("validate_puzzle" in result ) {
@@ -245,32 +252,8 @@ function setup() {
 			console.log("que des suces putes");
 		}
 		// TODO REMETTRE LA LIGNE EN BAS OU LA DESACTIVER POUR TESTER LE CHARGEMENT!!!
-		ui.loading = false;
+		ui.loading = true;
 	}
-
-	// initialize input for the puzzle
-
-	// gestion current_len a revoir TODO
-	ui.current_len = puzzle.size_puzzle;
-
-
-	// The button is always in the same place
-
-	// maybe with the responsive recalculate this position
-
-	button_edit = createButton('edit');
-	button_edit.mousePressed(event_button_edit);
-	button_edit.size(60, 20);
-
-	elem_title = createElement('h1', "42 N_PUZZLE");
-	elem_signature = createElement("h5", "by vguerand and alhelson");
-	// greeting = createElement('h2', 'what is your name?');
-	// greeting.position(ui.middle_width, 5);
-
-	initialize_mode_normal();
-
-  
-}
 
 
 
@@ -278,7 +261,6 @@ function setup() {
 
 function draw_edit_puzzle() {
 	// console.log("draw puzzle() puzzle.turn :", puzzle.turn);
-	push(); // The push() function saves the current drawing style settings and transformations
 
 	let w = ui.full_width * 0.4 / puzzle.size_puzzle;
 	let h = ui.full_height * 0.8  / puzzle.size_puzzle;
@@ -288,10 +270,6 @@ function draw_edit_puzzle() {
 
 	// TODO After delete the size of the button  remplace 20 with a variable
 	h = h - 20;
-
-	// console.log(" DEBUG ", puzzle.size_puzzle, ui.current_len, puzzle.current_puzzle)
-
-	let data;
 	for (var y = 0; y < puzzle.size_puzzle; y++) {
 		for (var x = 0; x < puzzle.size_puzzle; x++) {
 
@@ -302,7 +280,6 @@ function draw_edit_puzzle() {
 
 		}
 	}
-	//  pop() restores these settings of push()
 }
 
 
@@ -341,12 +318,10 @@ function draw_puzzle() {
 
 function draw_mode_edit() {
 	draw_edit_puzzle();
-
 	
 	puzzle.heuristics.forEach((value, i) => {
 		buttons_heuristics[i].position(ui.full_width * 0.75, ui.full_height * 0.25  + ( i * 50));
 	});
-
 
 	let height = ui.full_height * 0.5;
 	elem_size.position(ui.full_width * 0.5, height); 
@@ -354,9 +329,6 @@ function draw_mode_edit() {
 
   elem_factor.position(ui.full_width * 0.5, height + 100);
 	slider_factor.position(ui.full_width * 0.5, height + 150);
-
-
-	console.log("draw mode edit");
 }
 
 function draw_mode_normal( ) {
@@ -379,38 +351,36 @@ function draw_mode_normal( ) {
 	elem_time_duration.position(ui.full_width * 0.5 + width_interval * 3, height);
 
 	draw_puzzle();
-	console.log("draw mode normal");
 }
 
 function draw() {
-	console.log("draw");
+	/*
+		Function draw is called in loop.
+	*/
 
-	frameRate(2); // to regulate fps
+	frameRate(20); // to regulate fps
+
+
+	// Recalculate position for responsive app
 	button_edit.position(ui.full_width * 0.05, ui.full_height * 0.05);
-
 	elem_title.position(ui.full_width * 0.25, ui.full_height * 0.05);
 	elem_signature.position(ui.full_width * 0.15, ui.full_height * 0.92);
-	
+
 	if (ui.loading) {
+		// Loading Mode 
 		console.log(" Ouii");
 		image(ui.images[ui.index], ui.full_width / 2, ui.full_height / 2);
 		ui.index = (ui.index + 1) % ui.images.length; 
-		// clear();
-		// loadingAnimation.addClass('display-none');
-		// textAlign(CENTER, CENTER);
-		// textSize(120);
-		// textStyle(BOLD);
-		// fill("#8861A4");
-		// text("SUCCESS!!", width / 2, height / 2);
-		// ui.loading = false;
-		// faire des bails de chargements
 	} else if (ui.edit) {
+		// Edit Mode 
 		draw_mode_edit();
 	} else {
+		// Normal mode
 		draw_mode_normal();
 	}
 }
 
+// Just a function to test the communication with the back for the moment
 function algo() {
 	// puzzle.check_correct_puzzle();
 	console.log("Mouse pressed", mouseX, mouseY);

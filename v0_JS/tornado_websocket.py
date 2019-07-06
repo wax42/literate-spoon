@@ -1,4 +1,5 @@
 # !/usr/bin/python3
+# coding: utf8
 import os
 import json
 import tornado.web
@@ -60,6 +61,10 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			}
 			"logs": {
 			}
+			"random_puzzle" {
+				"number" = 2;
+			}
+			
 		}
 		"""
 		print("Transmitting message: %s" % message)

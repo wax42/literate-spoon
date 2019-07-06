@@ -1,6 +1,5 @@
 "use strict";
-// var button_navigate_puzzle = new Array(4).fill;
-// JSP ENCORE 
+
 
 /*
 
@@ -197,6 +196,7 @@ function initialize_mode_edit() {
 
 function initialize_input_puzzle() {
     // Initialize input puzzle
+    let n = 0;
     ui.input_puzzle = [];
     for(let i=0; i<puzzle.size_puzzle; i++) {
 		ui.input_puzzle[i] = [];
@@ -208,8 +208,8 @@ function initialize_input_puzzle() {
             ui.input_puzzle[i][j].attribute("min", 0);
             ui.input_puzzle[i][j].attribute("max", 99);
             ui.input_puzzle[i][j].addClass("input_puzzle")
-            ui.input_puzzle[i][j].value(i + j);
-
+            ui.input_puzzle[i][j].value(n);
+            n++;
 
 		}
 	}
