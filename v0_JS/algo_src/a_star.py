@@ -148,27 +148,11 @@ def astar_start(taquin):
 								node_actual = node_actual.parent
 							except:
 								print ("***")
+						taquin.len_path = len(path)
+						taquin.nb_open = len(pqueue)
 						path = path[::-1]
-						print (path)
 						return (path)
-
-		#######################################################
-                # add dans la closed list the father node
-                # si on arrive sur la target alors reconstituer le chemin
-                # end condition
-
-	############################################################################
-	### Build path
-	answer = []
-	while (data != None):
-			try:
-					answer.append(data.map)
-					data = data.parent
-			except:
-					print ("end bitch")
-	taquin.len_path = len(answer)
-	taquin.nb_open = len(pqueue)
-	return (answer)
+	return (-1)
 
 
 
