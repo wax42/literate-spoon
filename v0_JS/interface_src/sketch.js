@@ -222,6 +222,9 @@ function setup() {
 			elem_node_close.html("node open:" + puzzle.node_close);
 			elem_node_open.html("node close:" + puzzle.node_open);
 			elem_time_duration.html("time duration:" + puzzle.time_duration);
+			initialize_mode_normal();
+			console.log(puzzle.path);
+
 			// elem_time_duration.style(, 100);
 		} else if ("logs" in result ) {
 			console.log("Somes logs from the back", result.logs);
@@ -339,6 +342,12 @@ function draw_puzzle() {
 function draw_mode_edit() {
 	draw_edit_puzzle();
 
+	
+	puzzle.heuristics.forEach((value, i) => {
+		buttons_heuristics[i].position(ui.full_width * 0.75, ui.full_height * 0.25  + ( i * 50));
+	});
+
+
 	let height = ui.full_height * 0.5;
 	elem_size.position(ui.full_width * 0.5, height); 
 	slider_size.position(ui.full_width * 0.5, height  + 50);
@@ -415,6 +424,5 @@ function algo() {
 		"factor": puzzle.factor
 	}
 	ws.send(JSON.stringify(obj));
-	initialize_mode_normal();
 	ui.loading = true;
 }

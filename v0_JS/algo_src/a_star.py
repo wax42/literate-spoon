@@ -123,6 +123,16 @@ def astar_start(taquin):
 				# checker si la nouvelle matrice nexiste pas deja dans la closed list ou l open list
 				newnode = Node(data, new_matrice)
 				newnode_map_str = newnode.map_str(taquin.dim) # [ victor]
+		
+				# Pour moi [vguerand] Il faut checker ici si le newnode est egal au goal 
+				#  et si il est ok. Quitter la boucle ici
+				#  Le probleme est que sinon quand on met un mauvais factor, le dernier path ne se 
+				# retrouve pas en tete de la queue et donc le resultat final qu'on envoie est faux
+				# if newnode_map_str == goal_str:
+				# 	data = (heapq.heappop(pqueue))[1]
+				# 	print("IT s better bitch ")
+				# 	break 
+
 				if (newnode_map_str not in hash):
 					# calculer le g h and f
 					newnode.g = data.g + taquin.factor
@@ -139,6 +149,8 @@ def astar_start(taquin):
                 # END CONDITION
 		if goal_str in hash:
 			data = (heapq.heappop(pqueue))[1]
+			print(data)
+			print("GOAL FIND IN HASH")
 			break
 
 	############################################################################
@@ -197,7 +209,7 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	time_duration = time.time() - start_time
 	print ("*********************************")
 	print ("************* PATH *************")
-	print (path)
+	print (path[::-1])
 
 	# STATS DISPLAYIN
 	print ("*********************************")
@@ -210,7 +222,7 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	print ("TIME DURATION : %.3f" % time_duration)
 
 	send_dico = {}
-	send_dico['path'] = path
+	send_dico['path'] = path[::-1]
 	send_dico['size_puzzle'] = dim
 	send_dico['len_path'] = Astar.len_path
 	send_dico['all_node'] = Astar.nb_all_node

@@ -72,7 +72,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		if ('algo' in front_msg.keys()):
 			# Launch A star with params
 			# param heuristique, puzzle, size_puzzle, factor
-			message_send['algo'] = astar_launch(check_gaschnig, taquin_map, 3, 1)
+			message_send['algo'] = astar_launch(check_gaschnig, taquin_map, 3, 0)
+			# print("QUESECE CE QUE C QU CA", message['algo'])
 		elif ('validate_puzzle' in front_msg.keys()):
 			# Convert double array of str in double array of int
 			size_puzzle = front_msg['validate_puzzle']['size_puzzle']

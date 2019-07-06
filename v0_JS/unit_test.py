@@ -17,7 +17,7 @@ def test_one_dim(nb_test, h, dim):
 		print(solvable)
 		print("test")
 		# print(h, pzl, dim, 0)
-		list_result.append(astar_launch(h, pzl, dim, 0))
+		list_result.append(astar_launch(h, pzl, dim, 1))
 	return list_result
 
 
@@ -41,7 +41,7 @@ def main(nb_test, dim_min, dim_max):
 if __name__ == '__main__':
 	# main(1, 3, 9)
 
-	test_one_dim(1, check_manhattan, 5)
+	test_one_dim(1, check_gaschnig, 3)
 	# dim = 3
 	# goal = spiral(dim)
 	# print(goal)
