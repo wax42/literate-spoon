@@ -124,47 +124,38 @@ def astar_start(taquin):
 				newnode = Node(data, new_matrice)
 				newnode_map_str = newnode.map_str(taquin.dim) # [ victor]
 
-				if newnode_map_str == goal_str:
-					path = []
-					node_actual = newnode
-					while (node_actual != None):
-						try:
-							path.append(node_actual.map)
-							node_actual = node_actual.parent
-						except:
-							print ("***")
-					path = path[::-1]
-					print (path)
-					return (path)
-				else:
-					# Pour moi [vguerand] Il faut checker ici si le newnode est egal au goal 
-					#  et si il est ok. Quitter la boucle ici
-					#  Le probleme est que sinon quand on met un mauvais factor, le dernier path ne se 
-					# retrouve pas en tete de la queue et donc le resultat final qu'on envoie est faux
-					# if newnode_map_str == goal_str:
-					# 	data = (heapq.heappop(pqueue))[1]
-					# 	print("IT s better bitch ")
-					# 	break 
-
-					if (newnode_map_str not in hash):
-						# calculer le g h and f
-						newnode.g = data.g + taquin.factor
-						newnode.h = taquin.heuristique(new_matrice, taquin.goal)
-						heapq.heappush(pqueue, (newnode.g + newnode.h, newnode))
-						hash.add(newnode_map_str) # [ victor]
-						taquin.nb_all_node += 1
+				if newnode_map_str not in hash:
+					# Pour moi [vguerand] Il faut checker ici si le newnode est egal au goal
+                                        #  et si il est ok. Quitter la boucle ici
+                                        #  Le probleme est que sinon quand on met un mauvais factor, le dernier path $
+                                        # retrouve pas en tete de la queue et donc le resultat final qu'on envoie est$
+                                        # if newnode_map_str == goal_str:
+                                        #       data = (heapq.heappop(pqueue))[1]
+                                        #       print("IT s better bitch ")
+                                        #       break
+					# calculer le g h and f
+					newnode.g = data.g + taquin.factor
+					newnode.h = taquin.heuristique(new_matrice, taquin.goal)
+					heapq.heappush(pqueue, (newnode.g + newnode.h, newnode))
+					hash.add(newnode_map_str) # [ victor]
+					taquin.nb_all_node += 1
+					if (newnode_map_str == goal_str):
+						path = []
+						node_actual = newnode
+						while (node_actual != None):
+							try:
+								path.append(node_actual.map)
+								node_actual = node_actual.parent
+							except:
+								print ("***")
+						path = path[::-1]
+						print (path)
+						return (path)
 
 		#######################################################
                 # add dans la closed list the father node
                 # si on arrive sur la target alors reconstituer le chemin
                 # end condition
-
-                # END CONDITION
-		if goal_str in hash:
-			data = (heapq.heappop(pqueue))[1]
-			print(data)
-			print("GOAL FIND IN HASH")
-			break
 
 	############################################################################
 	### Build path
@@ -216,7 +207,7 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	time_duration = time.time() - start_time
 	print ("*********************************")
 	print ("************* PATH *************")
-	print (path[::-1])
+	print (path)
 
 	# STATS DISPLAYIN
 	print ("*********************************")
