@@ -123,23 +123,36 @@ def astar_start(taquin):
 				# checker si la nouvelle matrice nexiste pas deja dans la closed list ou l open list
 				newnode = Node(data, new_matrice)
 				newnode_map_str = newnode.map_str(taquin.dim) # [ victor]
-		
-				# Pour moi [vguerand] Il faut checker ici si le newnode est egal au goal 
-				#  et si il est ok. Quitter la boucle ici
-				#  Le probleme est que sinon quand on met un mauvais factor, le dernier path ne se 
-				# retrouve pas en tete de la queue et donc le resultat final qu'on envoie est faux
-				# if newnode_map_str == goal_str:
-				# 	data = (heapq.heappop(pqueue))[1]
-				# 	print("IT s better bitch ")
-				# 	break 
 
-				if (newnode_map_str not in hash):
-					# calculer le g h and f
-					newnode.g = data.g + taquin.factor
-					newnode.h = taquin.heuristique(new_matrice, taquin.goal)
-					heapq.heappush(pqueue, (newnode.g + newnode.h, newnode))
-					hash.add(newnode_map_str) # [ victor]
-					taquin.nb_all_node += 1
+				if newnode_map_str == goal_str:
+					path = []
+					node_actual = newnode
+					while (node_actual != None):
+						try:
+							path.append(node_actual.map)
+							node_actual = node_actual.parent
+						except:
+							print ("***")
+					path = path[::-1]
+					print (path)
+					return (path)
+				else:
+					# Pour moi [vguerand] Il faut checker ici si le newnode est egal au goal 
+					#  et si il est ok. Quitter la boucle ici
+					#  Le probleme est que sinon quand on met un mauvais factor, le dernier path ne se 
+					# retrouve pas en tete de la queue et donc le resultat final qu'on envoie est faux
+					# if newnode_map_str == goal_str:
+					# 	data = (heapq.heappop(pqueue))[1]
+					# 	print("IT s better bitch ")
+					# 	break 
+
+					if (newnode_map_str not in hash):
+						# calculer le g h and f
+						newnode.g = data.g + taquin.factor
+						newnode.h = taquin.heuristique(new_matrice, taquin.goal)
+						heapq.heappush(pqueue, (newnode.g + newnode.h, newnode))
+						hash.add(newnode_map_str) # [ victor]
+						taquin.nb_all_node += 1
 
 		#######################################################
                 # add dans la closed list the father node
@@ -176,12 +189,6 @@ def astar_setting(heuristique, map, dim):
 	if (dim >= 3 and dim <= 10):
 		taquin.set_goal(spiral(dim))
 		print("GOAL: ", taquin.goal)
-	# elif (dim == 3): # TODO delete this and verify
-	# 	taquin.set_goal([[1,2,3],[8,0,4],[7,6,5]])
-	# elif (dim == 4):
-	# 	taquin.set_goal([[1, 2, 3, 4], [12, 13, 14, 5], [11, 0, 15, 6], [10, 9, 8, 7]])
-	# elif (dim == 5):
-	# 	taquin.set_goal([[1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 0, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9]])
 	else:
 		taquin.error = 2
 
@@ -222,7 +229,7 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	print ("TIME DURATION : %.3f" % time_duration)
 
 	send_dico = {}
-	send_dico['path'] = path[::-1]
+	send_dico['path'] = path
 	send_dico['size_puzzle'] = dim
 	send_dico['len_path'] = Astar.len_path
 	send_dico['all_node'] = Astar.nb_all_node

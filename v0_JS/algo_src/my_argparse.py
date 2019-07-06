@@ -1,6 +1,6 @@
 import argparse
 import sys
-from .heuristique import check_manhattan, check_hamming, check_gaschnig, check_linearConflit
+from .heuristique import check_manhattan, check_hamming, check_gaschnig
 
 class Parsing():
 	def __init__(self):
@@ -87,7 +87,7 @@ def main_arg():
 	return (args)
 
 #if __name__ == '__main__':
-def parsing_bitch():
+def main_parsing():
 	parse = Parsing()
 	args = main_arg()
 	parser_file(parse, args.f[0])
