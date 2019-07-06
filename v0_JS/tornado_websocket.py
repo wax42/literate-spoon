@@ -6,7 +6,7 @@ import tornado.web
 import tornado.websocket
 import tornado.ioloop
 from algo_src.a_star import astar_launch, is_solvable
-from algo_src.utils import spiral
+from algo_src.utils import spiral, random_puzzle
 from algo_src.heuristique import check_gaschnig
 
 # TO DELETE FOR THE TEST	
@@ -16,6 +16,16 @@ uri = os.getenv("WS_HOST", "127.0.0.1")
 port = os.getenv("WS_PORT", "8082")
 address = "ws://" + uri + ":" + port
 root = os.path.dirname(__file__)
+
+
+def generate_radom_puzzle(dim):
+		goal = spiral(dim)
+		solvable = 0
+		while (solvable == 0):
+			pzl = random_puzzle(dim)
+			solvable = is_solvable(pzl, goal, dim)
+		return pzl
+
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	connections = set()
@@ -45,6 +55,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		1 Validate puzzle
 		2 Loading size closed size opened
 		3 Basic log communication
+		4 random_puzzle
 		message = {
 			"algo": {
 				"heuristique": "",
@@ -62,7 +73,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 			"logs": {
 			}
 			"random_puzzle" {
-				"number" = 2;
+				"size_puzzle" = 2;
 			}
 			
 		}
@@ -89,6 +100,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		# elif ('stats' in front_msg.keys()):
 		# 	# Chinoiserie pour la fin 
 		# 	pass
+		elif('random_puzzle' in front_msg.keys()):
+			message_send['random_puzzle'] = generate_radom_puzzle(front_msg["random_puzzle"]["size_puzzle"])
+
 		elif('logs' in front_msg.keys()):
 			# Print msg send by the front
 			print("Client send logs: %s" % front_msg['logs'])

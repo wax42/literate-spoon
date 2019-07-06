@@ -224,6 +224,8 @@ function setup() {
 	ui.current_len = puzzle.size_puzzle;
 	ui.findpos0();
 
+	initialize_button_heuristique();
+
 	button_edit = createButton('edit');
 	button_edit.mousePressed(event_button_edit);
 	button_edit.size(60, 20);
@@ -280,6 +282,8 @@ function event_onmessage(e) {
 
 				// lauch small animation
 			}
+		} else if ("random_puzzle" in result) {
+			puzzle.current_puzzle = result['random_puzzle'];
 		}
 		else {
 			console.log("que des suces putes");
@@ -350,10 +354,6 @@ function draw_puzzle() {
 function draw_mode_edit() {
 	draw_edit_puzzle();
 	
-	puzzle.heuristics.forEach((value, i) => {
-		buttons_heuristics[i].position(ui.full_width * 0.75, ui.full_height * 0.25  + ( i * 50));
-	});
-
 	let height = ui.full_height * 0.5;
 	elem_size.position(ui.full_width * 0.5, height); 
 	slider_size.position(ui.full_width * 0.5, height  + 50);
@@ -397,6 +397,10 @@ function draw() {
 	clear();
 
 	// Recalculate position for responsive app
+	puzzle.heuristics.forEach((value, i) => {
+		buttons_heuristics[i].position(ui.full_width * 0.75, ui.full_height * 0.15  + ( i * 50));
+	});
+
 	button_edit.position(ui.full_width * 0.05, ui.full_height * 0.05);
 	elem_title.position(ui.full_width * 0.25, ui.full_height * 0.05);
 	elem_signature.position(ui.full_width * 0.15, ui.full_height * 0.92);

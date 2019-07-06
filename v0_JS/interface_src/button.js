@@ -161,38 +161,35 @@ function validate_edit_mode() {
 function initialize_mode_edit() {
     // Initialize heuristics button
 
-    let x = ui.middle_width + 250;
-    let y = 50
+
+    initialize_input_puzzle();
+    initialize_slider_elem();
+}
+
+function initialize_button_heuristique() {        
     
     puzzle.heuristics.forEach((value, i) => {
 
         // button creation
 		buttons_heuristics[i] = createButton(value);
-        buttons_heuristics[i].position(x, y + ( i * 50));
         buttons_heuristics[i].size(60, 20);
-
-        // if the heuristics is already selected
-        if (puzzle.index_heuristics == i) {
-            buttons_heuristics[i].attribute('disabled', ''); 
-        }
+        if (puzzle.index_heuristics == i)
+            buttons_heuristics[i].addClass('active_button'); 
 
         // event button heuristics
 		buttons_heuristics[i].mousePressed( () => {
             // save index of heuristics in puzzle obj
             puzzle.index_heuristics = i;
             // disable the button of the selected heuristics
-            buttons_heuristics[i].attribute('disabled', ''); 
+            buttons_heuristics[i].addClass('active_button'); 
             puzzle.heuristics.forEach((value, e) => {
                 if (i != e) {
-                    buttons_heuristics[e].removeAttribute('disabled'); // activate the button for the other button
+                    buttons_heuristics[e].removeClass('active_button'); // activate the button for the other button
                 }
 			    console.log(value);
             });
         });
     });
-    
-    initialize_input_puzzle();
-    initialize_slider_elem();
 }
 
 function initialize_input_puzzle() {
@@ -253,9 +250,9 @@ function initialize_slider_elem() {
 
 function destroy_mode_edit() {
     // destroy button heuristics
-    for (let i=0; i<3; i++) {
-        buttons_heuristics[i].remove();
-    }
+    // for (let i=0; i<3; i++) {
+    //     buttons_heuristics[i].remove();
+    // }
     destroy_input_puzzle();
     slider_factor.remove();
     elem_factor.remove();
