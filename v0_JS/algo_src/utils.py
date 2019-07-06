@@ -12,6 +12,9 @@ class Taquin():
 		self.dim = dim
 		# matrice cible
 		self.goal = goal
+
+		self.goal1d = []
+
 		# matrice initial
 		self.map = map
 
@@ -35,10 +38,13 @@ class Taquin():
 
 	def set_goal(self, goal):
 		self.goal = goal
+		self.goal1d = []
+		for i in self.goal:
+			self.goal1d += i
+		print(self.goal1d)
 
 	def set_map(self, map):
 		self.map = map
-
 
 def map_str(map, dim):
 	string = ""

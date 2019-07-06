@@ -135,7 +135,7 @@ def astar_start(taquin):
                                         #       break
 					# calculer le g h and f
 					newnode.g = data.g + taquin.factor
-					newnode.h = taquin.heuristique(new_matrice, taquin.goal)
+					newnode.h = taquin.heuristique(new_matrice, taquin.goal1d)
 					heapq.heappush(pqueue, (newnode.g + newnode.h, newnode))
 					hash.add(newnode_map_str) # [ victor]
 					taquin.nb_all_node += 1

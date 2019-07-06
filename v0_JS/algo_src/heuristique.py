@@ -19,7 +19,6 @@ def check_manhattan(taquin_map, goal):
 	cost = 0
 	size = len(taquin_map)
 	taquin_map = puzzle_to_list(taquin_map)
-	goal = puzzle_to_list(goal)
 	#  rewrite in double array
 	for i in range(size*size):
 		if taquin_map[i] != 0 and taquin_map[i] != goal[i]:
@@ -35,7 +34,7 @@ def check_gaschnig(taquin, goal):
     res = 0
     size = len(taquin) # TODO transfere la size a chaque fois en argument au lieu de recalculer
     taquin = puzzle_to_list(taquin) # TODO eviter de reconvertir en list a chaque fois
-    goal = puzzle_to_list(goal)
+    #goal = puzzle_to_list(goal)
     taquin = list(taquin)
     goal = list(goal)
     # On itere jusqu'a ce que notre taquin devienne le goal et on retourne le nombre d'iteration
@@ -64,10 +63,10 @@ def check_gaschnig(taquin, goal):
 # differene entre deux map, nb different case
 # Hamming distance
 def check_hamming(taquin_map, goal):
+	taquin_map1d = puzzle_to_list(taquin_map)
 	nb_diff = 0
-	for y in range(0, len(taquin_map)):
-			for x in range(0, len(taquin_map[0])):
-					if (taquin_map[y][x] != goal[y][x] and taquin_map[y][x] != 0):
-							nb_diff += 1
+	for x in range(0, len(taquin_map1d)):
+		if (taquin_map1d[x] != goal[x] and taquin_map1d[x] != 0):
+			nb_diff += 1
 	return (nb_diff)
 
