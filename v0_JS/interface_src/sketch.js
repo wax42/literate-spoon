@@ -224,13 +224,13 @@ function setup() {
 	ui.current_len = puzzle.size_puzzle;
 	ui.findpos0();
 
-	initialize_button_heuristique();
+
 
 	button_edit = createButton('edit');
 	button_edit.mousePressed(event_button_edit);
 	button_edit.size(60, 20);
 
-	elem_title = createElement('h1', "42 N_PUZZLE");
+	elem_title = createElement('h1', "N-Puzzle");
 	elem_signature = createElement("h5", "by vguerand and alhelson");
 
 }
@@ -325,6 +325,11 @@ function draw_puzzle() {
 
 	let w = ui.full_width * 0.4 / puzzle.size_puzzle;
 	let h = ui.full_height * 0.7  / puzzle.size_puzzle;
+	if (w < h) {
+			h = w;
+	} else {
+		w = h;
+	}
 
 	let start_x = 0.05 * ui.full_width;
 	let start_y = 0.20 *  ui.full_height
@@ -343,7 +348,7 @@ function draw_puzzle() {
 				}
 				ui.div_titles[y][x].position(start_x + x * w, start_y + y * h);
 				ui.div_titles[y][x].size(w - 15, h - 15);
-				ui.text_puzzles[y][x].position(start_x + x * w + w * 0.25, start_y + y * h + h * 0.25);
+				ui.text_puzzles[y][x].position(start_x + x * w + w * 0.33, start_y + y * h + h * 0.33);
 				// Warning if the puzzle size move segmentation fault
 				ui.text_puzzles[y][x].html(puzzle.current_puzzle[y][x]);
 
@@ -364,24 +369,29 @@ function draw_mode_edit() {
 
 function draw_mode_normal( ) {
 	// position of the buttons
-	let height = ui.full_height * 0.25;
+	let height = ui.full_height * 0.15;
 	let width_interval = 65;
 
-	button_algo.position(ui.full_width * 0.5 + width_interval * 0, height);
-	button_next.position(ui.full_width * 0.5 + width_interval * 1, height);
-	button_previous.position(ui.full_width * 0.5 + width_interval * 2, height);
-	button_first.position(ui.full_width * 0.5 + width_interval * 3, height);
-	button_last.position(ui.full_width * 0.5 + width_interval * 4, height);
+	button_algo.position(ui.full_width * 0.15 + width_interval * 0, height); // TODO mettre  au autre endroit
+	button_next.position(ui.full_width * 0.15 + width_interval * 1, height);
+	button_previous.position(ui.full_width * 0.15 + width_interval * 2, height);
+	button_first.position(ui.full_width * 0.15 + width_interval * 3, height);
+	button_last.position(ui.full_width * 0.15 + width_interval * 4, height);
 
-	height = ui.full_height * 0.34;
+	puzzle.heuristics.forEach((value, i) => {
+		buttons_heuristics[i].position(ui.full_width * 0.75, ui.full_height * 0.15  + ( i * 50));
+	});
+
+
+	height = ui.full_height * 0.50;
 	let interval = 80;
 
 			
-	elem_all_node.position(ui.full_width * 0.5 , height + interval * 0);
-	elem_node_close.position(ui.full_width * 0.5 , height + interval * 1);
-	elem_node_open.position(ui.full_width * 0.5 , height + interval * 2);
-	elem_time_duration.position(ui.full_width * 0.5 , height + interval * 3);
-	elem_number_of_move.position(ui.full_width * 0.5 , height + interval * 4);
+	elem_all_node.position(ui.full_width * 0.50 , height + interval * 0);
+	elem_node_close.position(ui.full_width * 0.50 , height + interval * 1);
+	elem_node_open.position(ui.full_width * 0.50 , height + interval * 2);
+	elem_time_duration.position(ui.full_width * 0.50 , height + interval * 3);
+	elem_number_of_move.position(ui.full_width * 0.50 , height + interval * 4);
 	
 
 
@@ -397,9 +407,6 @@ function draw() {
 	clear();
 
 	// Recalculate position for responsive app
-	puzzle.heuristics.forEach((value, i) => {
-		buttons_heuristics[i].position(ui.full_width * 0.75, ui.full_height * 0.15  + ( i * 50));
-	});
 
 	button_edit.position(ui.full_width * 0.05, ui.full_height * 0.05);
 	elem_title.position(ui.full_width * 0.25, ui.full_height * 0.05);

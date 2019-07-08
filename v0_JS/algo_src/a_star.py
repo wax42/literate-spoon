@@ -87,22 +87,22 @@ def astar_start(taquin):
 	# utiliser comme un tableau associatif
 	# on stoque ici la string de la map de taquin comme une emprinte
 	# remplace la closed list
-	hash = set()
+	closed_list = set()
 
 	# queue bitch:
-	pqueue = []
+	opened_list = []
 
         # ici on store le premier noeud qui a un cout dez zero
-	heapq.heappush(pqueue, (1, start_node))
+	heapq.heappush(opened_list, (1, start_node))
 	taquin.nb_all_node += 1
 	# we store just the key not a value
-	hash.add(start_node.map_str(taquin.dim))
+	closed_list.add(start_node.map_str(taquin.dim))
 	# algo:
 	# pop open list
 	# gen neightbours withtout in closedlist
 	# add g, h, f
-	while len(pqueue):
-		data = (heapq.heappop(pqueue))[1] # ici on recupere l object
+	while len(opened_list):
+		data = (heapq.heappop(opened_list))[1] # ici on recupere l object
 		#########################################
 		# NEW SON GENERATION
                 # recuperer la position dwe l empty node
@@ -124,20 +124,11 @@ def astar_start(taquin):
 				newnode = Node(data, new_matrice)
 				newnode_map_str = newnode.map_str(taquin.dim) # [ victor]
 
-				if newnode_map_str not in hash:
-					# Pour moi [vguerand] Il faut checker ici si le newnode est egal au goal
-                                        #  et si il est ok. Quitter la boucle ici
-                                        #  Le probleme est que sinon quand on met un mauvais factor, le dernier path $
-                                        # retrouve pas en tete de la queue et donc le resultat final qu'on envoie est$
-                                        # if newnode_map_str == goal_str:
-                                        #       data = (heapq.heappop(pqueue))[1]
-                                        #       print("IT s better bitch ")
-                                        #       break
-					# calculer le g h and f
+				if newnode_map_str not in closed_list:
 					newnode.g = data.g + taquin.factor
 					newnode.h = taquin.heuristique(new_matrice, taquin.goal1d)
-					heapq.heappush(pqueue, (newnode.g + newnode.h, newnode))
-					hash.add(newnode_map_str) # [ victor]
+					heapq.heappush(opened_list, (newnode.g + newnode.h, newnode))
+					closed_list.add(newnode_map_str) # [ victor]
 					taquin.nb_all_node += 1
 					if (newnode_map_str == goal_str):
 						path = []
@@ -149,7 +140,7 @@ def astar_start(taquin):
 							except:
 								print ("***")
 						taquin.len_path = len(path)
-						taquin.nb_open = len(pqueue)
+						taquin.nb_open = len(opened_list)
 						path = path[::-1]
 						return (path)
 	return (-1)

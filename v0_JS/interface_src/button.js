@@ -76,6 +76,7 @@ function initialize_mode_normal() {
 
     initialize_div_titles();
     initialize_text_puzzle();
+    initialize_button_heuristique();
 
     elem_all_node = createElement('h4',"Total number of state ever selected in the 'opened' set (Complexity in time)" + 0);
     elem_node_open = createElement('h4',"Maximum numbere of states ever represented in memory at the same time during the search (Complexity in time)"  + puzzle.node_close);
@@ -161,9 +162,7 @@ function validate_edit_mode() {
 function initialize_mode_edit() {
     // Initialize heuristics button
 
-
     initialize_input_puzzle();
-    initialize_slider_elem();
 }
 
 function initialize_button_heuristique() {        
@@ -239,7 +238,7 @@ function initialize_slider_elem() {
         destroy_input_puzzle(current_len);
         destroy_div_titles(current_len);
         initialize_div_titles();
-        initialize_input_puzzle(); // reinitialize the size of the n_puzzle
+        initialize_input_puzzle(); // reinitialize the size of the N-Puzzle
         // redraw(); // Create somes bugs 
         // TODO fix the draw --> initialization input / responsive --> and come here 
     });
@@ -272,11 +271,18 @@ function destroy_input_puzzle(len = puzzle.size_puzzle) {
 function destroy_mode_normal() {
     // destroy button next previous first last
     destroy_text_puzzle();
+    destroy_button_heuristique();
     button_next.remove();
     button_previous.remove();
     button_first.remove();
     button_last.remove();
     button_algo.remove();
+}
+
+function destroy_button_heuristique() {
+    for (let i=0; i<3; i++) {
+        buttons_heuristics[i].remove();
+    }
 }
 
 

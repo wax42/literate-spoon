@@ -1,6 +1,7 @@
 #coding: utf8
 import math
 import pprint
+import random
 
 def count_conflicts(taquin_row, goal_row, size, ans=0):
 	"""
@@ -161,41 +162,25 @@ def test_linearConlift():
 	#         res += count_conflicts(taquin_columns[i], goal_columns[i], size)
 
 
+def random_puzzle(n):
+	size = n * n
+	list_nb = [i + 1 for i in range(size)]
 
-
-
-def spiral(n):
-    dx,dy = 1,0            # Starting increments
-    x,y = 0,0              # Starting location
-    myarray = [[None]* n for j in range(n)]
-    for i in range(n**2):
-        myarray[x][y] = i + 1
-        nx,ny = x+dx, y+dy
-        if 0<=nx<n and 0<=ny<n and myarray[nx][ny] == None:
-            x,y = nx,ny
-        else:
-            dx,dy = -dy,dx
-            x,y = x+dx, y+dy
-
-	#  Manque plus que a remplacer l'element le plus grand par un 0
-    return myarray
- 
-def printspiral(myarray):
-    n = range(len(myarray))
-    for y in n:
-        for x in n:
-            print "%2i" % myarray[x][y],
-        print
- 
-
-
-
-
+	puzzle = [[0] * n for _ in range(n)]
+	for y in range(n):
+		
+		for x in range(n):
+				random_nb = random.randint(0, size) - 1
+				nb = list_nb[random_nb]
+				list_nb.remove(nb)
+				size = size - 1
+				puzzle[y][x] = nb
+	return puzzle
 
 
 
 def main():
-	printspiral(spiral(5))
+    print(random_puzzle(3))
 
 
 
