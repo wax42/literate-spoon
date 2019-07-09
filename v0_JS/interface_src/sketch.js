@@ -108,8 +108,8 @@ class Puzzle {
 		this.factor = 0;
 		this.turn = 0;
 		this.len_path = 0;
-		this.current_puzzle = [[1, 2, 3, 4, 5], [16, 17, 18, 19, 6], [15, 24, 0, 20, 7], [14, 23, 22, 21, 8], [13, 12, 11, 10, 9]];
-		this.size_puzzle = 5;
+		this.current_puzzle = [[4, 5, 1], [0, 3, 8], [6, 2, 7]];
+		this.size_puzzle = 3;
 		this.all_node = 0;
 		this.node_open = 0;
 		this.node_close = 0;
@@ -118,7 +118,16 @@ class Puzzle {
 		this.heuristics = ['manhatan', 'gaschnig', 'hamming'];
 		this.index_heuristics = 0;
 	}
-
+	initialize_puzzle() {
+		puzzle.path = null;
+		puzzle.turn = 0;
+		puzzle.current_puzzle = [[4, 5, 1], [0, 3, 8], [6, 2, 7]];
+		puzzle.size_puzzle = 3;
+		puzzle.all_node = 0;
+		puzzle.node_open = 0;
+		puzzle.node_close = 0;
+		puzzle.time_duration = 0; 
+	}
 }
 
 var puzzle = new Puzzle();
@@ -230,6 +239,11 @@ function setup() {
 	button_edit.mousePressed(event_button_edit);
 	button_edit.size(60, 20);
 
+	button_random = createButton('random');
+	button_random.mousePressed(event_button_random);
+	button_random.size(60, 20);
+
+
 	elem_title = createElement('h1', "N-Puzzle");
 	elem_signature = createElement("h5", "by vguerand and alhelson");
 
@@ -239,17 +253,10 @@ function setup() {
 function event_onmessage(e) {
 		let result;
 
-		console.log(e);
-		if (e == undefined) {
-			// TODO delete
-			console.log("Suce tes morts");
-			return ;
-		}
+		// Parse the result in obj
 		result = JSON.parse(e.data);
-		// TODO gestion of which message
-		console.log("Back send a new message", result);
 		if ("algo" in result) {
-			initialize_mode_normal();
+			initialize_mode_normal(); // TODO fix this
 			result = result.algo;
 			puzzle.path = result.path;
 			puzzle.len_path = result.len_path;
@@ -263,13 +270,11 @@ function event_onmessage(e) {
 			elem_node_open.html("node close:" + puzzle.node_open);
 			elem_time_duration.html("time duration:" + puzzle.time_duration);
 			console.log(puzzle.path);
-
 		} else if ("logs" in result ) {
+
+			// TODO put all of the errors here
 			console.log("Somes logs from the back", result.logs);
 		} else if ("validate_puzzle" in result ) {
-			//  Que faire quand le puzzle est valide
-			// C'est le mauvais puzzle qui est envoyer pour l'instant ou plutot pas celui d'edit
-			// euh enfet si mais c'est buguer
 			if (result.validate_puzzle) {
 				console.log("Puzzle valide")
 				puzzle.current_puzzle = ui.tmp_validate_puzzle;
@@ -279,11 +284,16 @@ function event_onmessage(e) {
 				console.log("invalide Puzzle");
 				ui.edit = true;
 				initialize_mode_edit(); // Rego to edit the puzzle
-
-				// lauch small animation
 			}
 		} else if ("random_puzzle" in result) {
 			puzzle.current_puzzle = result['random_puzzle'];
+			if (ui.edit)
+				fill_input_puzzle();
+			else {
+				puzzle.initialize_puzzle();
+				puzzle.current_puzzle = result['random_puzzle'];
+				console.log("je t encule")
+			}
 		}
 		else {
 			console.log("que des suces putes");
@@ -363,14 +373,16 @@ function draw_mode_edit() {
 	elem_size.position(ui.full_width * 0.5, height); 
 	slider_size.position(ui.full_width * 0.5, height  + 50);
 
-  elem_factor.position(ui.full_width * 0.5, height + 100);
-	slider_factor.position(ui.full_width * 0.5, height + 150);
 }
 
 function draw_mode_normal( ) {
 	// position of the buttons
 	let height = ui.full_height * 0.15;
 	let width_interval = 65;
+
+
+  elem_factor.position(ui.full_width * 0.5, height + 100);
+	slider_factor.position(ui.full_width * 0.5, height + 150);
 
 	button_algo.position(ui.full_width * 0.15 + width_interval * 0, height); // TODO mettre  au autre endroit
 	button_next.position(ui.full_width * 0.15 + width_interval * 1, height);
@@ -409,7 +421,9 @@ function draw() {
 	// Recalculate position for responsive app
 
 	button_edit.position(ui.full_width * 0.05, ui.full_height * 0.05);
-	elem_title.position(ui.full_width * 0.25, ui.full_height * 0.05);
+	button_random.position(ui.full_width * 0.05 + 70, ui.full_height * 0.05);
+
+	elem_title.position(ui.full_width * 0.5, ui.full_height * 0.05);
 	elem_signature.position(ui.full_width * 0.15, ui.full_height * 0.92);
 
 	if (ui.loading) {

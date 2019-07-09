@@ -49,7 +49,7 @@ Function to delete
 // Declare 4 button [ next, previous, first, last]
 
 // TODO maybe in array ?
-var button_next, button_previous, button_first, button_last, button_edit
+var button_next, button_previous, button_first, button_last, button_edit, button_random
 
 // TO DELETE or NOT
 var button_algo;
@@ -73,6 +73,16 @@ var elem_size;
 
 function initialize_mode_normal() {
     // Initialize button next previous first last
+
+    slider_factor = createSlider(0, 100, 0, 1);
+    elem_factor = createElement('h2',"factor:" + 0);
+ 
+    slider_factor.style('width', '80px');
+    slider_factor.mouseReleased( () => {
+        puzzle.factor = slider_factor.value();
+        elem_factor.html("factor:" + puzzle.factor);
+    });
+
 
     initialize_div_titles();
     initialize_text_puzzle();
@@ -161,6 +171,8 @@ function validate_edit_mode() {
 
 function initialize_mode_edit() {
     // Initialize heuristics button
+    
+    initialize_slider_size();
 
     initialize_input_puzzle();
 }
@@ -212,17 +224,23 @@ function initialize_input_puzzle() {
 	}
 }
 
-function initialize_slider_elem() {
+
+function fill_input_puzzle() {
+    // FIll the input_puzzle with the current_puzzle
+    for(let i=0; i<puzzle.size_puzzle; i++) {
+		for(let j=0; j<puzzle.size_puzzle; j++) {
+            ui.input_puzzle[i][j].value(puzzle.current_puzzle[i][j]);
+        }
+    }
+}
+
+
+
+
+function initialize_slider_size() {
     // createSlider(min, max, [value], [step])
     // create elem for write the value of the slider
-    slider_factor = createSlider(0, 100, 0, 1);
-    elem_factor = createElement('h2',"factor:" + 0);
- 
-    slider_factor.style('width', '80px');
-    slider_factor.mouseReleased( () => {
-        puzzle.factor = slider_factor.value();
-        elem_factor.html("factor:" + puzzle.factor);
-    });
+
 
     
     // Manager of the size slider
@@ -253,8 +271,6 @@ function destroy_mode_edit() {
     //     buttons_heuristics[i].remove();
     // }
     destroy_input_puzzle();
-    slider_factor.remove();
-    elem_factor.remove();
 
     slider_size.remove();
     elem_size.remove();
@@ -272,6 +288,9 @@ function destroy_mode_normal() {
     // destroy button next previous first last
     destroy_text_puzzle();
     destroy_button_heuristique();
+    slider_factor.remove();
+    elem_factor.remove();
+
     button_next.remove();
     button_previous.remove();
     button_first.remove();
@@ -375,5 +394,9 @@ function event_button_last() {
 }
 
 
-
+function event_button_random() {
+    let obj = {};
+    obj.random_puzzle = puzzle.size_puzzle;
+    ws.send(JSON.stringify(obj));
+}
   

@@ -7,10 +7,8 @@ import tornado.websocket
 import tornado.ioloop
 from algo_src.a_star import astar_launch, is_solvable
 from algo_src.utils import spiral, random_puzzle
-from algo_src.heuristique import check_gaschnig
+from algo_src.heuristique import check_gaschnig, check_manhattan, check_hamming
 
-# TO DELETE FOR THE TEST	
-taquin_map = [[7,5,0], [2 ,3 ,8], [4 ,6 ,1]]
 
 uri = os.getenv("WS_HOST", "127.0.0.1")
 port = os.getenv("WS_PORT", "8082")
@@ -18,7 +16,7 @@ address = "ws://" + uri + ":" + port
 root = os.path.dirname(__file__)
 
 
-def generate_radom_puzzle(dim):
+def generate_random_puzzle(dim):
 		goal = spiral(dim)
 		solvable = 0
 		while (solvable == 0):
@@ -37,9 +35,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 	def open(self):
 		self.connections.add(self)
 		print("New client connected")
-		message_send = {}
-		message_send['algo'] = astar_launch(check_gaschnig, taquin_map, 3, 1)
-		# self.write_message(str(message_send))
+		puzzle = [[4, 5, 1], [0, 3, 8], [6, 2, 7]]
+		astar_launch(check_gaschnig, puzzle, 3, 1)
 		# TODO lancer un n_puzzle de 3 par 3 simple sur l'ouverture
 		# afin que l'interface s'ouvre deja sur une solution
 	
@@ -86,9 +83,17 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		print("DEBUG", front_msg)
 
 		if ('algo' in front_msg.keys()):
-			# Launch A star with params
+			puzzle = front_msg['algo']['puzzle']
+			if front_msg['algo']['heuristics'] == "manhattan":
+				heuristics = check_manhattan
+			elif front_msg['algo']['heuristics'] == "gaschnig":
+				heuristics = check_gaschnig
+			elif front_msg['algo']['heuristics'] == "hamming":
+				heuristics = check_hamming
+			factor = front_msg['algo']['factor']
+			size_puzzle = front_msg['algo']['size_puzzle']
 			# param heuristique, puzzle, size_puzzle, factor
-			message_send['algo'] = astar_launch(check_gaschnig, taquin_map, 3, 0)
+			message_send['algo'] = astar_launch(heuristics, puzzle, size_puzzle, factor)
 			# print("QUESECE CE QUE C QU CA", message['algo'])
 		elif ('validate_puzzle' in front_msg.keys()):
 			# Convert double array of str in double array of int
@@ -101,7 +106,8 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		# 	# Chinoiserie pour la fin 
 		# 	pass
 		elif('random_puzzle' in front_msg.keys()):
-			message_send['random_puzzle'] = generate_radom_puzzle(front_msg["random_puzzle"]["size_puzzle"])
+			size_puzzle = front_msg['random_puzzle']
+			message_send['random_puzzle'] = generate_random_puzzle(size_puzzle)
 
 		elif('logs' in front_msg.keys()):
 			# Print msg send by the front
