@@ -1,0 +1,96 @@
+/* Let's go to create some style */
+
+
+/**
+ * 1. Correct the line height in all browsers.
+ * 2. Prevent adjustments of font size after orientation changes in iOS.
+ */
+
+ html {
+	line-height: 1.15; /* 1 */
+	-webkit-text-size-adjust: 100%; /* 2 */
+
+	/* background: linear-gradient(135deg, red, blue); */
+	background: radial-gradient(ellipse at bottom, #002534 0%, #090a0f 100%);
+  }
+  
+ /* title */
+ h1 {
+	 font-size: 2em;
+	 z-index: 2;
+	 /* color: rgb(30, 186, 187); */
+	 color: rgb(70, 72, 76);;
+	 font-family: 'Trebuchet MS', Helvetica, sans-serif;
+ }
+
+/* factor and size */
+ h2 {
+	color: rgb(70, 72, 76);;
+ }
+
+ /* text in title puzzle */
+ h6 {
+	 z-index: 2;
+	 font-size: 4vw;
+	 margin: 0;
+ }
+
+ /* Stats */
+ h4 {
+	color: rgb(187, 192, 201);;
+ }
+
+ /* signature */
+ h5 {
+	color: rgb(70, 72, 76);;
+ }
+
+ .title_puzzle {
+	 background-color: rgb(30, 186, 187);
+	 /* background-image: linear-gradient(ellipse at bottom, rgb(30, 186, 187),  #002534); */
+	 border-radius: 5px;
+	 border-width: 40px;
+	 border: solid 0.3em  rgb(70, 72, 76);
+	 /* margin: 10px; */
+	 z-index: 1;
+ }
+
+ .empty_title_puzzle {
+	 background-color: transparent;
+	 border-color: #000;
+ }
+
+
+ .input_puzzle {
+	 color: #000;
+	 z-index: 2;
+	 size: 5vw;
+ }
+
+ button {
+		position: relative;
+
+		display: block;
+		margin: 30px auto;
+		padding: 0;
+
+		overflow: hidden;
+
+		border-width: 0;
+		outline: none;
+		border-radius: 4px;
+		box-shadow: 0 1px 4px rgba(0, 0, 0, .6);
+
+		background-color: rgb(70, 72, 76);
+		color: #ecf0f1;
+
+		transition: background-color .3s;
+}
+	
+	button:hover {
+		background-color: rgb(60, 46, 131);
+	}
+	
+	.active_button {
+		background-color: rgb(60, 46, 131);
+	}
