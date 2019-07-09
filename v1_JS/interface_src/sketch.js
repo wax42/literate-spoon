@@ -213,16 +213,18 @@ function event_onmessage(e) {
 
 function draw_puzzle() {
 
-	let w = ui.full_width * 0.4 / puzzle.size_puzzle;
-	let h = ui.full_height * 0.7  / puzzle.size_puzzle;
-	if (w < h) {
-			h = w;
-	} else {
-		w = h;
-	}
+	let start_x = 0.18 * ui.full_width;
+	let start_y = 0.25 *  ui.full_height
 
-	let start_x = 0.05 * ui.full_width;
-	let start_y = 0.20 *  ui.full_height
+	let max_x = ui.full_width * 0.5;
+	let max_y = ui.full_height * 0.5;
+
+
+	let size;
+	if ((max_x - start_x) / puzzle.size_puzzle < (max_y - start_y) / puzzle.size_puzzle)
+		size = (max_x - start_x) / puzzle.size_puzzle
+	else
+		size = (max_y - start_y) / puzzle.size_puzzle
 	
 	if (puzzle.path) {
 		puzzle.current_puzzle = puzzle.path[puzzle.turn]
@@ -241,9 +243,9 @@ function draw_puzzle() {
 					ui.div_titles[y][x].addClass("empty_title_puzzle");
 
 				}
-				ui.div_titles[y][x].position(start_x + x * w, start_y + y * h);
-				ui.div_titles[y][x].size(w - 15, h - 15);
-				ui.text_puzzles[y][x].position(start_x + x * w + w * 0.33, start_y + y * h + h * 0.33);
+				ui.div_titles[y][x].position(start_x + x * size, start_y + y * size);
+				ui.div_titles[y][x].size(size - 15, size - 15);
+				ui.text_puzzles[y][x].position(start_x + x * size + size * 0.33, start_y + y * size + size * 0.33);
 				// Warning if the puzzle size move segmentation fault
 				ui.text_puzzles[y][x].html(puzzle.current_puzzle[y][x]);
 
@@ -254,10 +256,11 @@ function draw_puzzle() {
 
 function draw_mode_normal( ) {
 	// position of the buttons
+
+	button_algo.position(ui.full_width * 0.5, ui.full_height * 0.40);
+
 	let height = ui.full_height * 0.15;
 	let width_interval = 65;
-
-	button_algo.position(ui.full_width * 0.5, height); // TODO mettre  au autre endroit
 
 
   elem_factor.position(ui.full_width * 0.5, height + 100);
