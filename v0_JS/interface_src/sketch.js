@@ -347,6 +347,11 @@ function draw_puzzle() {
 	if (puzzle.path) {
 		puzzle.current_puzzle = puzzle.path[puzzle.turn]
 	}
+	else if (puzzle.path == -1) {
+		// TODO fix this shit
+		console.log("Algo fail")
+		return ;
+	}
 
 	let data;
 	for (var y = 0; y < puzzle.size_puzzle; y++) {
@@ -380,15 +385,16 @@ function draw_mode_normal( ) {
 	let height = ui.full_height * 0.15;
 	let width_interval = 65;
 
+	button_algo.position(ui.full_width * 0.5, height); // TODO mettre  au autre endroit
+
 
   elem_factor.position(ui.full_width * 0.5, height + 100);
 	slider_factor.position(ui.full_width * 0.5, height + 150);
 
-	button_algo.position(ui.full_width * 0.15 + width_interval * 0, height); // TODO mettre  au autre endroit
-	button_next.position(ui.full_width * 0.15 + width_interval * 1, height);
-	button_previous.position(ui.full_width * 0.15 + width_interval * 2, height);
-	button_first.position(ui.full_width * 0.15 + width_interval * 3, height);
-	button_last.position(ui.full_width * 0.15 + width_interval * 4, height);
+	button_next.position(ui.full_width * 0.10 + width_interval * 0, height);
+	button_previous.position(ui.full_width * 0.10 + width_interval * 1, height);
+	button_first.position(ui.full_width * 0.10 + width_interval * 2, height);
+	button_last.position(ui.full_width * 0.10 + width_interval * 3, height);
 
 	puzzle.heuristics.forEach((value, i) => {
 		buttons_heuristics[i].position(ui.full_width * 0.75, ui.full_height * 0.15  + ( i * 50));
@@ -399,11 +405,11 @@ function draw_mode_normal( ) {
 	let interval = 80;
 
 			
-	elem_all_node.position(ui.full_width * 0.50 , height + interval * 0);
-	elem_node_close.position(ui.full_width * 0.50 , height + interval * 1);
-	elem_node_open.position(ui.full_width * 0.50 , height + interval * 2);
-	elem_time_duration.position(ui.full_width * 0.50 , height + interval * 3);
-	elem_number_of_move.position(ui.full_width * 0.50 , height + interval * 4);
+	elem_all_node.position(ui.full_width * 0.10 , height + interval * 0);
+	elem_node_close.position(ui.full_width * 0.10 , height + interval * 1);
+	elem_node_open.position(ui.full_width * 0.10 , height + interval * 2);
+	elem_time_duration.position(ui.full_width * 0.10 , height + interval * 3);
+	elem_number_of_move.position(ui.full_width * 0.10 , height + interval * 4);
 	
 
 
