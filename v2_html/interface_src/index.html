@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>N-Puzzle Project</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+      <link rel="stylesheet" type="text/css" href="styles.css">
+    </head>
+<body>
+
+<!-- Header -->
+<header class="container theme padding" id="myHeader">
+    <h1 class="title"> N-puzzle</h1>
+</header>
+
+<div class="row">
+  <div class="col-sm">
+    <div class="container" style="min-height:460px">
+
+      <p class="title">N: 3</p>
+      <input type="range" min="1" max="100" value="50" class="form-control-range." id="myRange">
+      </br>
+      <button class="btn btn-primary btn-lg" onclick="document.getElementById('id01').style.display='block'" style="font-weight:600;">mix puzzle</button>
+      <button class="btn btn-primary btn-lg" onclick="document.getElementById('id01').style.display='block'" style="font-weight:600;">resolve</button>
+
+  </div>
+
+</div>
+
+<div class="col-sm">
+  <div class="container" style="min-height:460px">
+  <h3>Puzzle</h3><br>
+
+  <div id="puzzle">
+
+  </div>
+  <br>
+  <div class="">
+      <button class="btn fa fa-fast-backward"></button>
+      <button class="btn fa fa-fast-left"></button>
+      <button class="btn fa fa-fast-right"></button>
+      <button class="btn fa fa-fast-forward"></button>
+  </div>
+  </div>
+</div>
+
+
+<div class="col-sm">
+  <div class="container" style="min-height:460px">
+    <h3>change settings</h3><br>
+   <div class="row">
+      <div class="col-sm"> <p>Factor</p> </div>
+      <div class="col-sm">
+          <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+      </div>
+    </div>
+        <div class="col-sm">
+          <input id="gaschnig" class="radio" type="radio" checked>
+          <label>gaschnig</label>
+          <br>
+          <br>
+          <input id="manhattanr" class="radio" type="radio">
+          <label>manhattan</label>
+          <br>
+          <br>
+          <input id="hamming" class="radio" type="radio">
+          <label>hamming</label>
+          <br>
+        </div>
+      </div>
+    </div>
+</div>
+</div>
+<br>
+
+<hr>
+<h2 class="center">Algorithm explication</h2>
+
+
+<br>
+
+<!-- Footer -->
+<footer class="container theme-dark padding-16">
+  <p> by vguerand and alhesson</p>
+</footer>
+
+
+
+</body>
+<script src="puzzle.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+</html>
