@@ -15,6 +15,16 @@
 	min-width:600px;
 	min-height:600px; 
   }
+
+  .isa_error {
+    color: #D8000C;
+	background-color: #FFD2D2;
+	margin: 10px 0px;
+padding:12px;
+}
+
+
+
  /* title */
  h1 {
 	 font-size: 2em;
@@ -26,19 +36,19 @@
 
 /* factor and size */
  h2 {
-	color: rgb(70, 72, 76);;
+	color: rgb(70, 72, 76);
  }
 
  /* text in title puzzle */
  h6 {
 	 z-index: 2;
-	 font-size: 4vw;
+	 font-size: 20px;
 	 margin: 0;
  }
 
  /* Stats */
  h4 {
-	color: rgb(187, 192, 201);;
+	color: rgb(70, 72, 76);
  }
 
  /* signature */
@@ -53,7 +63,7 @@
 	 border-width: 40px;
 	 border: solid 0.3em  rgb(70, 72, 76);
 	 /* margin: 10px; */
-	 z-index: 1;
+	 /* z-index: 1; */
  }
 
  .empty_title_puzzle {
@@ -65,7 +75,7 @@
  .input_puzzle {
 	 color: #000;
 	 z-index: 2;
-	 size: 5vw;
+	 size: 3vw;
  }
 
  button {

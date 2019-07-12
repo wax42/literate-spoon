@@ -32,6 +32,10 @@ class UI {
 		this.position0yx = [0, 0];
 		this.last_position0 = [0, 0];
 
+		// error mode
+		this.logs_error = "Error";
+		this.error = false;
+
 	}
 	findpos0 () {
 		for (let i=0; i<puzzle.size_puzzle; i++) {
@@ -159,10 +163,11 @@ function setup() {
 	ui.findpos0();
 
 
-	button_random = createButton('random');
+	button_random = createButton('random puzzle');
 	button_random.mousePressed(event_button_random);
-	button_random.size(60, 20);
+	button_random.size(110, 20);
 
+	elem_error = createDiv("Error")
 
 	elem_title = createElement('h1', "N-Puzzle");
 	elem_signature = createElement("h5", "by vguerand and alhelson");
@@ -188,7 +193,6 @@ function event_onmessage(e) {
 			initialize_mode_normal();
 			console.log(puzzle.path);
 		} else if ("logs" in result ) {
-
 			// TODO put all of the errors here
 			console.log("Somes logs from the back", result.logs);
 		}  
@@ -213,19 +217,22 @@ function event_onmessage(e) {
 
 function draw_puzzle() {
 
-	let start_x = 0.18 * ui.full_width;
+	//  Si la fenetre este plus petite que du 400 par 500 ne rien ecrire
+	let start_x = 0.10 * ui.full_width;
 	let start_y = 0.25 *  ui.full_height
 
 	let max_x = ui.full_width * 0.5;
 	let max_y = ui.full_height * 0.5;
+	// console.log('x',start_x)
+	// console.log('y',start_y)
 
+	let size = 60;
+	// if ((max_x - start_x) < (max_y - start_y))
+	// 	size = (max_x - start_x) / puzzle.size_puzzle
+	// else
+	// 	size = (max_y - start_y) / puzzle.size_puzzle
+	// console.log('size',size);
 
-	let size;
-	if ((max_x - start_x) / puzzle.size_puzzle < (max_y - start_y) / puzzle.size_puzzle)
-		size = (max_x - start_x) / puzzle.size_puzzle
-	else
-		size = (max_y - start_y) / puzzle.size_puzzle
-	
 	if (puzzle.path) {
 		puzzle.current_puzzle = puzzle.path[puzzle.turn]
 	}
@@ -245,8 +252,8 @@ function draw_puzzle() {
 				}
 				ui.div_titles[y][x].position(start_x + x * size, start_y + y * size);
 				ui.div_titles[y][x].size(size - 15, size - 15);
+				// How to place in the middle this fucking letter
 				ui.text_puzzles[y][x].position(start_x + x * size + size * 0.33, start_y + y * size + size * 0.33);
-				// Warning if the puzzle size move segmentation fault
 				ui.text_puzzles[y][x].html(puzzle.current_puzzle[y][x]);
 
 		}
@@ -263,7 +270,7 @@ function draw_mode_normal( ) {
 	let width_interval = 65;
 
 
-  elem_factor.position(ui.full_width * 0.5, height + 100);
+  	elem_factor.position(ui.full_width * 0.5, height + 100);
 	slider_factor.position(ui.full_width * 0.5, height + 150);
 
 	elem_size.position(ui.full_width * 0.2, height - 100);
@@ -292,6 +299,12 @@ function draw() {
 	frameRate(20); // to regulate fps
 	clear();
 
+	// Afficher un message // ecran trop petit
+	if (ui.full_height < 500 || ui.full_width < 400)
+		ui.error = true;
+	else
+		ui.error = false;
+
 	// Recalculate position for responsive app
 
 	button_random.position(ui.full_width * 0.05 + 70, ui.full_height * 0.05);
@@ -304,7 +317,12 @@ function draw() {
 		console.log(" Ouii");
 		image(ui.images[ui.index], ui.full_width / 2, ui.full_height / 2);
 		ui.index = (ui.index + 1) % ui.images.length; 
-	} else {
+	} else if (ui.error) {
+		console.log("error")
+		elem_error.html(ui.logs_error)
+		elem_error.position(0, 0);
+	}
+	else {
 		// Normal mode
 		draw_mode_normal();
 	}

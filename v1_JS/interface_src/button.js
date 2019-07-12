@@ -11,7 +11,7 @@ var button_next, button_previous, button_first, button_last, button_random
 var button_algo;
 
 // Declare Stats
-var elem_stats
+var elem_stats, elem_error
 // Declare elem to put the number all_node, node_open, node_close, time_duration
 var elem_all_node, elem_node_open, elem_node_close, elem_time_duration, elem_number_of_move;
 
