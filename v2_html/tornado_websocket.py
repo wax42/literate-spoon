@@ -52,13 +52,13 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 				heuristics = check_gaschnig
 			elif front_msg['algo']['heuristics'] == "hamming":
 				heuristics = check_hamming
-			factor = front_msg['algo']['factor']
+			factor = int(front_msg['algo']['factor'])
 			size_puzzle = front_msg['algo']['size_puzzle']
 			message_send['algo'] = astar_launch(heuristics, puzzle, size_puzzle, factor)
 		elif('random_puzzle' in front_msg.keys()):
 			size_puzzle = front_msg['random_puzzle']
 			message_send['random_puzzle'] = {}
-			message_send['random_puzzle']['puzzle'] = generate_random_puzzle(size_puzzle)
+			message_send['random_puzzle']['puzzle'] = generate_random_puzzle(int(size_puzzle))
 			message_send['random_puzzle']['size_puzzle'] = size_puzzle
 
 		elif('logs' in front_msg.keys()):

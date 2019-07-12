@@ -18,10 +18,9 @@ class Puzzle {
 		this.index_heuristics = 0;
 	}
 	initialize_puzzle() {
-		puzzle.path = null;
+        puzzle.path = null;
+		puzzle.len_path = 0;
 		puzzle.turn = 0;
-		puzzle.current_puzzle = [[4, 5, 1], [0, 3, 8], [6, 2, 7]];
-		puzzle.size_puzzle = 3;
 		puzzle.all_node = 0;
 		puzzle.node_open = 0;
 		puzzle.node_close = 0;
@@ -38,6 +37,8 @@ function animate_title() {
 }
 
 function event_button_next() {
+    if (puzzle.len_path <= 0)
+        return ;
     puzzle.turn = (puzzle.turn + 1);
     if (puzzle.turn >= puzzle.len_path) {
         puzzle.turn = puzzle.len_path - 1;
@@ -48,6 +49,8 @@ function event_button_next() {
 
 
 function event_button_previous() {
+    if (puzzle.len_path <= 0)
+        return ;
     puzzle.turn -= 1;
     if (puzzle.turn < 0)
     {
@@ -79,7 +82,7 @@ function event_resolve() {
 
 
 function event_factor(value) {
-    //  TODO modify the factor in puzzle
+    puzzle.factor =  value;
     let factor_elem = document.getElementById("factor");
     factor_elem.innerHTML = "Factor: " + value;
     
@@ -87,12 +90,14 @@ function event_factor(value) {
 
 function event_size(value) {
     //  TODO modify the size in variable
-    puzzle.random_size = 3;
+    puzzle.random_size = value;
     let size_elem = document.getElementById("size");
     size_elem.innerHTML = "N: " + value;
 }
 
 function event_button_first() {
+    if (puzzle.len_path <= 0)
+        return ;
     puzzle.turn = 0;
     // redraw();
     animate_title();
@@ -101,6 +106,8 @@ function event_button_first() {
 
 
 function event_button_last() {
+    if (puzzle.len_path <= 0)
+        return ;
     puzzle.turn = puzzle.len_path - 1;
     animate_title();
     
@@ -149,6 +156,14 @@ function initialize_div_titles(len = puzzle.size_puzzle) {
 }
 
 
+function initialize_html() {
+    document.getElementById("time_duration").innerHTML = puzzle.time_duration
+    document.getElementById("all_node").innerHTML = puzzle.all_node 
+    document.getElementById("node_close").innerHTML = puzzle.node_close
+    document.getElementById("len_path").innerHTML = puzzle.len_path
+}
+
+
 var ws = null;
 
 var text_puzzles, div_titles;
@@ -183,6 +198,8 @@ ws.onmessage = (e) => {
         puzzle.all_node = result.all_node;
         puzzle.node_open = result.node_open;
         puzzle.node_close = result.node_close;
+        puzzle.time_duration = result.time_duration;
+        initialize_html();
         console.log(puzzle.path);
     } else if ("logs" in result ) {
 
@@ -209,6 +226,7 @@ ws.onmessage = (e) => {
 Start of the programm :)
 
 */
+
 
 
 initialize_div_titles();

@@ -48,7 +48,6 @@
     <div class="table-responsive">
       <table>
         <tbody id="puzzle">
-
         </tbody>
       </table> 
     </div>
@@ -103,18 +102,26 @@
 <h2 class="center">Algorithm explication</h2>
 
 <div class="stats">
-  <h4> Total number of state ever selected in the 'opened' set (Complexity in time):  + puzzle.all_node
+  <h4> Total number of state ever selected in the 'opened' set (Complexity in time):
 
-    </br>Maximum numbere of states ever represented in memory at the same time during the search (Complexity in time):    puzzle.node_close 
-    </br>Number of moves required to transition from the initial state to the final state, according to the search:   puzzle.len_path 
-    </br>Time duration:" +  puzzle.time_duration)
+    <span id="all_node"></span>
+    </br></br>
+    Maximum numbere of states ever represented in memory at the same time during the search (Complexity in time):  
+    <span id="node_close"></span>
+      puzzle.node_close 
+    </br></br>
+
+    Number of moves required to transition from the initial state to the final state, according to the search:
+    <span id="len_path"> </span> </span> 
+    </br></br>
+    Time duration: <span id="time_duration"></span>
   </h4>
 </div>
 <br>
 
 <!-- Footer -->
 <hr>
-<footer class="container theme-dark padding-16">
+<footer>
   <p> by vguerand and alhesson</p>
 </footer>
 
