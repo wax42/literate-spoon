@@ -6,12 +6,13 @@
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
+
  html body{
 	line-height: 1.15; /* 1 */
 	-webkit-text-size-adjust: 100%; /* 2 */
 
 	/* background: linear-gradient(135deg, red, blue); */
-	background: radial-gradient(ellipse at bottom, #002534 0%, #090a0f 100%);
+	/* background: radial-gradient(ellipse at bottom, #002534 0%, #090a0f 100%); */
 	min-width:600px;
 	min-height:600px;
 	padding: 20px;
@@ -26,15 +27,27 @@
 	color: red;
 }
 
+#puzzle {
+	/* border-width: 3px; */
+	border: solid 0.3em #000;
+	/* padding: 10px 20px 10px 20px; */
+	/* padding-top: 10px;
+	padding-bottom: 10px; */
+	background-color: rgb(70, 72, 76);
+
+}
+
  .title_puzzle {
-	 background-color: rgb(30, 186, 187);
+	 background-color: whitesmoke;
 	 /* background-image: linear-gradient(ellipse at bottom, rgb(30, 186, 187),  #002534); */
-	 border-radius: 30px;
-	 border-width: 10px;
-	 border: solid 0.3em  rgb(70, 72, 76);
-	 margin: 2px;
+	 border-radius: 5px;
+	 border: solid 0.3px  rgb(70, 72, 76);
 	 font-size: 30px;
 	 /* background-color:#3377CC; */
+ }
+
+ .title_puzzle:hover {
+	background-color: rgb(70, 72, 76);
  }
 
  .empty_title_puzzle {

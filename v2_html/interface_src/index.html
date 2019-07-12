@@ -16,35 +16,56 @@
     <h1 class="title"> N-puzzle</h1>
 </header>
 
+<hr>
+
 <div class="row">
   <div class="col-sm">
     <div class="container" style="min-height:460px">
-
-      <p class="title">N: 3</p>
-      <input type="range" min="1" max="100" value="50" class="form-control-range." id="myRange">
-      </br>
-      <button class="btn btn-primary btn-lg" onclick="document.getElementById('id01').style.display='block'" style="font-weight:600;">mix puzzle</button>
-      <button class="btn btn-primary btn-lg" onclick="document.getElementById('id01').style.display='block'" style="font-weight:600;">resolve</button>
-
+    <div class="row">
+        <div class="col-sm">
+          <p id="size">N: 3</p>
+          <input type="range" min="3" max="9" value="3" onchange="event_size(this.value)" id="myRange">
+        </div>
+        </br>
+        </br>
+        <div class="col-sm">
+          <button class="btn" onclick="event_random();" >random puzzle</button>
+          </br>
+          </br>
+        <button class="btn" onclick="event_resolve();">resolve</button>
+      </div>
+    </div>
   </div>
 
 </div>
 
 <div class="col-sm">
   <div class="container" style="min-height:460px">
-  <h3>Puzzle</h3><br>
+  <!-- <h3>Puzzle</h3><br> -->
+  </br>
 
-  <div id="puzzle">
+  <div class="col-sm">
+    <div class="table-responsive">
+      <table>
+        <tbody id="puzzle">
 
+        </tbody>
+      </table> 
+    </div>
   </div>
-  <br>
-  <div class="">
-      <button class="btn fa fa-fast-backward"></button>
-      <button class="btn fa fa-fast-left"></button>
-      <button class="btn fa fa-fast-right"></button>
-      <button class="btn fa fa-fast-forward"></button>
+</br>
+</br>
+</br>
+
+  <div class="col-sm">
+    <div class="button">
+        <button class="btn fa fa-sm fa-fast-backward" onclick="event_button_first()" ></button>
+        <button class="btn fa fa-sm fa-fast-left" onclick="event_button_previous()"></button>
+        <button class="btn fa fa-sm fa-fast-right" onclick="event_button_next()"></button>
+        <button class="btn fa fa-sm fa-fast-forward" onclick="event_button_last()"></button>
+    </div>
   </div>
-  </div>
+</div>
 </div>
 
 
@@ -52,26 +73,28 @@
   <div class="container" style="min-height:460px">
     <h3>change settings</h3><br>
    <div class="row">
-      <div class="col-sm"> <p>Factor</p> </div>
       <div class="col-sm">
-          <input type="range" min="1" max="100" value="50" class="slider" id="myRange">
+          <p id="factor">Factor: 0</p> 
+      </div>
+      <div class="col-sm">
+        <input type="range" min="0" max="10" value="0" onchange="event_factor(this.value)"  class="slider" id="myRange">
       </div>
     </div>
-        <div class="col-sm">
-          <input id="gaschnig" class="radio" type="radio" checked>
-          <label>gaschnig</label>
-          <br>
-          <br>
-          <input id="manhattanr" class="radio" type="radio">
-          <label>manhattan</label>
-          <br>
-          <br>
-          <input id="hamming" class="radio" type="radio">
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+        <label>gaschnig</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+        <label>manhattan</label>
+      </div>
+      <div class="form-check">
+          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3">
           <label>hamming</label>
-          <br>
         </div>
       </div>
     </div>
+
 </div>
 </div>
 <br>
@@ -79,10 +102,18 @@
 <hr>
 <h2 class="center">Algorithm explication</h2>
 
+<div class="stats">
+  <h4> Total number of state ever selected in the 'opened' set (Complexity in time):  + puzzle.all_node
 
+    </br>Maximum numbere of states ever represented in memory at the same time during the search (Complexity in time):    puzzle.node_close 
+    </br>Number of moves required to transition from the initial state to the final state, according to the search:   puzzle.len_path 
+    </br>Time duration:" +  puzzle.time_duration)
+  </h4>
+</div>
 <br>
 
 <!-- Footer -->
+<hr>
 <footer class="container theme-dark padding-16">
   <p> by vguerand and alhesson</p>
 </footer>
