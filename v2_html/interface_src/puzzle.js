@@ -74,6 +74,8 @@ function event_random() {
 }
 
 function event_resolve() {
+    destroy_div_titles();
+    initialize_loading();
 	var obj = {}
 	obj.algo = {
 		"heuristics": puzzle.heuristics,
@@ -179,8 +181,10 @@ function initialize_div_titles(len = puzzle.size_puzzle) {
 function initialize_html() {
     document.getElementById("time_duration").innerHTML = puzzle.time_duration
     document.getElementById("all_node").innerHTML = puzzle.all_node 
-    document.getElementById("node_close").innerHTML = puzzle.node_close
+    document.getElementById("node_open").innerHTML = puzzle.node_open
     document.getElementById("len_path").innerHTML = puzzle.len_path
+    document.getElementById("path").innerHTML = JSON.stringify(puzzle.path, null, 2);
+
 }
 
 
@@ -217,6 +221,8 @@ ws.onmessage = (e) => {
         puzzle.node_open = result.node_open;
         puzzle.node_close = result.node_close;
         puzzle.time_duration = result.time_duration;
+        destroy_loading();
+        initialize_div_titles();
         initialize_html();
         console.log(puzzle.path);
     } else if ("logs" in result ) {
@@ -247,8 +253,4 @@ Start of the programm :)
 
 
 
-initialize_div_titles();
-destroy_div_titles();
 initialize_loading();
-destroy_loading();
-initialize_div_titles();

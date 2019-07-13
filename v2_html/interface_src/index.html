@@ -17,70 +17,48 @@
 </header>
 
 <hr>
+<div class="row align-items-center">
 
-<div class="row">
-  <div class="col-sm">
-    <div class="container" style="min-height:460px">
-    <div class="row">
-        <div class="col-sm">
-          <p id="size">N: 3</p>
-          <input type="range" min="3" max="9" value="3" onchange="event_size(this.value)" id="myRange">
-        </div>
-        </br>
-        </br>
-        <div class="col-sm">
-          <button class="btn btn-primary" onclick="event_random();" >random puzzle</button>
-          </br>
-          </br>
-        <button class="btn btn-primary" onclick="event_resolve();">resolve</button>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<div class="col-sm">
-  <div class="container" style="min-height:460px">
+<div class="col-10">
+  <div class="container card" style="min-height:200px">
   <!-- <h3>Puzzle</h3><br> -->
   </br>
 
-  <div class="col-sm">
-    <div class="table-responsive" id="loading">
+  <div class="row-10 table-responsive container_puzzle" id="loading">
       <table>
         <tbody id="puzzle">
         </tbody>
       </table> 
-    </div>
   </div>
-</br>
-<hr>
-</br>
-</br>
-</br>
 
     <div class="play_button">
+        <hr>
         <button class="btn btn-primary fa fa-sm fa-fast-backward" onclick="event_button_first()" ></button>
         <button class="btn btn-primary fa fa-sm fa-angle-left" onclick="event_button_previous()"></button>
         <button class="btn btn-primary fa fa-sm fa-angle-right" onclick="event_button_next()"></button>
         <button class="btn btn-primary fa fa-sm fa-fast-forward" onclick="event_button_last()"></button>
     </div> 
+      <button class="btn btn-primary btn_resolve" onclick="event_resolve();">resolve</button>
 
 </div>
 </div>
 
 
-<div class="col-sm">
-  <div class="container" style="min-height:460px">
-    <h3>change settings</h3><br>
+<div class="col-2">
+  <div class="container" style="min-height:200px">
+    <!-- <h3>change settings</h3><br> -->
    <div class="row">
-      <div class="col-sm">
-          <p id="factor">Factor: 0</p> 
+      <div class="size_container">
+          <p id="size">N: 3</p>
+          <input class="custom-slider" type="range" min="3" max="9" value="3" onchange="event_size(this.value)" id="myRange">
+          <button class="btn btn-primary random_button" onclick="event_random();" >random puzzle</button>
       </div>
-      <div class="col-sm">
-        <input type="range" min="0" max="10" value="0" onchange="event_factor(this.value)"  class="slider" id="myRange">
+      <div class="factor_container">
+          <p id="factor">Factor: 0</p> 
+          <input type="range" min="0" max="10" value="0" onchange="event_factor(this.value)"  class="slider" id="myRange">
       </div>
     </div>
-    <div class="form-check">
+    <div class="form-check radio_heuristics">
         <input class="form-check-input" type="radio" onclick="event_heuristics(this.value)" name="exampleRadios" id="exampleRadios1" value="option1" checked>
         <label>gaschnig</label>
       </div>
@@ -100,25 +78,27 @@
 <br>
 
 <hr>
-<h2 class="center">Algorithm explication</h2>
+<article>
+  <h2 class="center">Results</h2>
+    <p> Total number of state ever selected in the 'opened' set (Complexity in time):
+        <span id="node_open"></span>
+      </br></br>
+      Maximum number of states ever represented in memory at the same time during the search (Complexity in size):  
+      <span id="all_node"></span>
+      </br></br>
+      Number of moves required to transition from the initial state to the final state, according to the search:
+      <span id="len_path"> </span> </span> 
+      </br></br>
+      Time duration: <span id="time_duration"></span> seconds
+      </br></br>
+      <!-- Path:  <span id="path"> </span> -->
 
-<div class="stats">
-  <h4> Total number of state ever selected in the 'opened' set (Complexity in time):
+    </p>
+  <h2> Algorithm explication </h2>
 
-    <span id="all_node"></span>
-    </br></br>
-    Maximum numbere of states ever represented in memory at the same time during the search (Complexity in time):  
-    <span id="node_close"></span>
-      puzzle.node_close 
-    </br></br>
+  <br>
+</article>
 
-    Number of moves required to transition from the initial state to the final state, according to the search:
-    <span id="len_path"> </span> </span> 
-    </br></br>
-    Time duration: <span id="time_duration"></span>
-  </h4>
-</div>
-<br>
 
 <!-- Footer -->
 <hr>
