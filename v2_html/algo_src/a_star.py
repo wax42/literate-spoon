@@ -3,9 +3,6 @@ from copy import deepcopy
 import heapq, time
 from .heuristique import *
 
-#  TODO DELETE
-
-import pprint
 
 def find_pos_in_tab(tab, val):
         count = 0

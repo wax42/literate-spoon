@@ -29,10 +29,10 @@
         </br>
         </br>
         <div class="col-sm">
-          <button class="btn" onclick="event_random();" >random puzzle</button>
+          <button class="btn btn-primary" onclick="event_random();" >random puzzle</button>
           </br>
           </br>
-        <button class="btn" onclick="event_resolve();">resolve</button>
+        <button class="btn btn-primary" onclick="event_resolve();">resolve</button>
       </div>
     </div>
   </div>
@@ -53,17 +53,21 @@
     </div>
   </div>
 </br>
+<hr>
+</br>
 </br>
 </br>
 
-  <div class="col-sm">
-    <div class="button">
-        <button class="btn fa fa-sm fa-fast-backward" onclick="event_button_first()" ></button>
-        <button class="btn fa fa-sm fa-fast-left" onclick="event_button_previous()"></button>
-        <button class="btn fa fa-sm fa-fast-right" onclick="event_button_next()"></button>
-        <button class="btn fa fa-sm fa-fast-forward" onclick="event_button_last()"></button>
+    <div class="play_button">
+        <button class="btn btn-primary fa fa-sm fa-fast-backward" onclick="event_button_first()" ></button>
+        <button class="btn btn-primary fa fa-sm fa-angle-left" onclick="event_button_previous()"></button>
+        <button class="btn btn-primary fa fa-sm fa-angle-right" onclick="event_button_next()"></button>
+        <button class="btn btn-primary fa fa-sm fa-fast-forward" onclick="event_button_last()"></button>
+    </div> 
+    <div>
+      <i class="fa fa-spinner fa-5x fa-pulse"></i>
     </div>
-  </div>
+
 </div>
 </div>
 
@@ -80,7 +84,7 @@
       </div>
     </div>
     <div class="form-check">
-        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+        <input class="form-check-input" type="radio" onclick="event_heuristics(this.value)" name="exampleRadios" id="exampleRadios1" value="option1" checked>
         <label>gaschnig</label>
       </div>
       <div class="form-check">

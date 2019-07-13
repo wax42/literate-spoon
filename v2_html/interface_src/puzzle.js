@@ -14,8 +14,7 @@ class Puzzle {
 		this.time_duration = 0; 
         
         this.random_size = 3;
-		this.heuristics = ['manhatan', 'gaschnig', 'hamming'];
-		this.index_heuristics = 0;
+		this.heuristics = 'manhattan';
 	}
 	initialize_puzzle() {
         puzzle.path = null;
@@ -57,9 +56,15 @@ function event_button_previous() {
 		puzzle.turn = 0;
     }
     animate_title();
-
-    // redraw();
 }
+    // redraw();
+
+function event_heuristics(value) {
+    puzzle.heuristics = value;
+}
+
+
+
 
 function event_random() {
     let obj = {};
@@ -71,7 +76,7 @@ function event_random() {
 function event_resolve() {
 	var obj = {}
 	obj.algo = {
-		"heuristics": puzzle.heuristics[1],
+		"heuristics": puzzle.heuristics,
 		"puzzle": puzzle.current_puzzle, // checker le puzzle qu'on envoie la gestion est pas encore reglo
 		"size_puzzle": puzzle.size_puzzle,
 		"factor": puzzle.factor
@@ -117,12 +122,12 @@ function event_button_last() {
 
 
 function destroy_div_titles(len = puzzle.size_puzzle) {
-    let n = 1;
 
     for (let i=0; i<len; i++) {
         for (let j=0; j<len; j++) {
             div_titles[i][j].remove();
         }
+        row[i].remove();
     }
 }
 
@@ -131,22 +136,24 @@ function destroy_div_titles(len = puzzle.size_puzzle) {
 
 function initialize_div_titles(len = puzzle.size_puzzle) {
     div_titles = [];
-    let n = 1;
+    row = [];
 
     for (let i=0; i<len; i++) {
         div_titles[i] = [];
         let new_row = document.createElement("tr");
         new_row.setAttribute("id", "tr"+ i);
         // new_row.classList.add("row_puzzle");
+        row.push(new_row);
 
         document.getElementById("puzzle").appendChild(new_row);
         for (let j=0; j<len; j++) {
+
             div_titles[i][j] = document.createElement("th");
             div_titles[i][j].classList.add("title_puzzle");
             div_titles[i][j].setAttribute("id", "th"+ i);
-
-            // div_titles[i][j].classList.add("col_puzzle");
+                // div_titles[i][j].classList.add("col_puzzle");
             if (puzzle.current_puzzle[i][j] != 0) {
+         
                 text = document.createTextNode(puzzle.current_puzzle[i][j]);
                 div_titles[i][j].appendChild(text);
             }
@@ -166,7 +173,7 @@ function initialize_html() {
 
 var ws = null;
 
-var text_puzzles, div_titles;
+var text_puzzles, div_titles, row;
 
 
 
@@ -177,7 +184,7 @@ puzzle = new Puzzle();
 ws.onopen = ()=> {
     var obj = {}
     obj.algo = {
-        "heuristics": puzzle.heuristics[1],
+        "heuristics": puzzle.heuristics,
         "puzzle": puzzle.current_puzzle, // checker le puzzle qu'on envoie la gestion est pas encore reglo
         "size_puzzle": puzzle.size_puzzle,
         "factor": puzzle.factor
