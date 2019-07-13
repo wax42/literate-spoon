@@ -132,6 +132,19 @@ function destroy_div_titles(len = puzzle.size_puzzle) {
 }
 
 
+function initialize_loading() {
+    elem_load = document.createElement('i');
+    elem_load.classList.add('fa');
+    elem_load.classList.add('fa-spinner');
+    elem_load.classList.add('fa-5x');
+    elem_load.classList.add('fa-pulse');
+
+    document.getElementById('loading').appendChild(elem_load);
+}
+
+function destroy_loading() {
+    elem_load.remove();
+}
 
 
 function initialize_div_titles(len = puzzle.size_puzzle) {
@@ -173,9 +186,7 @@ function initialize_html() {
 
 var ws = null;
 
-var text_puzzles, div_titles, row;
-
-
+var text_puzzles, div_titles, row, elem_load;
 
 // Initialize the websocket
 ws = new WebSocket("ws://127.0.0.1:8082");
@@ -236,4 +247,8 @@ Start of the programm :)
 
 
 
+initialize_div_titles();
+destroy_div_titles();
+initialize_loading();
+destroy_loading();
 initialize_div_titles();
