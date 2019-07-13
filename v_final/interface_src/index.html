@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>N-Puzzle Project</title>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+      <link rel="stylesheet" type="text/css" href="styles.css">
+    </head>
+<body>
+
+<!-- Header -->
+<header class="container theme padding" id="myHeader">
+    <h1 class="title"> N-puzzle</h1>
+</header>
+
+<hr>
+<div class="row align-items-center">
+
+<div class="col-10">
+  <div class="container card" style="min-height:200px">
+  <!-- <h3>Puzzle</h3><br> -->
+  </br>
+
+  <div class="row-10 table-responsive container_puzzle" id="loading">
+      <table>
+        <tbody id="puzzle">
+        </tbody>
+      </table> 
+  </div>
+
+    <div class="play_button">
+        <hr>
+        <button class="btn btn-primary fa fa-sm fa-fast-backward" onclick="event_button_first()" ></button>
+        <button class="btn btn-primary fa fa-sm fa-angle-left" onclick="event_button_previous()"></button>
+        <button class="btn btn-primary fa fa-sm fa-angle-right" onclick="event_button_next()"></button>
+        <button class="btn btn-primary fa fa-sm fa-fast-forward" onclick="event_button_last()"></button>
+    </div> 
+      <button class="btn btn-primary btn_resolve" onclick="event_resolve();">resolve</button>
+
+</div>
+</div>
+
+
+<div class="col-2">
+  <div class="container" style="min-height:200px">
+    <!-- <h3>change settings</h3><br> -->
+   <div class="row">
+      <div class="size_container">
+          <p id="size">N: 3</p>
+          <input class="custom-slider" type="range" min="3" max="9" value="3" onchange="event_size(this.value)" id="myRange">
+          <button class="btn btn-primary random_button" onclick="event_random();" >random puzzle</button>
+      </div>
+      <div class="factor_container">
+          <p id="factor">Factor: 0</p> 
+          <input type="range" min="0" max="10" value="0" onchange="event_factor(this.value)"  class="slider" id="myRange">
+      </div>
+    </div>
+    <div class="form-check radio_heuristics">
+        <input class="form-check-input" type="radio" onclick="event_heuristics(this.value)" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+        <label>gaschnig</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+        <label>manhattan</label>
+      </div>
+      <div class="form-check">
+          <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios3" value="option3">
+          <label>hamming</label>
+        </div>
+      </div>
+    </div>
+
+</div>
+</div>
+<br>
+
+<hr>
+<article>
+  <h2 class="center">Results</h2>
+    <p> Total number of state ever selected in the 'opened' set (Complexity in time):
+        <span id="node_open"></span>
+      </br></br>
+      Maximum number of states ever represented in memory at the same time during the search (Complexity in size):  
+      <span id="all_node"></span>
+      </br></br>
+      Number of moves required to transition from the initial state to the final state, according to the search:
+      <span id="len_path"> </span> </span> 
+      </br></br>
+      Time duration: <span id="time_duration"></span> seconds
+      </br></br>
+      <!-- Path:  <span id="path"> </span> -->
+
+    </p>
+  <h2> Algorithm explication </h2>
+
+  <br>
+</article>
+
+
+<!-- Footer -->
+<hr>
+<footer>
+  <p> by vguerand and alhesson</p>
+</footer>
+
+
+
+</body>
+<script src="puzzle.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+</html>
