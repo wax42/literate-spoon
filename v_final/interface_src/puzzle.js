@@ -1,9 +1,7 @@
-
-
 class Puzzle {
 	constructor(name) {
 		this.path = null;
-		this.factor = 0;
+		this.factor = 1;
 		this.turn = 0;
 		this.len_path = 0;
 		this.current_puzzle = [[4, 5, 1], [0, 3, 8], [6, 2, 7]];
@@ -43,7 +41,6 @@ function event_button_next() {
         puzzle.turn = puzzle.len_path - 1;
     }
     animate_title();
-    // redraw();
 }
 
 
@@ -57,7 +54,6 @@ function event_button_previous() {
     }
     animate_title();
 }
-    // redraw();
 
 function event_heuristics(value) {
     puzzle.heuristics = value;
@@ -70,7 +66,6 @@ function event_random() {
     let obj = {};
     obj.random_puzzle = puzzle.random_size;
     ws.send(JSON.stringify(obj));
-    console.log("oui")
 }
 
 function event_resolve() {
@@ -82,31 +77,26 @@ function event_resolve() {
 		"puzzle": puzzle.current_puzzle, // checker le puzzle qu'on envoie la gestion est pas encore reglo
 		"size_puzzle": puzzle.size_puzzle,
 		"factor": puzzle.factor
-	}
+    }
+    console.log(JSON.stringify(obj));
 	ws.send(JSON.stringify(obj));
-	// ui.loading = true;
 }
 
 
 function event_factor(value) {
-    puzzle.factor =  value;
-    let factor_elem = document.getElementById("factor");
-    factor_elem.innerHTML = "Factor: " + value;
-    
+    puzzle.factor = value; 
 }
 
 function event_size(value) {
-    //  TODO modify the size in variable
     puzzle.random_size = value;
     let size_elem = document.getElementById("size");
-    size_elem.innerHTML = "N: " + value;
+    size_elem.innerHTML = value;
 }
 
 function event_button_first() {
     if (puzzle.len_path <= 0)
         return ;
     puzzle.turn = 0;
-    // redraw();
     animate_title();
 
 }
@@ -117,9 +107,6 @@ function event_button_last() {
         return ;
     puzzle.turn = puzzle.len_path - 1;
     animate_title();
-    
-    // redraw();
-
 }
 
 
@@ -157,7 +144,6 @@ function initialize_div_titles(len = puzzle.size_puzzle) {
         div_titles[i] = [];
         let new_row = document.createElement("tr");
         new_row.setAttribute("id", "tr"+ i);
-        // new_row.classList.add("row_puzzle");
         row.push(new_row);
 
         document.getElementById("puzzle").appendChild(new_row);
@@ -166,11 +152,13 @@ function initialize_div_titles(len = puzzle.size_puzzle) {
             div_titles[i][j] = document.createElement("th");
             div_titles[i][j].classList.add("title_puzzle");
             div_titles[i][j].setAttribute("id", "th"+ i);
-                // div_titles[i][j].classList.add("col_puzzle");
             if (puzzle.current_puzzle[i][j] != 0) {
          
                 text = document.createTextNode(puzzle.current_puzzle[i][j]);
                 div_titles[i][j].appendChild(text);
+            }
+            else {
+                div_titles[i][j].classList.add("empty_title_puzzle");
             }
             document.getElementById("tr" + i).appendChild(div_titles[i][j])
         }
@@ -179,12 +167,11 @@ function initialize_div_titles(len = puzzle.size_puzzle) {
 
 
 function initialize_html() {
-    document.getElementById("time_duration").innerHTML = puzzle.time_duration
-    document.getElementById("all_node").innerHTML = puzzle.all_node 
-    document.getElementById("node_open").innerHTML = puzzle.node_open
-    document.getElementById("len_path").innerHTML = puzzle.len_path
-    document.getElementById("path").innerHTML = JSON.stringify(puzzle.path, null, 2);
-
+    document.getElementById("time_duration").innerHTML = parseFloat(puzzle.time_duration).toFixed(3);
+    document.getElementById("all_node").innerHTML = puzzle.all_node;
+    document.getElementById("node_open").innerHTML = puzzle.node_open;
+    document.getElementById("len_path").innerHTML = puzzle.len_path;
+    // document.getElementById("path").innerHTML = JSON.stringify(puzzle.path, null, 2);
 }
 
 

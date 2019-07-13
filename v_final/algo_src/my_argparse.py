@@ -63,23 +63,14 @@ def parser_heuristique(parse, name_hr):
 	elif (name_hr in "manhattan"):
 		print ("* manhattan heuristique")
 		parse.heuristique = check_manhattan
-	elif (name_hr in "linearConflit"):
-		print ("* linear conflict heuristique")
-		parse.heuristique = check_linearConflit
 
 def main_arg():
-	# default : valuer par default
-	# choices : restreindre les choix possible
-	# nargs : nombre de choix
-	# action='store_tue' | no argument after
-	# required=True | obligatoire
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-f', nargs=1, help="input file", required=True)
-	parser.add_argument('-e', '--heuristique', nargs=1, choices=['hamming', 'manhattan', 'linearConflit', 'gaschnig'], default=["hamming"], help='choose an heuristique')
+	parser.add_argument('-e', '--heuristique', nargs=1, choices=['hamming', 'manhattan', 'gaschnig'], default=["hamming"], help='choose an heuristique')
 	parser.add_argument('--save', nargs=1, help='save in file data result')
 	parser.add_argument('--stats', action='store_true', help="show stats")
-	parser.add_argument('-g', '--graphic', action='store_true', default=False, help="launch graphic mode(tkinter)")
 	parser.add_argument('--factor', default = [0], type=int, nargs=1)
 
 	# parse argument

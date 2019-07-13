@@ -27,16 +27,18 @@ WORKDIR $APPLICATION_PATH
 # INSTALL PYTHON PACKAGES FROM requirements.txt
 RUN pip3 install virtualenv && \
     python3 -m virtualenv env
-# $APPLICATION_PATH/env/bin/pip3 install -r requirements.txt
+
+
+RUN $APPLICATION_PATH/env/bin/pip3 install -r requirements.txt
 
 # EXPOSE PORTS (OPTIONAL)
-EXPOSE 8080
+EXPOSE 8081
 
 # START THE APPLICATION
-ENTRYPOINT python3 file_server.py && python3 tornado_websocket.py
+ENTRYPOINT sh lauch_interface.sh
 
 #  docker build -t test_n_puzzle .
 
-# docker run -d -p 8080:8080 test_n_puzzle --name { NAME OF CONTAINER}
+# docker run -d -p 8081:8080 test_n_puzzle --name puzzle_docker
 
-# docker exec -it  { NAME OF CONTAINER }  bash
+# docker exec -it  puzzle_docker  bash

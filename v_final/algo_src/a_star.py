@@ -1,53 +1,55 @@
-from .utils import Taquin, map_str, check_pos_empty, spiral
+from .utils import map_str, check_pos_empty, spiral, is_solvable
 from copy import deepcopy
 import heapq, time
 from .heuristique import *
 
+class Taquin():
+	def __init__(self, heuristique, dim, goal, map):
+		# fonction euristique aue l on va utiliser
+		self.heuristique = heuristique
+		# dimension de la matrice
+		self.dim = dim
+		# matrice cible
+		self.goal = goal
 
-def find_pos_in_tab(tab, val):
-        count = 0
-        for i in tab:
-                if (i == val):
-                        return (count)
-                count += 1
-        return (count)
+		self.goal1d = []
 
-def find_n_simple_tab(map):
-        size = len(map)
-        n = 0
-        for x in range(0, size):
-                for xx in range(x+1, size):
-                        if (map[x] > 0 and map[xx] > 0 and map[x] > map[xx]):
-                                n = n + 1
-        return (n)
+		# matrice initial
+		self.map = map
 
-def is_solvable(puzzle, goal, dim):
-        # PUZZLE VERIF SOLVABLE
-        tab_map = []
-        tab_goal = []
-        for i in puzzle:
-                tab_map = tab_map + i
-        for i in goal:
-                tab_goal = tab_goal + i
+		self.factor = 0
 
-        v1 = find_n_simple_tab(tab_map)
-        v2 = find_n_simple_tab(tab_goal)
+		# 1 : taquin unsolvable
+		# 2 : invalid dim
+		self.error = 0
 
-        if (dim % 2 == 0):
-                v1 += (find_pos_in_tab(tab_map, 0) / dim)
-                v2 += (find_pos_in_tab(tab_goal, 0) / dim)
-        if (v1 % 2 == v2 % 2):
-                return (1)
-        else:
-                return (0)
+		# stats part
+		self.len_path    = 0
+		self.nb_all_node = 0
+		self.nb_open = 0
+
+	# h : fonction heuristique
+	def set_heuristique(self, h):
+		self.heuristique = h
+
+	def set_dim(self, dim):
+		self.dim = dim
+
+	def set_goal(self, goal):
+		self.goal = goal
+		self.goal1d = []
+		for i in self.goal:
+			self.goal1d += i
+
+	def set_map(self, map):
+		self.map = map
 
 class Node():
 	def __init__(self, parent=None, taquin=None):
-			# case precedente
 			self.parent = parent
-			# map du taquin
+
 			self.map = taquin
-			# distance depuis le depart
+
 			self.g = 0
 			# g + h
 			self.f = 0
@@ -68,64 +70,43 @@ class Node():
 			return False
 		return self.f == other.f
 
-# TODO clean l'initialisation / nom des variables etc
 
 def astar_start(taquin):
-	# tableau de 4 element qui 
-	# initialisation des data
 	start_node = Node(None, taquin.map)
 	goal_str = map_str(taquin.goal, taquin.dim)
-	# permet e checker les vopar simple addition de pos via une boucle
+
 	neightbours = [(0, -1), (0, 1), (-1, 0), (1, 0)]
-	total =  0
+	total =  0 # TODO delete the queue and count the total of node here
 
-	# initialisation des liste de priorite
-
-	# utiliser comme un tableau associatif
-	# on stoque ici la string de la map de taquin comme une emprinte
-	# remplace la closed list
 	closed_list = set()
 
-	# queue bitch:
 	opened_list = []
 
-        # ici on store le premier noeud qui a un cout dez zero
 	heapq.heappush(opened_list, (1, start_node))
 	taquin.nb_all_node += 1
+
 	# we store just the key not a value
 	closed_list.add(start_node.map_str(taquin.dim))
-	# algo:
-	# pop open list
-	# gen neightbours withtout in closedlist
-	# add g, h, f
+
 	while len(opened_list):
-		data = (heapq.heappop(opened_list))[1] # ici on recupere l object
-		#########################################
-		# NEW SON GENERATION
-                # recuperer la position dwe l empty node
+		data = (heapq.heappop(opened_list))[1]
 		pos = check_pos_empty(data.map)
 		for i in neightbours:
 			pos_y = pos[0] + i[0]
 			pos_x = pos[1] + i[1]
-			# checker si notre noeud actuel n est pas dans la closed list
-			# checker si on est encore dans le range
-			# pour l opti on va eviter le len
 			if pos_x >= 0 and pos_y >= 0 and pos_x < taquin.dim and pos_y < taquin.dim:
 				new_matrice = deepcopy(data.map)
-				# swap value
-				#penser a faire la verification de non duplication de notre list
 				new_matrice[pos[0]][pos[1]] = new_matrice[pos_y][pos_x]
 				new_matrice[pos_y][pos_x] = 0
 
-				# checker si la nouvelle matrice nexiste pas deja dans la closed list ou l open list
 				newnode = Node(data, new_matrice)
-				newnode_map_str = newnode.map_str(taquin.dim) # [ victor]
+				newnode_map_str = newnode.map_str(taquin.dim)
 
 				if newnode_map_str not in closed_list:
 					newnode.g = data.g + taquin.factor
 					newnode.h = taquin.heuristique(new_matrice, taquin.goal1d)
 					heapq.heappush(opened_list, (newnode.g + newnode.h, newnode))
-					closed_list.add(newnode_map_str) # [ victor]
+					closed_list.add(newnode_map_str)
 					taquin.nb_all_node += 1
 					if (newnode_map_str == goal_str):
 						path = []
@@ -142,8 +123,6 @@ def astar_start(taquin):
 						return (path)
 	return (-1)
 
-
-
 # heuristique : heuristique function
 # map of origin
 # dim : dimension of the taquin
@@ -151,7 +130,6 @@ def astar_setting(heuristique, map, dim):
 	taquin = Taquin(heuristique, dim, 0, map)
 	if (dim >= 3 and dim <= 10):
 		taquin.set_goal(spiral(dim))
-		print("GOAL: ", taquin.goal)
 	else:
 		taquin.error = 2
 
@@ -169,10 +147,10 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 	Astar.factor = factor
 	if (Astar.error == 1):
 		print("Taquin invalide. Try another file.")
-		exit(1)
+		exit(1) # TODO delete the exit
 	if (Astar.error == 2):
 		print ("Bad dim. Need to be [2 < dim < 6]")
-		exit(1)
+		exit(1) # TODO delete the exit
 
 	start_time = time.time()
 	path = astar_start(Astar)

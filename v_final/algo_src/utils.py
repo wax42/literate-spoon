@@ -1,50 +1,5 @@
 import random
-# parametrer notre resolution de taquin
-# heurisitique : fonction heuristique que l'on veut utiliser
-# dim : dimension de la matrice a traiter
-# goal : pattern final que l'on veut obtenir
-# map : tableau a 2 dimension qui represente la map de commencement du taquin
-class Taquin():
-	def __init__(self, heuristique, dim, goal, map):
-		# fonction euristique aue l on va utiliser
-		self.heuristique = heuristique
-		# dimension de la matrice
-		self.dim = dim
-		# matrice cible
-		self.goal = goal
 
-		self.goal1d = []
-
-		# matrice initial
-		self.map = map
-
-		self.factor = 0
-
-		# 1 : taquin unsolvable
-		# 2 : invalid dim
-		self.error = 0
-
-		# stats part
-		self.len_path    = 0
-		self.nb_all_node = 0
-		self.nb_open = 0
-
-	# h : fonction heuristique
-	def set_heuristique(self, h):
-		self.heuristique = h
-
-	def set_dim(self, dim):
-		self.dim = dim
-
-	def set_goal(self, goal):
-		self.goal = goal
-		self.goal1d = []
-		for i in self.goal:
-			self.goal1d += i
-		print(self.goal1d)
-
-	def set_map(self, map):
-		self.map = map
 
 def map_str(map, dim):
 	string = ""
@@ -96,6 +51,26 @@ def puzzle_to_list(puzzle):
 		lst.extend(row)
 	return lst
 
+def is_solvable(puzzle, goal, dim):
+        # PUZZLE VERIF SOLVABLE
+        tab_map = []
+        tab_goal = []
+        for i in puzzle:
+                tab_map = tab_map + i
+        for i in goal:
+                tab_goal = tab_goal + i
+
+        v1 = find_n_simple_tab(tab_map)
+        v2 = find_n_simple_tab(tab_goal)
+
+        if (dim % 2 == 0):
+                v1 += (find_pos_in_tab(tab_map, 0) / dim)
+                v2 += (find_pos_in_tab(tab_goal, 0) / dim)
+        if (v1 % 2 == v2 % 2):
+                return (1)
+        else:
+                return (0)
+
 
 def random_puzzle(n):
 	size = n * n
@@ -119,5 +94,31 @@ def random_puzzle(n):
 
 	
 	return puzzle
+
+def find_pos_in_tab(tab, val):
+        count = 0
+        for i in tab:
+                if (i == val):
+                        return (count)
+                count += 1
+        return (count)
+
+def find_n_simple_tab(map):
+        size = len(map)
+        n = 0
+        for x in range(0, size):
+                for xx in range(x+1, size):
+                        if (map[x] > 0 and map[xx] > 0 and map[x] > map[xx]):
+                                n = n + 1
+        return (n)
+
+
+def validate_random_puzzle(dim):
+		goal = spiral(dim)
+		solvable = 0
+		while (solvable == 0):
+			pzl = random_puzzle(dim)
+			solvable = is_solvable(pzl, goal, dim)
+		return pzl
 
 
