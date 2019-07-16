@@ -2,6 +2,7 @@ from .utils import map_str, check_pos_empty, spiral, is_solvable
 from copy import deepcopy
 import heapq, time
 from .heuristique import *
+import signal
 
 class Taquin():
 	def __init__(self, heuristique, dim, goal, map):
@@ -138,6 +139,13 @@ def astar_setting(heuristique, map, dim):
 
 	return (taquin)
 
+
+
+
+def signal_alarm():
+   raise Exception("End of time")
+
+
 # heuristique : heuristique function
 # map of origin
 # dim : dimension of the taquin
@@ -153,7 +161,16 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 		exit(1) # TODO delete the exit
 
 	start_time = time.time()
-	path = astar_start(Astar)
+
+
+	signal.signal(signal.SIGALRM, signal_alarm)
+	signal.alarm(1)
+
+	try:
+		path = astar_start(Astar)
+	except Exception:
+		print("Time out")
+		path = -1
 	time_duration = time.time() - start_time
 	print ("*********************************")
 	print ("************* PATH *************")

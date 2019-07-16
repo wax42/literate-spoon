@@ -82,7 +82,7 @@ def main_parsing():
 	parse = Parsing()
 	args = main_arg()
 	parser_file(parse, args.f[0])
-	parse.graphic = args.graphic
+	# parse.graphic = args.graphic
 	parser_heuristique(parse, args.heuristique)
 	parse.save = args.save
 	parse.factor = args.factor[0]
