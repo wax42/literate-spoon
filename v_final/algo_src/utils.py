@@ -77,8 +77,7 @@ def random_puzzle(n):
 	list_nb = [i + 1 for i in range(size)]
 
 	puzzle = [[0] * n for _ in range(n)]
-	for y in range(n):
-		
+	for y in range(n):		
 		for x in range(n):
 				random_nb = random.randint(0, size) - 1
 				nb = list_nb[random_nb]
@@ -120,5 +119,3 @@ def validate_random_puzzle(dim):
 			pzl = random_puzzle(dim)
 			solvable = is_solvable(pzl, goal, dim)
 		return pzl
-
-

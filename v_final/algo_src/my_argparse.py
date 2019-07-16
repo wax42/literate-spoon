@@ -37,10 +37,8 @@ def parser_file(parse, name_file):
 					print("COMMENT")
 			else:
 					data = line.split()
-					print(data)
 					for x in range(0, dim):
 							matrice[i][x] = int(data[x])
-			print (line)
 	f.close()
 	parse.matrice = matrice
 	return matrice
@@ -52,13 +50,13 @@ def parser_heuristique(parse, name_hr):
 	parse.heuristique = check_manhattan
 
 	if (name_hr in "gaschnig"):
-		print ("* gaschnig heuristique")
+		print ("[+] gaschnig heuristique")
 		parse.heuristique = check_gaschnig
 	elif (name_hr in "hamming"):
-		print ("* hamming heuristique")
+		print ("[+] hamming heuristique")
 		parse.heuristique = check_hamming
 	elif (name_hr in "manhattan"):
-		print ("* manhattan heuristique")
+		print ("[+] manhattan heuristique")
 		parse.heuristique = check_manhattan
 
 def main_arg():
