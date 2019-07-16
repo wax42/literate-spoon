@@ -59,7 +59,7 @@ def parser_heuristique(parse, name_hr):
 		parse.heuristique = check_gaschnig
 	elif (name_hr in "hamming"):
 		print ("* hamming heuristique")
-		parse.heuristique = check_gaschnig
+		parse.heuristique = check_hamming
 	elif (name_hr in "manhattan"):
 		print ("* manhattan heuristique")
 		parse.heuristique = check_manhattan
