@@ -6,9 +6,6 @@ class Parsing():
 	def __init__(self):
 		self.dim = 0
 		self.matrice = 0
-		self.graphic = 0
-		self.save = 0
-		self.stats = 0
 		self.factor = 0
 		self.heuristique = 0
 		self.error = 0
@@ -69,8 +66,6 @@ def main_arg():
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-f', nargs=1, help="input file", required=True)
 	parser.add_argument('-e', '--heuristique', nargs=1, choices=['hamming', 'manhattan', 'gaschnig'], default=["hamming"], help='choose an heuristique')
-	parser.add_argument('--save', nargs=1, help='save in file data result')
-	parser.add_argument('--stats', action='store_true', help="show stats")
 	parser.add_argument('--factor', default = [0], type=int, nargs=1)
 
 	# parse argument
@@ -82,8 +77,6 @@ def main_parsing():
 	parse = Parsing()
 	args = main_arg()
 	parser_file(parse, args.f[0])
-	# parse.graphic = args.graphic
 	parser_heuristique(parse, args.heuristique)
-	parse.save = args.save
 	parse.factor = args.factor[0]
 	return (parse)
