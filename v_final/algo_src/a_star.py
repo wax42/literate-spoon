@@ -50,9 +50,8 @@ class Node():
 			self.parent = parent
 
 			self.map = taquin
-
 			self.g = 0
-			# g + h
+
 			self.f = 0
 
 #	# transform la map actuel en string
@@ -163,9 +162,8 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 
 	start_time = time.time()
 
-
 	signal.signal(signal.SIGALRM, signal_alarm)
-	signal.alarm(1)
+	signal.alarm(25)
 	try:
 		path = astar_start(Astar)
 	except TimeoutException as e:
