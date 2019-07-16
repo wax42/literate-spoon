@@ -74,9 +74,13 @@ def main_arg():
 
 #if __name__ == '__main__':
 def main_parsing():
-	parse = Parsing()
-	args = main_arg()
-	parser_file(parse, args.f[0])
-	parser_heuristique(parse, args.heuristique)
-	parse.factor = args.factor[0]
-	return (parse)
+	try:
+		parse = Parsing()
+		args = main_arg()
+		parser_file(parse, args.f[0])
+		parser_heuristique(parse, args.heuristique)
+		parse.factor = args.factor[0]
+		return (parse)
+	except:
+		print("*** Error parsing argument")
+		exit(0)
