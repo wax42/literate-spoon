@@ -69,6 +69,9 @@ function event_random() {
 }
 
 function event_resolve() {
+    console.log(elem_load)
+    if (elem_load != undefined)
+        return ;
     destroy_div_titles();
     initialize_loading();
 	var obj = {}
@@ -121,7 +124,28 @@ function destroy_div_titles(len = puzzle.size_puzzle) {
 }
 
 
+function initialize_timeout() {
+    document.getElementById("msg").innerHTML = "Time out";
+    elem_timeout = document.createElement('i');
+    elem_timeout.classList.add('fa');
+    elem_timeout.classList.add('fa-clock-o');
+    elem_timeout.classList.add('fa-5x');
+    elem_timeout.classList.add('fa-pulse');
+
+    document.getElementById('loading').appendChild(elem_timeout);
+}
+
+function destroy_timeout() {
+    elem_timeout.remove();
+    elem_timeout = undefined;
+}
+
+
 function initialize_loading() {
+    if (elem_timeout != undefined) {
+        destroy_timeout();
+    }
+
     elem_load = document.createElement('i');
     elem_load.classList.add('fa');
     elem_load.classList.add('fa-spinner');
@@ -129,14 +153,18 @@ function initialize_loading() {
     elem_load.classList.add('fa-pulse');
 
     document.getElementById('loading').appendChild(elem_load);
+    document.getElementById("msg").innerHTML = "loading ...";
 }
 
 function destroy_loading() {
     elem_load.remove();
+    elem_load = undefined;
 }
 
 
 function initialize_div_titles(len = puzzle.size_puzzle) {
+    document.getElementById("msg").innerHTML = "";
+
     div_titles = [];
     row = [];
 
@@ -177,7 +205,7 @@ function initialize_html() {
 
 var ws = null;
 
-var text_puzzles, div_titles, row, elem_load;
+var text_puzzles, div_titles, row, elem_load, elem_timeout;
 
 // Initialize the websocket
 ws = new WebSocket("ws://127.0.0.1:8082");
@@ -187,7 +215,7 @@ ws.onopen = ()=> {
     var obj = {}
     obj.algo = {
         "heuristics": puzzle.heuristics,
-        "puzzle": puzzle.current_puzzle, // checker le puzzle qu'on envoie la gestion est pas encore reglo
+        "puzzle": puzzle.current_puzzle,
         "size_puzzle": puzzle.size_puzzle,
         "factor": puzzle.factor
     }
@@ -198,46 +226,46 @@ ws.onmessage = (e) => {
     let result;
     // Parse the result in object
     result = JSON.parse(e.data);
-    console.log("On message", result)
     if ("algo" in result) {
         result = result.algo;
-        puzzle.path = result.path;
-        puzzle.len_path = result.len_path;
-        puzzle.size_puzzle = result.size_puzzle;
-        puzzle.all_node = result.all_node;
-        puzzle.node_open = result.node_open;
-        puzzle.node_close = result.node_close;
-        puzzle.time_duration = result.time_duration;
         destroy_loading();
-        initialize_div_titles();
-        initialize_html();
+        if (result.path == -1) {
+            console.log("TimeOut")
+            initialize_timeout();
+            puzzle.initialize_puzzle();
+        } else {
+            puzzle.path = result.path;
+            puzzle.len_path = result.len_path;
+            puzzle.size_puzzle = result.size_puzzle;
+            puzzle.all_node = result.all_node;
+            puzzle.node_open = result.node_open;
+            puzzle.node_close = result.node_close;
+            puzzle.time_duration = result.time_duration;
+            initialize_div_titles();
+            initialize_html();
+        }
         console.log(puzzle.path);
     } else if ("logs" in result ) {
-
-        // TODO put all of the errors here and put it on modal
         console.log("Somes logs from the back", result.logs);
     }  
     else if ("random_puzzle" in result) {
+        if (elem_timeout != undefined) {
+            destroy_timeout();
+        }
         puzzle.initialize_puzzle();
         destroy_div_titles();
         puzzle.current_puzzle = result['random_puzzle']['puzzle'];
         puzzle.size_puzzle = result['random_puzzle']['size_puzzle'];
         initialize_div_titles();
-    // TODO GEERE MIEUX sa
     }
     else {
-        console.log("que des suces putes");
+        console.log("Error websocket invalid", result);
     }
-    // TODO REMETTRE LA LIGNE EN BAS OU LA DESACTIVER POUR TESTER LE CHARGEMENT!!!
 }
 
 
 
 /*
 Start of the programm :)
-
 */
-
-
-
 initialize_loading();

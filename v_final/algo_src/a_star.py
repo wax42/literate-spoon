@@ -139,11 +139,12 @@ def astar_setting(heuristique, map, dim):
 
 	return (taquin)
 
+class TimeoutException(Exception):
+	pass
 
 
-
-def signal_alarm():
-   raise Exception("End of time")
+def signal_alarm(signum, stack):
+   raise TimeoutException("TimeOut")
 
 
 # heuristique : heuristique function
@@ -165,12 +166,13 @@ def astar_launch(heuristique, taquin, dim, factor=0):
 
 	signal.signal(signal.SIGALRM, signal_alarm)
 	signal.alarm(1)
-
 	try:
 		path = astar_start(Astar)
-	except Exception:
-		print("Time out")
+	except TimeoutException as e:
+		print(e)
 		path = -1
+	signal.alarm(0)
+	
 	time_duration = time.time() - start_time
 	print ("*********************************")
 	print ("************* PATH *************")

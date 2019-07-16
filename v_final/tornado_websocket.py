@@ -66,7 +66,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
 		print("Client disconnected")
 
 print("URI ws://%s:%s is now open for web communication" % (uri, port))
-application = tornado.web.Application([(r"/", WebSocketHandler)])
+application = tornado.web.Application([(r"/", WebSocketHandler)], debug=False)
  
 if __name__ == "__main__":
 	application.listen(8082)

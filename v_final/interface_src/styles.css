@@ -28,6 +28,13 @@
 	color: rgb(70, 72, 76);;
 }
 
+#msg {
+  margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	color: rgb(70, 72, 76);;
+}
+
 .btn-primary {
 	background-color: rgb(70, 72, 76);
 }
