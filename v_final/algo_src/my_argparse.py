@@ -27,12 +27,11 @@ def parser_file(parse, name_file):
 					sys.stdout.write("DIM : " + line)
 					count += 1
 
-	print ("Get dim " + str(dim))
 	# get matrice of dim DIM
 	matrice = [[0] * dim for i in range(dim)]
 	for i in range(0, dim):
 			line = f.readline()
-			print(line)
+			print(line, end="")
 			if (data[0] == "#" or data[0] == "\n"):
 					print("COMMENT")
 			else:
