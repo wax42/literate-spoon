@@ -69,7 +69,6 @@ function event_random() {
 }
 
 function event_resolve() {
-    console.log(elem_load)
     if (elem_load != undefined)
         return ;
     destroy_div_titles();
@@ -81,7 +80,6 @@ function event_resolve() {
 		"size_puzzle": puzzle.size_puzzle,
 		"factor": puzzle.factor
     }
-    console.log(JSON.stringify(obj));
 	ws.send(JSON.stringify(obj));
 }
 
@@ -230,7 +228,6 @@ ws.onmessage = (e) => {
         result = result.algo;
         destroy_loading();
         if (result.path == -1) {
-            console.log("TimeOut")
             initialize_timeout();
             puzzle.initialize_puzzle();
         } else {
@@ -244,7 +241,6 @@ ws.onmessage = (e) => {
             initialize_div_titles();
             initialize_html();
         }
-        console.log(puzzle.path);
     } else if ("logs" in result ) {
         console.log("Somes logs from the back", result.logs);
     }  

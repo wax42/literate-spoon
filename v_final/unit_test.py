@@ -3,7 +3,18 @@ from algo_src.a_star import astar_launch, astar_setting
 
 from algo_src.heuristique import check_gaschnig, check_hamming, check_manhattan
 
-import pprint
+import json
+
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 def test_one_dim_all_heuristics(nb_test, dim, factor):
 	dico_result = {}
@@ -21,31 +32,6 @@ def test_one_dim_all_heuristics(nb_test, dim, factor):
 
 		dico_result["TEST_N" + str(i)] = result
 	return dico_result
-
-
-
-def test_one_dim_factor(nb_test, dim, h, min_factor, max_factor):
-	dico_result = {}
-	stats = {}
-	for i in range(nb_test):
-		pzl = validate_random_puzzle(dim)
-		dico_result["TEST_N" + str(i)] = []
-
-		for j in range(min_factor, max_factor  + 1):
-			print("TEST FACTOR ", j)
-			result = astar_launch(h, pzl, dim, j)
-
-			time_duration = result['time_duration']
-			len_path = result['len_path']
-			stats["FACTOR" + str(j)] = {
-				"time_duration": time_duration,
-				"len_path": len_path
-			}
-			dico_result["TEST_N" + str(i)].append(result)
-
-		return dico_result, stats
-
-
 
 
 def create_stats_heuristics(dico_result, nb_test):
@@ -75,14 +61,17 @@ def main(nb_test, dim_min, dim_max, factor):
 	#  Check diffents heuritics and create stats with the faster factor
 	list_result = {}
 	stats = {}
-	for i in range(dim_min, dim_max + 1):
-		list_result[str(i)] = test_one_dim_all_heuristics(nb_test, i, factor)
-		stats[str(i)] = create_stats_heuristics(list_result[str(i)], nb_test)
-	
-	pprint.pprint(list_result)
-	print(" Heuristique la plus rapide")
-	pprint.pprint(stats)
+	print(bcolors.OKGREEN + "\tStart somes stats: " + str(nb_test) + " times the dimensions " + str(dim_min) + " to " + str(dim_max)  + bcolors.ENDC)
 
+	for i in range(dim_min, dim_max + 1):
+		print(bcolors.HEADER)
+		list_result[str(i)] = test_one_dim_all_heuristics(nb_test, i, factor)
+		stats[str(i)  +  "*" + str(i)] = create_stats_heuristics(list_result[str(i)], nb_test)
+
+		print(bcolors.ENDC)
+
+	print(bcolors.OKGREEN +  "The fastest heuristics" + bcolors.ENDC)
+	print(json.dumps(stats, indent=4, sort_keys=True))
 
 	
 	# list_result = {}
@@ -105,9 +94,10 @@ if __name__ == '__main__':
 	# min dim = 3 
 	dim_min = 3
 	# max dim = 3
-	dim_max = 8
+	dim_max = 4
 	factor = 1
 	main(nb_test, dim_min, dim_max, factor)
-	# To test greedy search
-	factor = 0
-	main(nb_test, dim_min, dim_max, factor)
+
+	# # To test greedy search
+	# factor = 0
+	# main(nb_test, dim_min, dim_max, factor)
