@@ -64,8 +64,8 @@ def is_solvable(puzzle, goal, dim):
         v2 = find_n_simple_tab(tab_goal)
 
         if (dim % 2 == 0):
-                v1 += (find_pos_in_tab(tab_map, 0) / dim)
-                v2 += (find_pos_in_tab(tab_goal, 0) / dim)
+                v1 += (find_pos_in_tab(tab_map, 0) // dim)
+                v2 += (find_pos_in_tab(tab_goal, 0) // dim)
         if (v1 % 2 == v2 % 2):
                 return (1)
         else:
